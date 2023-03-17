@@ -29,7 +29,4 @@ class CoRefSolver:
         return documents
 
     def _get_co_reference_indices(self, document: data.Document) -> typing.List[typing.List[int]]:
-        return [
-            [3, 26, 32],
-            [6, 9, 23]
-        ]
+        return []

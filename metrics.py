@@ -1,4 +1,3 @@
-import collections
 import typing
 
 import data
@@ -20,11 +19,19 @@ def mentions_f1_stats(*, predicted_documents: typing.List[data.Document],
                      attribute='mentions', verbose=verbose)
 
 
+def entity_f1_stats(*, predicted_documents: typing.List[data.Document],
+                    ground_truth_documents: typing.List[data.Document],
+                    verbose: bool = False) -> typing.Tuple[float, float, float]:
+    return _f1_stats(predicted_documents=predicted_documents,
+                     ground_truth_documents=ground_truth_documents,
+                     attribute='entities', verbose=verbose)
+
+
 def _f1_stats(*, predicted_documents: typing.List[data.Document],
               ground_truth_documents: typing.List[data.Document],
               attribute: str,
               verbose: bool = False):
-    assert attribute in ['mentions', 'relations']
+    assert attribute in ['mentions', 'relations', 'entities']
     assert len(predicted_documents) == len(ground_truth_documents)
 
     num_gold = 0
@@ -46,22 +53,22 @@ def _f1_stats(*, predicted_documents: typing.List[data.Document],
         ok_preds = true_as_set.intersection(pred_as_set)
         non_ok = [e.pretty_print(p) for e in pred_attribute if e.to_tuple(p) not in true_as_set]
         if attribute == 'relations' and verbose and len(non_ok) > 0:
-            print('='*150)
+            print('=' * 150)
             print(p.text)
             print('pred mentions:')
             print(', '.join([e.pretty_print(p) for e in p.mentions if 'act' in e.ner_tag.lower()]))
             print()
             print('true mentions')
             print(', '.join([e.pretty_print(t) for e in t.mentions if 'act' in e.ner_tag.lower()]))
-            print('-'*100)
+            print('-' * 100)
             print('pred')
             print(', '.join([a.pretty_print(p) for a in pred_attribute if 'act' in a.tag.lower()]))
             print([e for e in pred_as_set if 'act' in e[1]])
-            print('-'*100)
+            print('-' * 100)
             print('true')
             print(', '.join([a.pretty_print(t) for a in true_attribute if 'act' in a.tag.lower()]))
             print([e for e in true_as_set if 'act' in e[1]])
-            print('-'*100)
+            print('-' * 100)
             print('ok')
             print(ok_preds)
             print('non ok')

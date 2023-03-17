@@ -3,6 +3,7 @@ import functools
 import pathlib
 import typing
 
+import coref
 import data
 import entities
 import metrics
@@ -15,12 +16,14 @@ class PipelineResult:
     predictions_baseline_1: typing.List[data.Document]
     predictions_baseline_2: typing.List[data.Document]
     predictions_baseline_3: typing.List[data.Document]
+    predictions_baseline_4: typing.List[data.Document]
 
 
 def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document], typing.List[data.Document]]]):
     baseline_1_f1_stats = []
     baseline_2_f1_stats = []
     baseline_3_f1_stats = []
+    baseline_4_f1_stats = []
 
     for n_fold, (train_fold, test_fold) in enumerate(folds):
         result = pipeline(train_fold, test_fold, crf_model_path=pathlib.Path(f'models/crf.{n_fold}.model'))
@@ -36,6 +39,10 @@ def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document],
             predicted_documents=result.predictions_baseline_3,
             ground_truth_documents=result.ground_truth
         ))
+        baseline_4_f1_stats.append(metrics.entity_f1_stats(
+            predicted_documents=result.predictions_baseline_4,
+            ground_truth_documents=result.ground_truth
+        ))
 
     print(f'Fold |   P     |   R     |   F1    ')
     print(f'=====+=========+=========+=========')
@@ -45,6 +52,8 @@ def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document],
     _print_f1_stats(baseline_2_f1_stats)
     print(f'--- B3 ----------------------------')
     _print_f1_stats(baseline_3_f1_stats)
+    print(f'--- B4 ----------------------------')
+    _print_f1_stats(baseline_4_f1_stats)
 
 
 def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data.Document], *,
@@ -99,12 +108,16 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
     predictions_baseline_3 = extractor.predict(baseline_3_input)
 
     # BASELINE 4 - CO-REFERENCES ####################################################################################
+    baseline_4_input = [d.copy() for d in predictions_baseline_1]
+    solver = coref.CoRefSolver()
+    predictions_baseline_4 = solver.resolve_co_references(baseline_4_input)
 
     return PipelineResult(
         ground_truth=test_data,
         predictions_baseline_1=predictions_baseline_1,
         predictions_baseline_2=predictions_baseline_2,
         predictions_baseline_3=predictions_baseline_3,
+        predictions_baseline_4=predictions_baseline_4
     )
 
 
