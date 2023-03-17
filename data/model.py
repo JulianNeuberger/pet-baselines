@@ -73,15 +73,13 @@ class Mention:
 
 @dataclasses.dataclass
 class Entity:
-    ner_tag: str
     mention_indices: typing.List[int] = dataclasses.field(default_factory=list)
 
     def to_tuple(self, *args) -> typing.Tuple:
-        return self.ner_tag, set(self.mention_indices)
+        return set(self.mention_indices),
 
     def copy(self) -> 'Entity':
         return Entity(
-            ner_tag=self.ner_tag,
             mention_indices=[i for i in self.mention_indices]
         )
 

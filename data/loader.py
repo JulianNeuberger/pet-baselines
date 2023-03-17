@@ -25,8 +25,9 @@ def read_documents_from_json(file_path: str) -> typing.List[model.Document]:
 
 
 def _read_document_from_json(json_data: typing.Dict) -> model.Document:
-    mentions = _read_mentions_from_json(json_data['entities'])
-    relations = _read_relations_from_json(json_data['relations'], mentions)
+    mentions = _read_mentions_from_json(json_data['mentions'])
+    entities = _read_entities_from_json(json_data['entities'])
+    relations = _read_relations_from_json(json_data['relations'], entities)
     return model.Document(
         text=json_data['text'],
         sentences=_read_sentences_from_json(json_data['tokens']),
@@ -64,22 +65,34 @@ def _read_mentions_from_json(json_mentions: typing.List[typing.Dict]) -> typing.
     return mentions
 
 
+def _read_entities_from_json(json_entities: typing.List[typing.Dict]) -> typing.List[model.Entity]:
+    entities = []
+    for json_entity in json_entities:
+        entity = _read_entity_from_json(json_entity)
+        entities.append(entity)
+    return entities
+
+
 def _read_mention_from_json(json_mention: typing.Dict) -> model.Mention:
     return model.Mention(ner_tag=json_mention['ner'],
                          sentence_index=json_mention['sentence_id'],
                          token_indices=json_mention['token_indices'])
 
 
-def _read_relations_from_json(json_relations: typing.List[typing.Dict],
-                              mentions: typing.List[model.Mention]) -> typing.List[model.Relation]:
-    relations = []
-    mentions_as_tuples = [m.to_tuple() for m in mentions]
-    for json_relation in json_relations:
-        head_mention = _read_mention_from_json(json_relation['head_entity'])
-        tail_mention = _read_mention_from_json(json_relation['tail_entity'])
+def _read_entity_from_json(json_entity: typing.Dict) -> model.Entity:
+    return model.Entity(json_entity['mention_indices'])
 
-        head_index = mentions_as_tuples.index(head_mention.to_tuple())
-        tail_index = mentions_as_tuples.index(tail_mention.to_tuple())
+
+def _read_relations_from_json(json_relations: typing.List[typing.Dict],
+                              entities: typing.List[model.Entity]) -> typing.List[model.Relation]:
+    relations = []
+    entities_as_tuples = [e.to_tuple() for e in entities]
+    for json_relation in json_relations:
+        head_entity = _read_entity_from_json(json_relation['head_entity'])
+        tail_entity = _read_entity_from_json(json_relation['tail_entity'])
+
+        head_index = entities_as_tuples.index(head_entity.to_tuple())
+        tail_index = entities_as_tuples.index(tail_entity.to_tuple())
 
         relations.append(model.Relation(
             head_entity_index=head_index,

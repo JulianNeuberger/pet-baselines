@@ -6,7 +6,7 @@ import typing
 import coref
 import data
 import entities
-import metrics
+from eval import metrics
 import relations
 
 

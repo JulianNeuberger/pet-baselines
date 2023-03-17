@@ -5,7 +5,7 @@ import typing
 import pycrfsuite
 
 import data
-import metrics
+from eval import metrics
 from entities import decoder
 
 
