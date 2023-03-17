@@ -193,13 +193,18 @@ class FurtherSpecificationRule(RelationExtractionRule):
                 chosen_index = left_index
             else:
                 # both not None, choose nearer
-                left_candidate = document.mentions[left_index]
-                right_candidate = document.mentions[right_index]
 
                 # closest token of left candidate is the right-most
-                left_end = document.sentences[left_candidate.sentence_index].tokens[left_candidate.token_indices[-1]].index_in_document
+                left_candidate = document.mentions[left_index]
+                left_sentence = document.sentences[left_candidate.sentence_index]
+                left_token = left_sentence.tokens[left_candidate.token_indices[-1]]
+                left_end = left_token.index_in_document
+
                 # closest token of right candidate is the left-most
-                right_start = document.sentences[right_candidate.sentence_index].tokens[right_candidate.token_indices[0]].index_in_document
+                right_candidate = document.mentions[right_index]
+                right_sentence = document.sentences[right_candidate.sentence_index]
+                right_token = right_sentence.tokens[right_candidate.token_indices[0]]
+                right_start = right_token.index_in_document
 
                 source_start = document.sentences[mention.sentence_index].tokens[min(mention.token_indices)].index_in_document
                 source_end = document.sentences[mention.sentence_index].tokens[max(mention.token_indices)].index_in_document
