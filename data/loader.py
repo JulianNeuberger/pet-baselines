@@ -12,6 +12,7 @@ class Document:
     text: str
     sentences: typing.List['Sentence'] = dataclasses.field(default_factory=list)
     mentions: typing.List['Mention'] = dataclasses.field(default_factory=list)
+    entities: typing.List['Entity'] = dataclasses.field(default_factory=list)
     relations: typing.List['Relation'] = dataclasses.field(default_factory=list)
 
     def contains_relation(self, relation: 'Relation') -> bool:
@@ -24,6 +25,12 @@ class Document:
             mentions=[m.copy() for m in self.mentions],
             relations=[r.copy() for r in self.relations]
         )
+
+    def get_mentions_by_token_index(self, token_index: int) -> typing.Optional['Mention']:
+        for mention in self.mentions:
+            if token_index in mention.token_indices:
+                return mention
+        return None
 
     @property
     def tokens(self):
@@ -65,6 +72,21 @@ class Mention:
             ner_tag=self.ner_tag,
             sentence_index=self.sentence_index,
             token_indices=[i for i in self.token_indices]
+        )
+
+
+@dataclasses.dataclass
+class Entity:
+    ner_tag: str
+    mention_indices: typing.List[int] = dataclasses.field(default_factory=list)
+
+    def to_tuple(self, *args) -> typing.Tuple:
+        pass
+
+    def copy(self) -> 'Entity':
+        return Entity(
+            ner_tag=self.ner_tag,
+            mention_indices=[i for i in self.mention_indices]
         )
 
 

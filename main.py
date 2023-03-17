@@ -39,17 +39,17 @@ def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document],
 
     print(f'Fold |   P     |   R     |   F1    ')
     print(f'=====+=========+=========+=========')
-    print(f'--- B1-----------------------------')
+    print(f'--- B1 ----------------------------')
     _print_f1_stats(baseline_1_f1_stats)
-    print(f'--- B2-----------------------------')
+    print(f'--- B2 ----------------------------')
     _print_f1_stats(baseline_2_f1_stats)
-    print(f'--- B3-----------------------------')
+    print(f'--- B3 ----------------------------')
     _print_f1_stats(baseline_3_f1_stats)
 
 
 def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data.Document], *,
              crf_model_path: pathlib.Path):
-    # BASELINE 1 ####################################################################################################
+    # BASELINE 1 - ENTITY EXTRACTION VIA CRF ########################################################################
     # crf step for entity extraction
     estimator = entities.ConditionalRandomFieldsEstimator(crf_model_path)
     estimator.train(train_data)
@@ -86,7 +86,7 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
         relations.rules.UsesRelationRule(activity_data_tag=activity_data, activity_tag=activity, uses_relation_tag=uses)
     ])
 
-    # BASELINE 2 ####################################################################################################
+    # BASELINE 2 - RELATIONS ON PERFECT ENTITIES ####################################################################
     documents_with_perfect_entities = []
     for d in test_data:
         d = d.copy()
@@ -94,9 +94,11 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
         documents_with_perfect_entities.append(d)
     predictions_baseline_2 = extractor.predict(documents_with_perfect_entities)
 
-    # BASELINE 3 ####################################################################################################
+    # BASELINE 3 - RELATIONS ON BASELINE 1 PREDICTIONS ##############################################################
     baseline_3_input = [d.copy() for d in predictions_baseline_1]
     predictions_baseline_3 = extractor.predict(baseline_3_input)
+
+    # BASELINE 4 - CO-REFERENCES ####################################################################################
 
     return PipelineResult(
         ground_truth=test_data,
