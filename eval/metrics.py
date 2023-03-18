@@ -47,8 +47,8 @@ def _f1_stats(*, predicted_documents: typing.List[data.Document],
         true_as_set = set([e.to_tuple(t) for e in true_attribute])
         assert len(true_as_set) == len(true_attribute), f'{len(true_as_set)}, {len(true_attribute)}'
 
-        pred_as_set = set([frozenset(e.to_tuple(p)) for e in pred_attribute])
-        assert len(pred_as_set) == len(pred_attribute), f'{len(pred_as_set)}, {len(pred_attribute)}'
+        pred_as_set = set([e.to_tuple(p) for e in pred_attribute])
+        assert len(pred_as_set) == len(pred_attribute), f'{pred_as_set}, {pred_attribute}'
 
         ok_preds = true_as_set.intersection(pred_as_set)
         non_ok = [e.pretty_print(p) for e in pred_attribute if e.to_tuple(p) not in true_as_set]

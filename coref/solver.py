@@ -7,7 +7,8 @@ import spacy
 
 class CoRefSolver:
     # loading an english SpaCy model
-    nlp = spacy.load('en')
+    spacy.cli.download('en_core_web_md')
+    nlp = spacy.load('en_core_web_md')
 
     # load NeuralCoref and add it to the pipe of SpaCy's model
     coref = neuralcoref.NeuralCoref(nlp.vocab)
@@ -19,32 +20,43 @@ class CoRefSolver:
 
     def resolve_co_references(self, documents: typing.List[data.Document]) -> typing.List[data.Document]:
         for document in documents:
-            co_reference_token_indices = self._get_co_reference_indices(document)
-            for co_reference_tokens in co_reference_token_indices:
-                co_referencing_mentions = [(i, document.get_mentions_by_token_index(i)) for i in co_reference_tokens]
-                # remove None values
-                co_referencing_mentions = [(i, m) for (i, m) in co_referencing_mentions if m is not None]
-                if len(co_referencing_mentions) == 0:
-                    # found co-reference that contains no tagged elements, i.e., process elements
+            coref_entities = self._get_co_reference_indices(document)
+            for e in coref_entities:
+                entity = self._resolve_single_entity(e, document)
+                if entity is None:
                     continue
-
-                # TODO: how do we handle entities, where mentions have heterogeneous tags?
-                # TODO: LA: Currently they are ignored.
-                ner_tag = co_referencing_mentions[0][1].ner_tag
-                # assert all([m.ner_tag == ner_tag for i, m in co_referencing_mentions])
-                if all([m.ner_tag == ner_tag for i, m in co_referencing_mentions]):
-                    document.entities.append(data.Entity(
-                        mention_indices=[i for i, m in co_referencing_mentions]
-                    ))
+                if document.contains_entity(entity):
+                    continue
+                document.entities.append(entity)
         return documents
 
-    def _get_co_reference_indices(self, document: data.Document) -> typing.List[typing.List[int]]:
-        coreference_clusters = self.nlp([token.text for token in document.tokens])._.coref_clusters
-        coreferences_token_indices = []
-        for cluster in coreference_clusters:
-            clustered_indices = []
-            for mention in cluster.mentions:
-                clustered_indices.extend([i for i in range(mention.start, mention.end)])
-            coreferences_token_indices.append(clustered_indices)
+    @staticmethod
+    def _resolve_single_entity(list_of_mention_indices: typing.List[typing.List[int]],
+                               document: data.Document) -> typing.Optional[data.Entity]:
+        mention_indices = set()
+        for co_ref_mention_indices in list_of_mention_indices:
+            for co_ref_mention_index in co_ref_mention_indices:
+                for mention_index, mention in enumerate(document.mentions):
+                    if co_ref_mention_index in mention.token_indices:
+                        mention_indices.add(mention_index)
+                        continue
+        mention_indices = list(mention_indices)
+        if len(mention_indices) == 0:
+            return None
+        return data.Entity(mention_indices)
 
-        return coreferences_token_indices
+    def _get_co_reference_indices(self, document: data.Document) -> typing.List[typing.List[typing.List[int]]]:
+        # return a three times nested list
+        # - first level: list of entities
+        #   - second level: list of mentions of a given entity
+        #     - third level: list of token indices of a given mention
+
+        clusters: typing.List[neuralcoref.neuralcoref.Cluster]
+        clusters = self.nlp([token.text for token in document.tokens])._.coref_clusters
+        entities = []
+        for cluster in clusters:
+            entity = []
+            for mention in cluster.mentions:
+                entity.append(list(range(mention.start, mention.end)))
+            entities.append(entity)
+        return entities

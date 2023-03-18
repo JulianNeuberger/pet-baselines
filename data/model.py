@@ -14,6 +14,9 @@ class Document:
     def contains_relation(self, relation: 'Relation') -> bool:
         return relation.to_tuple(self) in [e.to_tuple(self) for e in self.relations]
 
+    def contains_entity(self, entity: 'Entity') -> bool:
+        return entity.to_tuple(self) in [e.to_tuple(self) for e in self.entities]
+
     def copy(self) -> 'Document':
         return Document(
             text=self.text,
@@ -76,12 +79,15 @@ class Entity:
     mention_indices: typing.List[int] = dataclasses.field(default_factory=list)
 
     def to_tuple(self, *args) -> typing.Tuple:
-        return set(self.mention_indices),
+        return frozenset(self.mention_indices),
 
     def copy(self) -> 'Entity':
         return Entity(
             mention_indices=[i for i in self.mention_indices]
         )
+
+    def pretty_print(self, document: Document):
+        return f'Entity {self.mention_indices}'
 
 
 @dataclasses.dataclass
