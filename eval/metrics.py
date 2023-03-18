@@ -21,7 +21,16 @@ def mentions_f1_stats(*, predicted_documents: typing.List[data.Document],
 
 def entity_f1_stats(*, predicted_documents: typing.List[data.Document],
                     ground_truth_documents: typing.List[data.Document],
+                    min_num_mentions: int = 1,
                     verbose: bool = False) -> typing.Tuple[float, float, float]:
+    predicted_documents = [d.copy() for d in predicted_documents]
+    for d in predicted_documents:
+        d.entities = [e for e in d.entities if len(e.mention_indices) >= min_num_mentions]
+
+    ground_truth_documents = [d.copy() for d in ground_truth_documents]
+    for d in ground_truth_documents:
+        d.entities = [e for e in d.entities if len(e.mention_indices) >= min_num_mentions]
+
     return _f1_stats(predicted_documents=predicted_documents,
                      ground_truth_documents=ground_truth_documents,
                      attribute='entities', verbose=verbose)

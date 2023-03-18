@@ -18,7 +18,8 @@ def decode_predictions(document: data.Document,
                 text=token.text,
                 pos_tag=token.pos_tag,
                 bio_tag=bio_tag,
-                index_in_document=token.index_in_document
+                index_in_document=token.index_in_document,
+                sentence_index=sent_id
             )
             decoded_sentence.tokens.append(current_token)
 

@@ -32,7 +32,8 @@ def _read_document_from_json(json_data: typing.Dict) -> model.Document:
         text=json_data['text'],
         sentences=_read_sentences_from_json(json_data['tokens']),
         mentions=mentions,
-        relations=relations
+        relations=relations,
+        entities=entities
     )
 
 
@@ -43,7 +44,8 @@ def _read_sentences_from_json(json_tokens: typing.List[typing.Dict]) -> typing.L
             text=json_token['text'],
             pos_tag=json_token['stanza_pos'],
             bio_tag=json_token['ner'],
-            index_in_document=i
+            index_in_document=i,
+            sentence_index=json_token['sentence_id']
         )))
 
     sentences = []

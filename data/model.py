@@ -22,14 +22,9 @@ class Document:
             text=self.text,
             sentences=[s.copy() for s in self.sentences],
             mentions=[m.copy() for m in self.mentions],
-            relations=[r.copy() for r in self.relations]
+            relations=[r.copy() for r in self.relations],
+            entities=[e.copy() for e in self.entities]
         )
-
-    def get_mentions_by_token_index(self, token_index: int) -> typing.Optional['Mention']:
-        for mention in self.mentions:
-            if token_index in mention.token_indices:
-                return mention
-        return None
 
     @property
     def tokens(self):
@@ -63,6 +58,15 @@ class Mention:
     def text(self, document: Document):
         return ' '.join([document.sentences[self.sentence_index].tokens[i].text for i in self.token_indices])
 
+    def contains_token(self, token: 'Token', document: 'Document') -> bool:
+        if token.sentence_index != self.sentence_index:
+            return False
+        for own_token_idx in self.token_indices:
+            own_token = document.sentences[self.sentence_index].tokens[own_token_idx]
+            if own_token.index_in_document == token.index_in_document:
+                return True
+        return False
+
     def pretty_print(self, document: Document):
         return f'{self.text(document)} ({self.ner_tag}, s{self.sentence_index}:{min(self.token_indices)}-{max(self.token_indices)})'
 
@@ -87,7 +91,7 @@ class Entity:
         )
 
     def pretty_print(self, document: Document):
-        return f'Entity {self.mention_indices}'
+        return f'Entity [{[document.mentions[m].pretty_print(document) for m in self.mention_indices]}]'
 
 
 @dataclasses.dataclass
@@ -123,11 +127,13 @@ class Token:
     index_in_document: int
     pos_tag: str
     bio_tag: str
+    sentence_index: int
 
     def copy(self) -> 'Token':
         return Token(
             text=self.text,
             index_in_document=self.index_in_document,
             pos_tag=self.pos_tag,
-            bio_tag=self.bio_tag
+            bio_tag=self.bio_tag,
+            sentence_index=self.sentence_index
         )

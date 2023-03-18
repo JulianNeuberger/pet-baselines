@@ -42,7 +42,7 @@ def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document],
         baseline_4_f1_stats.append(metrics.entity_f1_stats(
             predicted_documents=result.predictions_baseline_4,
             ground_truth_documents=result.ground_truth,
-            verbose=True
+            min_num_mentions=2
         ))
 
     print(f'Fold |   P     |   R     |   F1    ')
@@ -109,8 +109,8 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
     predictions_baseline_3 = extractor.predict(baseline_3_input)
 
     # BASELINE 4 - CO-REFERENCES ####################################################################################
-    baseline_4_input = [d.copy() for d in predictions_baseline_1]
-    solver = coref.CoRefSolver()
+    baseline_4_input = [d.copy() for d in test_data]
+    solver = coref.CoRefSolver(co_referencable_tags=['Activity Data', 'Actor'])
     predictions_baseline_4 = solver.resolve_co_references(baseline_4_input)
 
     return PipelineResult(
