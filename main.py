@@ -42,7 +42,8 @@ def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document],
         baseline_4_f1_stats.append(metrics.entity_f1_stats(
             predicted_documents=result.predictions_baseline_4,
             ground_truth_documents=result.ground_truth,
-            min_num_mentions=2
+            min_num_mentions=1,
+            verbose=True
         ))
 
     print(f'Fold |   P     |   R     |   F1    ')

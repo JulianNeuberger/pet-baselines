@@ -15,16 +15,35 @@ class CoRefSolver:
     nlp.add_pipe(coref, name='neuralcoref')
     nlp.tokenizer = nlp.tokenizer.tokens_from_list
 
-    def __init__(self, co_referencable_tags: typing.List[str]):
+    def __init__(self, co_referencable_tags: typing.List[str],
+                 strict_ner_tags: bool = True,
+                 min_cluster_overlap: float = .33,
+                 min_mention_overlap: float = .1,
+                 verbose: bool = False):
+        """
+        :param co_referencable_tags: NER tags we want to resolve co-references for (ignore all others, e.g. Activities)
+        :param strict_ner_tags: only accept Entities, iff all their mentions have the same NER tag
+        :param min_cluster_overlap: minimum percentage of cluster mentions predicted by neuralcoref
+               that have to be resolved to mentions for a entity to be accepted
+        :param min_mention_overlap: minimum percentage of overlap between a neuralcoref mention prediction and a
+                                    mention present in the document to be counted as resolved
+        """
         self._tags = [t.lower() for t in co_referencable_tags]
+        self._min_cluster_overlap = min_cluster_overlap
+        self._min_mention_overlap = min_mention_overlap
+        self._strict_ner_tags = strict_ner_tags
+        self._verbose = verbose
 
     def resolve_co_references(self, documents: typing.List[data.Document]) -> typing.List[data.Document]:
+        assert all([len(document.entities) for document in documents])
+
         for document in documents:
             coref_entities = self._get_co_reference_indices(document)
             for e in coref_entities:
                 # try to resolve the list of mentions (each a list of token indices) to a entity
-                entity = self._resolve_single_entity(e, document, verbose=True)
-                print('=========================')
+                entity = self._resolve_single_entity(e, document)
+                if self._verbose:
+                    print('=========================')
                 if entity is None:
                     continue
                 if document.contains_entity(entity):
@@ -50,8 +69,8 @@ class CoRefSolver:
 
     def _resolve_single_entity(self,
                                cluster_token_indices: typing.List[typing.List[int]],
-                               document: data.Document, verbose: bool = False) -> typing.Optional[data.Entity]:
-        if verbose:
+                               document: data.Document) -> typing.Optional[data.Entity]:
+        if self._verbose:
             print('neuralcoref found the following cluster:')
             for mention_indices in cluster_token_indices:
                 mention_text = " ".join([document.tokens[i].text for i in mention_indices])
@@ -61,7 +80,8 @@ class CoRefSolver:
         mention_indices = set()
         for mention_token_indices in cluster_token_indices:
             mention_index = self._get_mention_for_token_indices(mention_token_indices, document, self._tags,
-                                                                threshold=0.1, verbose=verbose)
+                                                                threshold=self._min_mention_overlap,
+                                                                verbose=self._verbose)
             if mention_index is not None:
                 mention_indices.add(mention_index)
 
@@ -69,16 +89,24 @@ class CoRefSolver:
         if len(mention_indices) == 0:
             # did not find a single predicted mention for the cluster neuralcoref predicted
             return None
-        if len(mention_indices) != len(cluster_token_indices):
-            # maybe we should calculate a minimum percentage of resolved cluster entries before we return an
-            # entity, this way we could reduce false positives?
-            if verbose:
-                print(f'Resolved only {len(mention_indices)} of {len(cluster_token_indices)} clusters '
-                      f'predicted by neural coref. ' 
-                      'This could indicate the predicted cluster was not really of interest to us...')
-        else:
-            if verbose:
-                print(f'Found perfect match of clusters to predicted elements!')
+
+        overlap = len(mention_indices) / len(cluster_token_indices)
+
+        if overlap < self._min_cluster_overlap:
+            if self._verbose:
+                print(f'Only resolved {len(mention_indices)} of {len(cluster_token_indices)} predicted mentions '
+                      f'({overlap:.2%} overlap), DISCARDING entity!')
+            return None
+
+        ner_tags = [document.mentions[m_id].ner_tag for m_id in mention_indices]
+        if len(set(ner_tags)) > 1 and self._strict_ner_tags:
+            if self._verbose:
+                print(f'Resolved entity would have mixed NER tags at mention level. '
+                      f'This is an indicator for us to DISCARD the entity.')
+
+        if self._verbose:
+            print(f'Resolved {len(mention_indices)} of {len(cluster_token_indices)} predicted mentions '
+                  f'({overlap:.2%} overlap), accepting entity.')
         return data.Entity(mention_indices)
 
     @staticmethod
@@ -111,7 +139,11 @@ class CoRefSolver:
                     # of the cluster's token indices, add it to the list of mentions for the new entity
                     num_matching_tokens += 1
 
-            overlap = num_matching_tokens / len(token_indices)
+            prediction_matched = num_matching_tokens / len(token_indices)
+            mention_matched = num_matching_tokens / len(mention.token_indices)
+
+            overlap = (prediction_matched + mention_matched) / 2.0
+
             is_above_threshold = overlap >= threshold
             if is_above_threshold:
                 if verbose:
