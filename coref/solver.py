@@ -34,7 +34,6 @@ class CoRefSolver:
                 # assert all([m.ner_tag == ner_tag for i, m in co_referencing_mentions])
                 if all([m.ner_tag == ner_tag for i, m in co_referencing_mentions]):
                     document.entities.append(data.Entity(
-                        ner_tag=ner_tag,
                         mention_indices=[i for i, m in co_referencing_mentions]
                     ))
         return documents
