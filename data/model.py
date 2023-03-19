@@ -2,6 +2,8 @@ import dataclasses
 
 import typing
 
+import data
+
 
 @dataclasses.dataclass
 class Document:
@@ -17,13 +19,16 @@ class Document:
     def contains_entity(self, entity: 'Entity') -> bool:
         return entity.to_tuple(self) in [e.to_tuple(self) for e in self.entities]
 
-    def copy(self) -> 'Document':
+    def copy(self,
+             clear_mentions: bool = False,
+             clear_relations: bool = False,
+             clear_entities: bool = False) -> 'Document':
         return Document(
             text=self.text,
             sentences=[s.copy() for s in self.sentences],
-            mentions=[m.copy() for m in self.mentions],
-            relations=[r.copy() for r in self.relations],
-            entities=[e.copy() for e in self.entities]
+            mentions=[] if clear_mentions else [m.copy() for m in self.mentions],
+            relations=[] if clear_relations else [r.copy() for r in self.relations],
+            entities=[] if clear_entities else [e.copy() for e in self.entities]
         )
 
     @property
@@ -52,11 +57,14 @@ class Mention:
     sentence_index: int
     token_indices: typing.List[int] = dataclasses.field(default_factory=list)
 
+    def get_tokens(self, document: Document) -> typing.List['Token']:
+        return [document.sentences[self.sentence_index].tokens[i] for i in self.token_indices]
+
     def to_tuple(self, *args) -> typing.Tuple:
         return (self.ner_tag.lower(), self.sentence_index) + tuple(self.token_indices)
 
     def text(self, document: Document):
-        return ' '.join([document.sentences[self.sentence_index].tokens[i].text for i in self.token_indices])
+        return ' '.join([t.text for t in self.get_tokens(document)])
 
     def contains_token(self, token: 'Token', document: 'Document') -> bool:
         if token.sentence_index != self.sentence_index:

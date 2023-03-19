@@ -1,11 +1,14 @@
+import collections
 import typing
 
 import data
 import neuralcoref
 import spacy
 
+from coref import util
 
-class CoRefSolver:
+
+class NeuralCoRefSolver:
     # loading an english SpaCy model
     spacy.cli.download('en_core_web_md')
     nlp = spacy.load('en_core_web_md')
@@ -16,13 +19,15 @@ class CoRefSolver:
     nlp.tokenizer = nlp.tokenizer.tokens_from_list
 
     def __init__(self, co_referencable_tags: typing.List[str],
-                 strict_ner_tags: bool = True,
+                 ner_tag_strategy: str = 'skip',
                  min_cluster_overlap: float = .33,
                  min_mention_overlap: float = .1,
                  verbose: bool = False):
         """
         :param co_referencable_tags: NER tags we want to resolve co-references for (ignore all others, e.g. Activities)
-        :param strict_ner_tags: only accept Entities, iff all their mentions have the same NER tag
+        :param ner_tag_strategy: strategy to use when co-reference between mentions of different ner-tags have been
+               found: "skip" ignores the entire cluster, "keep" uses all mentions regardless of their ner tag,
+               "frequency" only uses mentions that have the most frequent ner tag in the predicted cluster
         :param min_cluster_overlap: minimum percentage of cluster mentions predicted by neuralcoref
                that have to be resolved to mentions for a entity to be accepted
         :param min_mention_overlap: minimum percentage of overlap between a neuralcoref mention prediction and a
@@ -31,11 +36,11 @@ class CoRefSolver:
         self._tags = [t.lower() for t in co_referencable_tags]
         self._min_cluster_overlap = min_cluster_overlap
         self._min_mention_overlap = min_mention_overlap
-        self._strict_ner_tags = strict_ner_tags
+        self._ner_tag_strategy = ner_tag_strategy
         self._verbose = verbose
 
     def resolve_co_references(self, documents: typing.List[data.Document]) -> typing.List[data.Document]:
-        assert all([len(document.entities) for document in documents])
+        assert all([len(document.entities) == 0 for document in documents])
 
         for document in documents:
             coref_entities = self._get_co_reference_indices(document)
@@ -49,23 +54,8 @@ class CoRefSolver:
                 if document.contains_entity(entity):
                     continue
                 document.entities.append(entity)
-            self._resolve_remaining_mentions_to_entities(document)
+            util.resolve_remaining_mentions_to_entities(document)
         return documents
-
-    @staticmethod
-    def _resolve_remaining_mentions_to_entities(document: data.Document) -> None:
-        """
-        Resolves each mention that is not yet part of an entity
-        to a new entity that only contains this mention.
-        """
-        part_of_entity = set()
-        for e in document.entities:
-            for i in e.mention_indices:
-                part_of_entity.add(i)
-        for mention_index, mention in enumerate(document.mentions):
-            if mention_index in part_of_entity:
-                continue
-            document.entities.append(data.Entity([mention_index]))
 
     def _resolve_single_entity(self,
                                cluster_token_indices: typing.List[typing.List[int]],
@@ -98,16 +88,11 @@ class CoRefSolver:
                       f'({overlap:.2%} overlap), DISCARDING entity!')
             return None
 
-        ner_tags = [document.mentions[m_id].ner_tag for m_id in mention_indices]
-        if len(set(ner_tags)) > 1 and self._strict_ner_tags:
-            if self._verbose:
-                print(f'Resolved entity would have mixed NER tags at mention level. '
-                      f'This is an indicator for us to DISCARD the entity.')
-
         if self._verbose:
             print(f'Resolved {len(mention_indices)} of {len(cluster_token_indices)} predicted mentions '
-                  f'({overlap:.2%} overlap), accepting entity.')
-        return data.Entity(mention_indices)
+                  f'({overlap:.2%} overlap).')
+
+        return util.resolve_ner_conflicts(document, mention_indices, self._ner_tag_strategy, verbose=self._verbose)
 
     @staticmethod
     def _get_mention_for_token_indices(token_indices: typing.List[int],

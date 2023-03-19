@@ -42,7 +42,7 @@ def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document],
         baseline_4_f1_stats.append(metrics.entity_f1_stats(
             predicted_documents=result.predictions_baseline_4,
             ground_truth_documents=result.ground_truth,
-            min_num_mentions=1,
+            min_num_mentions=2,
             verbose=True
         ))
 
@@ -64,7 +64,7 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
     # crf step for entity extraction
     estimator = entities.ConditionalRandomFieldsEstimator(crf_model_path)
     estimator.train(train_data)
-    baseline_1_input = [d.copy() for d in test_data]
+    baseline_1_input = [d.copy(clear_mentions=True) for d in test_data]
     predictions_baseline_1 = estimator.predict(baseline_1_input)
 
     # relation extraction step
@@ -98,20 +98,21 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
     ])
 
     # BASELINE 2 - RELATIONS ON PERFECT ENTITIES ####################################################################
-    documents_with_perfect_entities = []
-    for d in test_data:
-        d = d.copy()
-        d.relations = []
-        documents_with_perfect_entities.append(d)
-    predictions_baseline_2 = extractor.predict(documents_with_perfect_entities)
+    baseline_2_input = [d.copy(clear_relations=True) for d in test_data]
+    predictions_baseline_2 = extractor.predict(baseline_2_input)
 
     # BASELINE 3 - RELATIONS ON BASELINE 1 PREDICTIONS ##############################################################
-    baseline_3_input = [d.copy() for d in predictions_baseline_1]
+    baseline_3_input = [d.copy(clear_relations=True) for d in predictions_baseline_1]
     predictions_baseline_3 = extractor.predict(baseline_3_input)
 
     # BASELINE 4 - CO-REFERENCES ####################################################################################
-    baseline_4_input = [d.copy() for d in test_data]
-    solver = coref.CoRefSolver(co_referencable_tags=['Activity Data', 'Actor'])
+    baseline_4_input = [d.copy(clear_entities=True) for d in test_data]
+    resolved_tags = ['Activity Data', 'Actor']
+    # solver = coref.NeuralCoRefSolver(resolved_tags,
+    #                                  ner_tag_strategy='frequency',
+    #                                  min_mention_overlap=.8,
+    #                                  min_cluster_overlap=.5)
+    solver = coref.NaiveCoRefSolver(resolved_tags, min_mention_overlap=.1, ner_strategy='frequency')
     predictions_baseline_4 = solver.resolve_co_references(baseline_4_input)
 
     return PipelineResult(
