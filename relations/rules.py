@@ -39,9 +39,12 @@ class SequenceFlowsRule(RelationExtractionRule):
             if next_behavioral_element_index is None:
                 continue
 
+            head_entity = document.entity_index_for_mention(current_mention)
+            tail_entity = document.entity_index_for_mention(document.mentions[next_behavioral_element_index])
+
             flow_relation = data.Relation(
-                head_entity_index=i,
-                tail_entity_index=next_behavioral_element_index,
+                head_entity_index=head_entity,
+                tail_entity_index=tail_entity,
                 tag=self._tag
             )
 
@@ -76,9 +79,12 @@ class SameGatewayRule(RelationExtractionRule):
             if distance > 1:
                 continue
 
+            head_entity = document.entity_index_for_mention(mention)
+            tail_entity = document.entity_index_for_mention(next_gateway)
+
             relations.append(data.Relation(
-                head_entity_index=i,
-                tail_entity_index=next_gateway_index,
+                head_entity_index=head_entity,
+                tail_entity_index=tail_entity,
                 tag=self._tag
             ))
 
@@ -104,9 +110,12 @@ class GatewayActivityRule(RelationExtractionRule):
             if next_activity_index is None:
                 continue
 
+            head_entity = document.entity_index_for_mention(mention)
+            tail_entity = document.entity_index_for_mention(document.mentions[next_activity_index])
+
             flow_relation = data.Relation(
-                head_entity_index=i,
-                tail_entity_index=next_activity_index,
+                head_entity_index=head_entity,
+                tail_entity_index=tail_entity,
                 tag=self._tag
             )
 
@@ -148,18 +157,24 @@ class ActorPerformerRecipientRule(RelationExtractionRule):
                                                                       search_backwards=True)
             if performer_index is not None:
                 if document.mentions[performer_index].sentence_index == mention.sentence_index:
+                    head_entity = document.entity_index_for_mention(mention)
+                    tail_entity = document.entity_index_for_mention(document.mentions[performer_index])
+
                     relations.append(data.Relation(
-                        head_entity_index=i,
-                        tail_entity_index=performer_index,
+                        head_entity_index=head_entity,
+                        tail_entity_index=tail_entity,
                         tag=self._performer
                     ))
 
             recipient_index = self.get_next_index_of_mention_with_tag(document, i, [self._actor])
             if recipient_index is not None:
                 if document.mentions[recipient_index].sentence_index == mention.sentence_index:
+                    head_entity = document.entity_index_for_mention(mention)
+                    tail_entity = document.entity_index_for_mention(document.mentions[recipient_index])
+
                     relations.append(data.Relation(
-                        head_entity_index=i,
-                        tail_entity_index=recipient_index,
+                        head_entity_index=head_entity,
+                        tail_entity_index=tail_entity,
                         tag=self._recipient
                     ))
 
@@ -216,9 +231,12 @@ class FurtherSpecificationRule(RelationExtractionRule):
                 else:
                     chosen_index = right_index
 
+            head_entity = document.entity_index_for_mention(document.mentions[chosen_index])
+            tail_entity = document.entity_index_for_mention(mention)
+
             relations.append(data.Relation(
-                head_entity_index=chosen_index,
-                tail_entity_index=i,
+                head_entity_index=head_entity,
+                tail_entity_index=tail_entity,
                 tag=self._tag
             ))
 
@@ -246,9 +264,12 @@ class UsesRelationRule(RelationExtractionRule):
             if activity_index is None or document.mentions[activity_index].sentence_index != mention.sentence_index:
                 continue
 
+            head_entity = document.entity_index_for_mention(document.mentions[activity_index])
+            tail_entity = document.entity_index_for_mention(mention)
+
             r = data.Relation(
-                head_entity_index=activity_index,
-                tail_entity_index=i,
+                head_entity_index=head_entity,
+                tail_entity_index=tail_entity,
                 tag=self._tag
             )
             relations.append(r)

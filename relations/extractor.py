@@ -9,8 +9,8 @@ class RuleBasedRelationEstimator:
         self._rules = rules
 
     def predict(self, documents: typing.List[data.Document]) -> typing.List[data.Document]:
-        for document in documents:
-            assert len(document.relations) == 0
+        assert all([len(d.entities) > 0 for d in documents])
+        assert all([len(d.relations) == 0 for d in documents])
 
         for document in documents:
             for rule in self._rules:

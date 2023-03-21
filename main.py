@@ -13,60 +13,110 @@ import relations
 @dataclasses.dataclass
 class PipelineResult:
     ground_truth: typing.List[data.Document]
-    predictions_baseline_1: typing.List[data.Document]
-    predictions_baseline_2: typing.List[data.Document]
-    predictions_baseline_3: typing.List[data.Document]
-    predictions_baseline_4: typing.List[data.Document]
+
+    mentions_baseline: typing.List[data.Document]
+
+    entities_perfect_mentions: typing.List[data.Document]
+    entities_predicted_mentions: typing.List[data.Document]
+
+    relations_perfect_entities: typing.List[data.Document]
+    relations_predicted_entities_perfect_mentions: typing.List[data.Document]
+    relations_predicted_entities_predicted_mentions: typing.List[data.Document]
 
 
 def cross_validation(folds: typing.List[typing.Tuple[typing.List[data.Document], typing.List[data.Document]]]):
-    baseline_1_f1_stats = []
-    baseline_2_f1_stats = []
-    baseline_3_f1_stats = []
-    baseline_4_f1_stats = []
+    mentions_f1_stats = []
+
+    entities_perfect_mentions_f1_stats = []
+    entities_predicted_mentions_f1_stats = []
+
+    relations_perfect_entities_f1_stats = []
+    relations_predicted_entities_perfect_mentions_f1_stats = []
+    relations_predicted_entities_predicted_mentions_f1_stats = []
 
     for n_fold, (train_fold, test_fold) in enumerate(folds):
         result = pipeline(train_fold, test_fold, crf_model_path=pathlib.Path(f'models/crf.{n_fold}.model'))
-        baseline_1_f1_stats.append(metrics.mentions_f1_stats(
-            predicted_documents=result.predictions_baseline_1,
+        mentions_f1_stats.append(metrics.mentions_f1_stats(
+            predicted_documents=result.mentions_baseline,
             ground_truth_documents=result.ground_truth
-        ))
-        baseline_2_f1_stats.append(metrics.relation_f1_stats(
-            predicted_documents=result.predictions_baseline_2,
-            ground_truth_documents=result.ground_truth
-        ))
-        baseline_3_f1_stats.append(metrics.relation_f1_stats(
-            predicted_documents=result.predictions_baseline_3,
-            ground_truth_documents=result.ground_truth
-        ))
-        baseline_4_f1_stats.append(metrics.entity_f1_stats(
-            predicted_documents=result.predictions_baseline_4,
-            ground_truth_documents=result.ground_truth,
-            min_num_mentions=2,
-            verbose=True
         ))
 
+        entities_perfect_mentions_f1_stats.append(metrics.entity_f1_stats(
+            predicted_documents=result.entities_perfect_mentions,
+            ground_truth_documents=result.ground_truth
+        ))
+        entities_predicted_mentions_f1_stats.append(metrics.entity_f1_stats(
+            predicted_documents=result.entities_predicted_mentions,
+            ground_truth_documents=result.ground_truth
+        ))
+
+        relations_perfect_entities_f1_stats.append(metrics.relation_f1_stats(
+            predicted_documents=result.relations_perfect_entities,
+            ground_truth_documents=result.ground_truth
+        ))
+        relations_predicted_entities_perfect_mentions_f1_stats.append(metrics.relation_f1_stats(
+            predicted_documents=result.relations_predicted_entities_perfect_mentions,
+            ground_truth_documents=result.ground_truth
+        ))
+        relations_predicted_entities_predicted_mentions_f1_stats.append(metrics.relation_f1_stats(
+            predicted_documents=result.relations_predicted_entities_predicted_mentions,
+            ground_truth_documents=result.ground_truth
+        ))
+
+
     print(f'Fold |   P     |   R     |   F1    ')
-    print(f'=====+=========+=========+=========')
-    print(f'--- B1 ----------------------------')
-    _print_f1_stats(baseline_1_f1_stats)
-    print(f'--- B2 ----------------------------')
-    _print_f1_stats(baseline_2_f1_stats)
-    print(f'--- B3 ----------------------------')
-    _print_f1_stats(baseline_3_f1_stats)
-    print(f'--- B4 ----------------------------')
-    _print_f1_stats(baseline_4_f1_stats)
+    print(f'=====+=========+=========+==============================================')
+    print(f'--- MENTIONS -----------------------------------------------------------')
+    _print_f1_stats(mentions_f1_stats)
+    print()
+
+    print(f'Fold |   P     |   R     |   F1    ')
+    print(f'=====+=========+=========+==============================================')
+    print(f'--- ENTITIES (PERFECT MENTIONS) ----------------------------------------')
+    _print_f1_stats(entities_perfect_mentions_f1_stats)
+    print(f'--- ENTITIES (PREDICTED MENTIONS) --------------------------------------')
+    _print_f1_stats(entities_predicted_mentions_f1_stats)
+    print()
+
+    print(f'Fold |   P     |   R     |   F1    ')
+    print(f'=====+=========+=========+==============================================')
+    print(f'--- RELATIONS (PERFECT ENTITIES) ---------------------------------------')
+    _print_f1_stats(relations_perfect_entities_f1_stats)
+    print(f'--- RELATIONS (PREDICTED ENTITIES, PERFECT MENTIONS) -------------------')
+    _print_f1_stats(relations_predicted_entities_perfect_mentions_f1_stats)
+    print(f'--- RELATIONS (PREDICTED ENTITIES, PREDICTED MENTIONS) -----------------')
+    _print_f1_stats(relations_predicted_entities_predicted_mentions_f1_stats)
+    print()
 
 
 def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data.Document], *,
              crf_model_path: pathlib.Path):
-    # BASELINE 1 - ENTITY EXTRACTION VIA CRF ########################################################################
+    # MENTION EXTRACTION VIA CRF (BELLAN) ########################################################################
     # crf step for entity extraction
+    print('Running mention extraction...')
     estimator = entities.ConditionalRandomFieldsEstimator(crf_model_path)
     estimator.train(train_data)
-    baseline_1_input = [d.copy(clear_mentions=True) for d in test_data]
-    predictions_baseline_1 = estimator.predict(baseline_1_input)
+    mention_extraction_input = [d.copy(clear_mentions=True) for d in test_data]
+    baseline_mentions = estimator.predict(mention_extraction_input)
 
+    # ENTITY EXTRACTION BASELINES (CO-REF RESOLUTION) ###############################################################
+    print('Running co-reference resolution on perfect data...')
+
+
+    resolved_tags = ['Activity Data', 'Actor']
+    solver = coref.NeuralCoRefSolver(resolved_tags,
+                                     ner_tag_strategy='frequency',
+                                     min_mention_overlap=.8,
+                                     min_cluster_overlap=.5)
+    # solver = coref.NaiveCoRefSolver(resolved_tags, min_mention_overlap=.1, ner_strategy='frequency')
+
+    entity_extraction_perfect_mentions = [d.copy(clear_entities=True) for d in test_data]
+    entities_perfect_mentions = solver.resolve_co_references(entity_extraction_perfect_mentions)
+
+    entity_extraction_predicted_mentions = [d.copy(clear_entities=True) for d in baseline_mentions]
+    entities_predicted_mentions = solver.resolve_co_references(entity_extraction_predicted_mentions)
+
+    # RELATION EXTRACTION BASELINES #################################################################################
     # relation extraction step
     activity = 'Activity'
     actor = 'Actor'
@@ -97,30 +147,29 @@ def pipeline(train_data: typing.List[data.Document], test_data: typing.List[data
         relations.rules.UsesRelationRule(activity_data_tag=activity_data, activity_tag=activity, uses_relation_tag=uses)
     ])
 
-    # BASELINE 2 - RELATIONS ON PERFECT ENTITIES ####################################################################
-    baseline_2_input = [d.copy(clear_relations=True) for d in test_data]
-    predictions_baseline_2 = extractor.predict(baseline_2_input)
+    relations_perfect_inputs = [d.copy(clear_relations=True) for d in test_data]
+    relations_from_perfect_entities = extractor.predict(relations_perfect_inputs)
 
-    # BASELINE 3 - RELATIONS ON BASELINE 1 PREDICTIONS ##############################################################
-    baseline_3_input = [d.copy(clear_relations=True) for d in predictions_baseline_1]
-    predictions_baseline_3 = extractor.predict(baseline_3_input)
+    relations_predicted_entities_perfect_mentions = [d.copy(clear_relations=True)
+                                                     for d in entities_perfect_mentions]
+    relations_from_predicted_entities_perfect_mentions = extractor.predict(relations_predicted_entities_perfect_mentions)
 
-    # BASELINE 4 - CO-REFERENCES ####################################################################################
-    baseline_4_input = [d.copy(clear_entities=True) for d in test_data]
-    resolved_tags = ['Activity Data', 'Actor']
-    # solver = coref.NeuralCoRefSolver(resolved_tags,
-    #                                  ner_tag_strategy='frequency',
-    #                                  min_mention_overlap=.8,
-    #                                  min_cluster_overlap=.5)
-    solver = coref.NaiveCoRefSolver(resolved_tags, min_mention_overlap=.1, ner_strategy='frequency')
-    predictions_baseline_4 = solver.resolve_co_references(baseline_4_input)
+    relations_predicted_entities_predicted_mentions = [d.copy(clear_relations=True)
+                                                       for d in entities_predicted_mentions]
+    relations_from_predicted_entities_predicted_mentions = extractor.predict(
+        relations_predicted_entities_predicted_mentions
+    )
 
     return PipelineResult(
         ground_truth=test_data,
-        predictions_baseline_1=predictions_baseline_1,
-        predictions_baseline_2=predictions_baseline_2,
-        predictions_baseline_3=predictions_baseline_3,
-        predictions_baseline_4=predictions_baseline_4
+        mentions_baseline=baseline_mentions,
+
+        entities_perfect_mentions=entities_perfect_mentions,
+        entities_predicted_mentions=entities_predicted_mentions,
+
+        relations_perfect_entities=relations_from_perfect_entities,
+        relations_predicted_entities_perfect_mentions=relations_from_predicted_entities_perfect_mentions,
+        relations_predicted_entities_predicted_mentions=relations_from_predicted_entities_predicted_mentions
     )
 
 

@@ -2,12 +2,11 @@ import dataclasses
 
 import typing
 
-import data
-
 
 @dataclasses.dataclass
 class Document:
     text: str
+    name: str
     sentences: typing.List['Sentence'] = dataclasses.field(default_factory=list)
     mentions: typing.List['Mention'] = dataclasses.field(default_factory=list)
     entities: typing.List['Entity'] = dataclasses.field(default_factory=list)
@@ -19,11 +18,24 @@ class Document:
     def contains_entity(self, entity: 'Entity') -> bool:
         return entity.to_tuple(self) in [e.to_tuple(self) for e in self.entities]
 
+    def entity_index_for_mention(self, mention: 'Mention') -> int:
+        mentions_as_tuples = [m.to_tuple(self) for m in self.mentions]
+        mention_index = mentions_as_tuples.index(mention.to_tuple(self))
+        for i, e in enumerate(self.entities):
+            if mention_index in e.mention_indices:
+                return i
+        print(mention_index)
+        print(self.entities)
+        raise ValueError(f'Document contains no entity using mention {mention}, '
+                         f'which should not happen, but can happen, '
+                         f'if entities are not properly resolved')
+
     def copy(self,
              clear_mentions: bool = False,
              clear_relations: bool = False,
              clear_entities: bool = False) -> 'Document':
         return Document(
+            name=self.name,
             text=self.text,
             sentences=[s.copy() for s in self.sentences],
             mentions=[] if clear_mentions else [m.copy() for m in self.mentions],
@@ -116,17 +128,20 @@ class Relation:
         )
 
     def to_tuple(self, document: Document) -> typing.Tuple:
-        assert type(self.head_entity_index) == int, f'head, {self}'
-        assert type(self.tail_entity_index) == int, f'tail, {self}'
-        return (document.mentions[self.head_entity_index].to_tuple(),
+        return (document.entities[self.head_entity_index].to_tuple(),
                 self.tag.lower(),
-                document.mentions[self.tail_entity_index].to_tuple())
+                document.entities[self.tail_entity_index].to_tuple())
 
     def pretty_print(self, document: Document):
-        head_mention = document.mentions[self.head_entity_index]
-        tail_mention = document.mentions[self.tail_entity_index]
+        head_entity = document.entities[self.head_entity_index]
+        tail_entity = document.entities[self.tail_entity_index]
 
-        return f'[{head_mention.pretty_print(document)}]--[{self.tag}]-->[{tail_mention.pretty_print(document)}]'
+        head_mention = document.mentions[head_entity.mention_indices[0]]
+        tail_mention = document.mentions[tail_entity.mention_indices[0]]
+
+        return f'[{head_mention.pretty_print(document)} (+{len(head_entity.mention_indices) - 1})]' \
+               f'--[{self.tag}]-->' \
+               f'[{tail_mention.pretty_print(document)} (+{len(tail_entity.mention_indices) - 1})]'
 
 
 @dataclasses.dataclass

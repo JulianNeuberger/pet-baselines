@@ -29,6 +29,7 @@ def _read_document_from_json(json_data: typing.Dict) -> model.Document:
     entities = _read_entities_from_json(json_data['entities'])
     relations = _read_relations_from_json(json_data['relations'], entities)
     return model.Document(
+        name=json_data['id'],
         text=json_data['text'],
         sentences=_read_sentences_from_json(json_data['tokens']),
         mentions=mentions,
