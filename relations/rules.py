@@ -23,9 +23,10 @@ class RelationExtractionRule:
 
 
 class SequenceFlowsRule(RelationExtractionRule):
-    def __init__(self, triggering_elements: typing.List[str], target_tag: str):
+    def __init__(self, triggering_elements: typing.List[str], target_tag: str, verbose: bool = False):
         self._elements = triggering_elements
         self._tag = target_tag
+        self._verbose = verbose
 
     def get_relations(self, document: data.Document) -> typing.List[data.Relation]:
         relations = []
@@ -49,8 +50,9 @@ class SequenceFlowsRule(RelationExtractionRule):
             )
 
             if document.contains_relation(flow_relation):
-                print(f'[{self.__class__.__name__}] '
-                      f'{flow_relation.pretty_print(document)} already in relations, not adding.')
+                if self._verbose:
+                    print(f'[{self.__class__.__name__}] '
+                          f'{flow_relation.pretty_print(document)} already in relations, not adding.')
                 continue
 
             relations.append(flow_relation)

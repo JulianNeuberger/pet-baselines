@@ -5,7 +5,10 @@ import nltk
 
 from data import model
 
-nltk.download('averaged_perceptron_tagger')
+try:
+    nltk.data.find('averaged_perceptron_tagger')
+except LookupError:
+    nltk.download('averaged_perceptron_tagger')
 
 
 def read_names(filename) -> typing.List[typing.List[str]]:
@@ -89,13 +92,13 @@ def _read_entity_from_json(json_entity: typing.Dict) -> model.Entity:
 def _read_relations_from_json(json_relations: typing.List[typing.Dict],
                               entities: typing.List[model.Entity]) -> typing.List[model.Relation]:
     relations = []
-    entities_as_tuples = [e.to_tuple() for e in entities]
+    entities_as_tuples = [frozenset(e.mention_indices) for e in entities]
     for json_relation in json_relations:
         head_entity = _read_entity_from_json(json_relation['head_entity'])
         tail_entity = _read_entity_from_json(json_relation['tail_entity'])
 
-        head_index = entities_as_tuples.index(head_entity.to_tuple())
-        tail_index = entities_as_tuples.index(tail_entity.to_tuple())
+        head_index = entities_as_tuples.index(frozenset(head_entity.mention_indices))
+        tail_index = entities_as_tuples.index(frozenset(tail_entity.mention_indices))
 
         relations.append(model.Relation(
             head_entity_index=head_index,

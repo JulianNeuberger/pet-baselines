@@ -102,8 +102,10 @@ class Mention:
 class Entity:
     mention_indices: typing.List[int] = dataclasses.field(default_factory=list)
 
-    def to_tuple(self, *args) -> typing.Tuple:
-        return frozenset(self.mention_indices),
+    def to_tuple(self, document: Document) -> typing.Tuple:
+        mentions = [document.mentions[i] for i in self.mention_indices]
+
+        return frozenset([m.to_tuple(document) for m in mentions]),
 
     def copy(self) -> 'Entity':
         return Entity(
@@ -128,9 +130,9 @@ class Relation:
         )
 
     def to_tuple(self, document: Document) -> typing.Tuple:
-        return (document.entities[self.head_entity_index].to_tuple(),
-                self.tag.lower(),
-                document.entities[self.tail_entity_index].to_tuple())
+        return (self.tag.lower(),
+                document.entities[self.head_entity_index].to_tuple(document),
+                document.entities[self.tail_entity_index].to_tuple(document))
 
     def pretty_print(self, document: Document):
         head_entity = document.entities[self.head_entity_index]

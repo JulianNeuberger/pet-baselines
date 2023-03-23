@@ -5,57 +5,68 @@ from coref import util
 
 
 class NaiveCoRefSolver:
-    def __init__(self, resolved_tags: typing.List[str], min_mention_overlap: float = .33, ner_strategy: str = 'skip'):
+    def __init__(self, resolved_tags: typing.List[str], min_mention_overlap: float = .33):
         self._tags = resolved_tags
         self._mention_overlap_threshold = min_mention_overlap
-        self._ner_strategy = ner_strategy
 
     def resolve_co_references(self, documents: typing.List[data.Document]) -> typing.List[data.Document]:
         assert all([len(d.entities) == 0 for d in documents])
+
         for document in documents:
-            resolved_mention_indices = []
-
+            all_matches: typing.Dict[int, typing.Dict[int, float]] = {}
             for mention_index, mention in enumerate(document.mentions):
-                if mention_index in resolved_mention_indices:
+                if mention.ner_tag not in self._tags:
+                    continue
+                all_matches[mention_index] = self._match_mention(mention, document)
+
+            # resolve mentions starting with best matches
+            # noinspection PyTypeChecker
+            all_match_items: typing.List[typing.Tuple[int, typing.Dict[int, float]]] = list(all_matches.items())
+            all_match_items.sort(key=lambda item: max(item[1].values()), reverse=True)
+
+            entities: typing.Dict[int, data.Entity] = {}
+
+            for mention_index, matches in all_match_items:
+                top_match_index = max(matches, key=lambda k: matches[k])
+                top_match_overlap = matches[top_match_index]
+
+                if mention_index in entities:
+                    # already resolved
                     continue
 
-                cluster: typing.List[int] = [mention_index]
-
-                for other_index, other in enumerate(document.mentions):
-                    if mention == other:
-                        continue
-
-                    if other_index in resolved_mention_indices:
-                        continue
-
-                    if other.ner_tag not in self._tags:
-                        continue
-
-                    mention_token_texts = self._text_from_mention(mention, document)
-                    other_token_texts = self._text_from_mention(other, document)
-
-                    overlap_text = self._longest_overlap_of_lists(mention_token_texts, other_token_texts)
-
-                    left_overlap = len(overlap_text) / len(mention_token_texts)
-                    right_overlap = len(overlap_text) / len(other_token_texts)
-                    overlap = (left_overlap + right_overlap) / 2
-
-                    if overlap < self._mention_overlap_threshold:
-                        continue
-
-                    cluster.append(other_index)
-
-                entity = util.resolve_ner_conflicts(document, cluster, self._ner_strategy)
-                if entity is None:
+                if top_match_overlap < self._mention_overlap_threshold:
                     continue
 
-                resolved_mention_indices.extend(entity.mention_indices)
+                if top_match_index not in entities:
+                    entities[top_match_index] = data.Entity([top_match_index])
+                entities[top_match_index].mention_indices.append(mention_index)
+                entities[mention_index] = entities[top_match_index]
 
-                document.entities.append(entity)
-
+            document.entities.extend(entities.values())
             util.resolve_remaining_mentions_to_entities(document)
 
         return documents
+
+    @staticmethod
+    def _match_mention(mention: data.Mention, document: data.Document) -> typing.Dict[int, float]:
+        matches: typing.Dict[int, float] = {}
+        for other_index, other in enumerate(document.mentions):
+            if other == mention:
+                continue
+
+            if other.ner_tag != mention.ner_tag:
+                continue
+
+            mention_token_texts = NaiveCoRefSolver._text_from_mention(mention, document)
+            other_token_texts = NaiveCoRefSolver._text_from_mention(other, document)
+            overlap_text = NaiveCoRefSolver._longest_overlap_of_lists(mention_token_texts, other_token_texts)
+
+            left_overlap = len(overlap_text) / len(mention_token_texts)
+            right_overlap = len(overlap_text) / len(other_token_texts)
+            overlap = (left_overlap + right_overlap) / 2
+
+            matches[other_index] = overlap
+        return matches
 
     @staticmethod
     def _text_from_mention(mention: data.Mention, document: data.Document) -> typing.List[str]:
