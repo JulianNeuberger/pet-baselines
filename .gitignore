@@ -336,3 +336,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 neuralcoref/
+catboost_info/
