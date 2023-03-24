@@ -54,6 +54,12 @@ class PipelineStep(abc.ABC):
 
 
 class CatBoostRelationExtractionStep(PipelineStep):
+    def __init__(self, name: str, num_trees: int, negative_sampling_rate: float, context_size: int):
+        super().__init__(name)
+        self._num_trees = num_trees
+        self._negative_sampling = negative_sampling_rate
+        self._context_size = context_size
+
     def _eval(self, *, predictions: typing.List[data.Document],
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
         return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
@@ -63,11 +69,13 @@ class CatBoostRelationExtractionStep(PipelineStep):
         ner_tags = ['Activity', 'Actor', 'Activity Data', 'Condition Specification',
                     'Further Specification', 'AND Gateway', 'XOR Gateway']
         relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
-        estimator = relations.CatBoostDecisionTreeRelationEstimator(negative_sampling_rate=50.0,
-                                                                    verbose=False,
-                                                                    relation_tags=relation_tags,
-                                                                    ner_tags=ner_tags,
-                                                                    name=self._name)
+        estimator = relations.CatBoostRelationEstimator(negative_sampling_rate=self._negative_sampling,
+                                                        num_trees=self._num_trees,
+                                                        verbose=False,
+                                                        context_size=self._context_size,
+                                                        relation_tags=relation_tags,
+                                                        ner_tags=ner_tags,
+                                                        name=self._name)
         estimator.train(train_documents)
         test_documents = [d.copy(clear_relations=True) for d in test_documents]
         return estimator.predict(test_documents)

@@ -9,22 +9,25 @@ import numpy as np
 import data
 
 
-class CatBoostDecisionTreeRelationEstimator:
+class CatBoostRelationEstimator:
     def __init__(self,
                  name: str,
                  negative_sampling_rate: float,
+                 num_trees: int,
+                 context_size: int,
                  relation_tags: typing.List[str],
                  ner_tags: typing.List[str],
                  verbose: bool):
-        self._model = catboost.CatBoostClassifier(iterations=1000, verbose=False)
+        self._model = catboost.CatBoostClassifier(iterations=num_trees, verbose=False)
         self._negative_rate = negative_sampling_rate
         self._target_tags = [t.lower() for t in relation_tags]
         self._ner_tags = [t.lower() for t in ner_tags]
         self._no_relation_tag = 'NO REL'
         self._verbose = verbose
         self._name = name
+        self._context_size = context_size
 
-    def train(self, documents: typing.List[data.Document]) -> 'CatBoostDecisionTreeRelationEstimator':
+    def train(self, documents: typing.List[data.Document]) -> 'CatBoostRelationEstimator':
         samples = []
         for document in documents:
             samples_in_document = 0
@@ -61,7 +64,13 @@ class CatBoostDecisionTreeRelationEstimator:
         xs = [x for x, _ in samples]
         ys = [y for _, y in samples]
 
-        self._model.fit(xs, ys, cat_features=[2, 3, 4, 5, 6, 7])
+        cat_features = [2, 3, *range(4, 4 + self._context_size * 4)]
+        try:
+            self._model.fit(xs, ys, cat_features=cat_features)
+        except catboost.CatboostError as e:
+            print('cat features', cat_features)
+            print(xs[0])
+            raise e
 
         graph = self._model.plot_tree(self._model.tree_count_ - 1)
         graph.render(filename=f'graphs/{self._name}')
@@ -154,9 +163,8 @@ class CatBoostDecisionTreeRelationEstimator:
         head = document.mentions[head_mention_index]
         tail = document.mentions[tail_mention_index]
 
-        context_size = 1
         context = []
-        for i in range(-context_size, context_size + 1):
+        for i in range(-self._context_size, self._context_size + 1):
             if i == 0:
                 continue
 

@@ -36,7 +36,7 @@ def accumulate_pipeline_results(pipeline_results: typing.List[pipeline.PipelineR
     num_runs = len(pipeline_results)
     return {
         step: {
-            k: v / num_runs for k, v in functools.reduce(_accumulate, f1_stats).items()
+            k: v / num_runs for k, v in functools.reduce(accumulate, f1_stats).items()
         }
         for step, f1_stats
         in res_by_step.items()
@@ -48,51 +48,57 @@ def print_pipeline_results(p: pipeline.Pipeline,
     print(f'=== {p.name} {"=" * (47 - len(p.name))}')
     for step, scores_by_ner in res.items():
         print(f'--- {step.name} {"-" * (47 - len(step.name))}')
-        _print_scores(scores_by_ner)
+        print_scores(scores_by_ner)
 
 
 def main():
     train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
 
-    cross_validate_pipeline(
-        p=pipeline.Pipeline(name='complete pipeline rule-based relations', steps=[
-            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
-            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
-                                                     resolved_tags=['Actor', 'Activity Data'],
-                                                     cluster_overlap=.5,
-                                                     mention_overlap=.8,
-                                                     ner_strategy='frequency'),
-            pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
-        ]),
-        train_folds=train_folds,
-        test_folds=test_folds
-    )
-
-    print()
-    print('---')
-    print()
-
-    cross_validate_pipeline(
-        p=pipeline.Pipeline(name='complete pipeline cat-boost relations', steps=[
-            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
-            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
-                                                     resolved_tags=['Actor', 'Activity Data'],
-                                                     cluster_overlap=.5,
-                                                     mention_overlap=.8,
-                                                     ner_strategy='frequency'),
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction')
-        ]),
-        train_folds=train_folds,
-        test_folds=test_folds
-    )
-
-    print()
-    print('---')
-    print()
+    # cross_validate_pipeline(
+    #     p=pipeline.Pipeline(name='complete pipeline rule-based relations', steps=[
+    #         pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+    #         pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+    #                                                  resolved_tags=['Actor', 'Activity Data'],
+    #                                                  cluster_overlap=.5,
+    #                                                  mention_overlap=.8,
+    #                                                  ner_strategy='frequency'),
+    #         pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    #     ]),
+    #     train_folds=train_folds,
+    #     test_folds=test_folds
+    # )
+    #
+    # print()
+    # print('---')
+    # print()
+    #
+    # cross_validate_pipeline(
+    #     p=pipeline.Pipeline(name='complete pipeline cat-boost relations', steps=[
+    #         pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+    #         pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+    #                                                  resolved_tags=['Actor', 'Activity Data'],
+    #                                                  cluster_overlap=.5,
+    #                                                  mention_overlap=.8,
+    #                                                  ner_strategy='frequency'),
+    #         pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction')
+    #     ]),
+    #     train_folds=train_folds,
+    #     test_folds=test_folds
+    # )
+    #
+    # print()
+    # print('---')
+    # print()
 
     cross_validate_pipeline(
         p=pipeline.Pipeline(name='relations isolated (rule-based)', steps=[
+            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency'),
             pipeline.RuleBasedRelationExtraction(name='perfect entities')
         ]),
         train_folds=train_folds,
@@ -104,15 +110,88 @@ def main():
     print()
 
     cross_validate_pipeline(
-        p=pipeline.Pipeline(name='relations isolated (cat-boost)', steps=[
-            pipeline.CatBoostRelationExtractionStep(name='perfect entities')
+        p=pipeline.Pipeline(name='relations isolated (cat-boost, cs=0)', steps=[
+            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency'),
+            pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=0,
+                                                    num_trees=50, negative_sampling_rate=50.0)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds
+    )
+
+    print()
+    print('---')
+    print()
+
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='relations isolated (cat-boost, cs=1)', steps=[
+            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency'),
+            pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=1,
+                                                    num_trees=50, negative_sampling_rate=50.0)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds
+    )
+
+    print()
+    print('---')
+    print()
+
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='relations isolated (cat-boost, cs=2)', steps=[
+            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency'),
+            pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                    num_trees=50, negative_sampling_rate=50.0)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds
+    )
+
+    print()
+    print('---')
+    print()
+
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='relations isolated (cat-boost, cs=3)', steps=[
+            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency'),
+            pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=3,
+                                                    num_trees=50, negative_sampling_rate=50.0)
         ]),
         train_folds=train_folds,
         test_folds=test_folds
     )
 
 
-def _print_scores(scores_by_ner: typing.Dict[str, metrics.Scores], order: typing.List[str] = None):
+def accumulate(left: typing.Dict[str, metrics.Scores],
+               right: typing.Dict[str, metrics.Scores]) -> typing.Dict[str, metrics.Scores]:
+    key_set = set(left.keys()).union(set(right.keys()))
+    return {
+        ner_tag: left.get(ner_tag, metrics.Scores(1, 1, 1)) + right.get(ner_tag, metrics.Scores(1, 1, 1))
+        for ner_tag in key_set
+    }
+
+
+def print_scores(scores_by_ner: typing.Dict[str, metrics.Scores], order: typing.List[str] = None):
     len_ner_tags = max([len(t) for t in scores_by_ner.keys()])
 
     if order is None:
@@ -131,39 +210,6 @@ def _print_scores(scores_by_ner: typing.Dict[str, metrics.Scores], order: typing
     score = sum(scores_by_ner.values(), metrics.Scores(0, 0, 0)) / len(scores_by_ner)
     print(f' {"Overall": >{len_ner_tags}} | {score.p: >7.2%} | {score.r: >7.2%} | {score.f1: >7.2%}')
     print(f'{"-" * (len_ner_tags + 2)}+---------+---------+---------')
-
-
-def _print_module_stats(f1_stats: FoldStats, order: typing.List[str], only_for_tags: typing.List[str] = None) -> None:
-    num_folds = len(f1_stats)
-    accumulated_stats = functools.reduce(_accumulate, f1_stats)
-    accumulated_stats = {
-        k: v / num_folds for k, v in accumulated_stats.items()
-    }
-
-    if only_for_tags:
-        only_for_tags = [t.lower() for t in only_for_tags]
-        accumulated_stats = {
-            k: v for k, v in accumulated_stats.items() if k.lower() in only_for_tags
-        }
-
-    _print_scores(accumulated_stats)
-
-
-def _accumulate(left: typing.Dict[str, metrics.Scores],
-                right: typing.Dict[str, metrics.Scores]) -> typing.Dict[str, metrics.Scores]:
-    key_set = set(left.keys()).union(set(right.keys()))
-    return {
-        ner_tag: left.get(ner_tag, metrics.Scores(1, 1, 1)) + right.get(ner_tag, metrics.Scores(1, 1, 1))
-        for ner_tag in key_set
-    }
-
-
-def print_module_f1_stats(stats: FoldStats, name: str,
-                          order: typing.List[str], only_for_tags: typing.List[str] = None):
-    print(f'--- {name} -------------------------------------------------------------')
-    _print_module_stats(stats, order, only_for_tags=only_for_tags)
-    print()
-    print()
 
 
 if __name__ == '__main__':

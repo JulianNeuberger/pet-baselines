@@ -1,2 +1,2 @@
 from relations.rules import RelationExtractionRule, RuleBasedRelationEstimator
-from relations.catboost import CatBoostDecisionTreeRelationEstimator
+from relations.catboost import CatBoostRelationEstimator
