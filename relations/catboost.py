@@ -9,14 +9,14 @@ import numpy as np
 import data
 
 
-class RandomForestRelationEstimator:
+class CatBoostDecisionTreeRelationEstimator:
     def __init__(self,
                  name: str,
                  negative_sampling_rate: float,
                  relation_tags: typing.List[str],
                  ner_tags: typing.List[str],
                  verbose: bool):
-        self._model = catboost.CatBoostClassifier(iterations=500, verbose=False)
+        self._model = catboost.CatBoostClassifier(iterations=1000, verbose=False)
         self._negative_rate = negative_sampling_rate
         self._target_tags = [t.lower() for t in relation_tags]
         self._ner_tags = [t.lower() for t in ner_tags]
@@ -24,7 +24,7 @@ class RandomForestRelationEstimator:
         self._verbose = verbose
         self._name = name
 
-    def train(self, documents: typing.List[data.Document]) -> 'RandomForestRelationEstimator':
+    def train(self, documents: typing.List[data.Document]) -> 'CatBoostDecisionTreeRelationEstimator':
         samples = []
         for document in documents:
             samples_in_document = 0
@@ -154,29 +154,36 @@ class RandomForestRelationEstimator:
         head = document.mentions[head_mention_index]
         tail = document.mentions[tail_mention_index]
 
-        neighbours = [
-            document.mentions[head_mention_index - 1] if head_mention_index > 0 else None,
-            document.mentions[head_mention_index + 1] if head_mention_index < len(document.mentions) - 1 else None,
-            document.mentions[tail_mention_index - 1] if tail_mention_index > 0 else None,
-            document.mentions[tail_mention_index + 1] if tail_mention_index < len(document.mentions) - 1 else None
-        ]
+        context_size = 1
+        context = []
+        for i in range(-context_size, context_size + 1):
+            if i == 0:
+                continue
 
-        neighbour_tags = [
-            m.ner_tag if m is not None else '' for m in neighbours
-        ]
+            mention_index = head_mention_index + i
+            if mention_index < 0:
+                context.append(None)
+            elif mention_index >= len(document.mentions):
+                context.append(None)
+            else:
+                context.append(document.mentions[mention_index])
 
-        distance = head_mention_index - tail_mention_index
-        head_tag = head.ner_tag  # self._ner_tag_to_one_hot(head.ner_tag)
-        tail_tag = tail.ner_tag  # self._ner_tag_to_one_hot(tail.ner_tag)
+            mention_index = tail_mention_index + i
+            if mention_index < 0:
+                context.append(None)
+            elif mention_index >= len(document.mentions):
+                context.append(None)
+            else:
+                context.append(document.mentions[mention_index])
 
         return [
-            distance,
-            head.sentence_index - tail.sentence_index,
-            head_tag,
-            tail_tag,
-            *neighbour_tags
-            # *head_tag.tolist(),
-            # *tail_tag.tolist()
+            tail_mention_index - head_mention_index,
+            tail.sentence_index - head.sentence_index,
+            head.ner_tag,
+            tail.ner_tag,
+            *[
+                m.ner_tag if m is not None else '' for m in context
+            ]
         ]
 
     def _ner_tag_to_one_hot(self, ner_tag: str) -> np.ndarray:

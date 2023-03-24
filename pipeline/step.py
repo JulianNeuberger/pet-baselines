@@ -63,11 +63,11 @@ class CatBoostRelationExtractionStep(PipelineStep):
         ner_tags = ['Activity', 'Actor', 'Activity Data', 'Condition Specification',
                     'Further Specification', 'AND Gateway', 'XOR Gateway']
         relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
-        estimator = relations.RandomForestRelationEstimator(negative_sampling_rate=50.0,
-                                                            verbose=False,
-                                                            relation_tags=relation_tags,
-                                                            ner_tags=ner_tags,
-                                                            name=self._name)
+        estimator = relations.CatBoostDecisionTreeRelationEstimator(negative_sampling_rate=50.0,
+                                                                    verbose=False,
+                                                                    relation_tags=relation_tags,
+                                                                    ner_tags=ner_tags,
+                                                                    name=self._name)
         estimator.train(train_documents)
         test_documents = [d.copy(clear_relations=True) for d in test_documents]
         return estimator.predict(test_documents)
