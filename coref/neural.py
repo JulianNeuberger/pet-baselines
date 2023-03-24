@@ -10,7 +10,6 @@ from coref import util
 
 class NeuralCoRefSolver:
     # loading an english SpaCy model
-    spacy.cli.download('en_core_web_md')
     nlp = spacy.load('en_core_web_md')
 
     # load NeuralCoref and add it to the pipe of SpaCy's model

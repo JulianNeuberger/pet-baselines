@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/neuralcoref" />
+      <excludeFolder url="file://$MODULE_DIR$/catboost_info" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7 (pettokenbaselines)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

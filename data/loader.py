@@ -103,7 +103,8 @@ def _read_relations_from_json(json_relations: typing.List[typing.Dict],
         relations.append(model.Relation(
             head_entity_index=head_index,
             tail_entity_index=tail_index,
-            tag=json_relation['type']
+            tag=json_relation['type'],
+            evidence=json_relation['evidence']
         ))
 
     return relations

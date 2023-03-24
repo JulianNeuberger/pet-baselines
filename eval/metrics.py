@@ -1,4 +1,3 @@
-import collections
 import dataclasses
 import typing
 
@@ -32,7 +31,6 @@ def relation_f1_stats(*, predicted_documents: typing.List[data.Document],
                       verbose: bool = False) -> typing.Dict[str, Scores]:
     return _f1_stats(predicted_documents=predicted_documents,
                      ground_truth_documents=ground_truth_documents,
-                     tag_attribute='tag',
                      attribute='relations', verbose=verbose)
 
 
@@ -41,7 +39,6 @@ def mentions_f1_stats(*, predicted_documents: typing.List[data.Document],
                       verbose: bool = False) -> typing.Dict[str, Scores]:
     return _f1_stats(predicted_documents=predicted_documents,
                      ground_truth_documents=ground_truth_documents,
-                     tag_attribute='ner_tag',
                      attribute='mentions', verbose=verbose)
 
 
@@ -59,7 +56,6 @@ def entity_f1_stats(*, predicted_documents: typing.List[data.Document],
 
     return _f1_stats(predicted_documents=predicted_documents,
                      ground_truth_documents=ground_truth_documents,
-                     tag_attribute='',
                      attribute='entities', verbose=verbose)
 
 
@@ -113,8 +109,7 @@ def _calculate_f1_stats(num_gold: float, num_pred: float, num_ok: float, verbose
 
 def _f1_stats(*, predicted_documents: typing.List[data.Document],
               ground_truth_documents: typing.List[data.Document],
-              attribute: str, tag_attribute: str,
-              verbose: bool = False) -> typing.Dict[str, Scores]:
+              attribute: str, verbose: bool = False) -> typing.Dict[str, Scores]:
     assert attribute in ['mentions', 'relations', 'entities']
     assert len(predicted_documents) == len(ground_truth_documents)
 
@@ -125,7 +120,7 @@ def _f1_stats(*, predicted_documents: typing.List[data.Document],
         pred_attribute = getattr(p, attribute)
 
         true_as_set = set([e.to_tuple(t) for e in true_attribute])
-        assert len(true_as_set) == len(true_attribute), f'{len(true_as_set)}, {len(true_attribute)}'
+        assert len(true_as_set) == len(true_attribute), f'{len(true_as_set)}, {len(true_attribute)}, {true_as_set}, {true_attribute}'
 
         pred_as_set = set([e.to_tuple(p) for e in pred_attribute])
 

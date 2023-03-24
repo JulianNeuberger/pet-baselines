@@ -1,2 +1,2 @@
-from relations.rules import RelationExtractionRule
-from relations.extractor import RuleBasedRelationEstimator
+from relations.rules import RelationExtractionRule, RuleBasedRelationEstimator
+from relations.catboost import RandomForestRelationEstimator

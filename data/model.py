@@ -12,6 +12,12 @@ class Document:
     entities: typing.List['Entity'] = dataclasses.field(default_factory=list)
     relations: typing.List['Relation'] = dataclasses.field(default_factory=list)
 
+    def relation_exists_between(self, head_entity_index: int, tail_entity_index: int) -> bool:
+        for r in self.relations:
+            if r.head_entity_index == head_entity_index and r.tail_entity_index == tail_entity_index:
+                return True
+        return False
+
     def contains_relation(self, relation: 'Relation') -> bool:
         return relation.to_tuple(self) in [e.to_tuple(self) for e in self.relations]
 
@@ -121,12 +127,14 @@ class Relation:
     head_entity_index: int
     tail_entity_index: int
     tag: str
+    evidence: typing.List[int]
 
     def copy(self) -> 'Relation':
         return Relation(
             head_entity_index=self.head_entity_index,
             tail_entity_index=self.tail_entity_index,
-            tag=self.tag
+            tag=self.tag,
+            evidence=[i for i in self.evidence]
         )
 
     def to_tuple(self, document: Document) -> typing.Tuple:

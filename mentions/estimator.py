@@ -6,7 +6,7 @@ import pycrfsuite
 
 import data
 from eval import metrics
-from entities import decoder
+from mentions import decoder
 
 
 class ConditionalRandomFieldsEstimator:
@@ -54,7 +54,7 @@ class ConditionalRandomFieldsEstimator:
 
         return predicted_documents
 
-    def test(self, test_documents: typing.List[data.Document]) -> typing.Tuple[float, float, float]:
+    def test(self, test_documents: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
         predicted_documents = self.predict(test_documents)
         ground_truth_documents = []
 

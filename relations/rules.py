@@ -3,6 +3,24 @@ import typing
 import data
 
 
+class RuleBasedRelationEstimator:
+    def __init__(self, rules: typing.List['RelationExtractionRule']):
+        self._rules = rules
+
+    def predict(self, documents: typing.List[data.Document]) -> typing.List[data.Document]:
+        assert all([len(d.entities) > 0 for d in documents])
+        assert all([len(d.relations) == 0 for d in documents])
+
+        for document in documents:
+            for rule in self._rules:
+                rs = rule.get_relations(document)
+                for r in rs:
+                    assert r.head_entity_index != r.tail_entity_index
+                document.relations.extend(rs)
+
+        return documents
+
+
 class RelationExtractionRule:
     def get_relations(self, document: data.Document) -> typing.List[data.Relation]:
         raise NotImplementedError()
@@ -40,13 +58,15 @@ class SequenceFlowsRule(RelationExtractionRule):
             if next_behavioral_element_index is None:
                 continue
 
+            tail_mention = document.mentions[next_behavioral_element_index]
+
             head_entity = document.entity_index_for_mention(current_mention)
-            tail_entity = document.entity_index_for_mention(document.mentions[next_behavioral_element_index])
+            tail_entity = document.entity_index_for_mention(tail_mention)
 
             flow_relation = data.Relation(
                 head_entity_index=head_entity,
                 tail_entity_index=tail_entity,
-                tag=self._tag
+                tag=self._tag, evidence=list({current_mention.sentence_index, tail_mention.sentence_index})
             )
 
             if document.contains_relation(flow_relation):
@@ -87,7 +107,8 @@ class SameGatewayRule(RelationExtractionRule):
             relations.append(data.Relation(
                 head_entity_index=head_entity,
                 tail_entity_index=tail_entity,
-                tag=self._tag
+                tag=self._tag,
+                evidence=list({mention.sentence_index, next_gateway.sentence_index})
             ))
 
         return relations
@@ -112,13 +133,16 @@ class GatewayActivityRule(RelationExtractionRule):
             if next_activity_index is None:
                 continue
 
+            tail_mention = document.mentions[next_activity_index]
+
             head_entity = document.entity_index_for_mention(mention)
-            tail_entity = document.entity_index_for_mention(document.mentions[next_activity_index])
+            tail_entity = document.entity_index_for_mention(tail_mention)
 
             flow_relation = data.Relation(
                 head_entity_index=head_entity,
                 tail_entity_index=tail_entity,
-                tag=self._tag
+                tag=self._tag,
+                evidence=list({mention.sentence_index, tail_mention.sentence_index})
             )
 
             if document.contains_relation(flow_relation):
@@ -159,25 +183,29 @@ class ActorPerformerRecipientRule(RelationExtractionRule):
                                                                       search_backwards=True)
             if performer_index is not None:
                 if document.mentions[performer_index].sentence_index == mention.sentence_index:
+                    tail_mention = document.mentions[performer_index]
                     head_entity = document.entity_index_for_mention(mention)
-                    tail_entity = document.entity_index_for_mention(document.mentions[performer_index])
+                    tail_entity = document.entity_index_for_mention(tail_mention)
 
                     relations.append(data.Relation(
                         head_entity_index=head_entity,
                         tail_entity_index=tail_entity,
-                        tag=self._performer
+                        tag=self._performer,
+                        evidence=list({mention.sentence_index, tail_mention.sentence_index})
                     ))
 
             recipient_index = self.get_next_index_of_mention_with_tag(document, i, [self._actor])
             if recipient_index is not None:
                 if document.mentions[recipient_index].sentence_index == mention.sentence_index:
+                    tail_mention = document.mentions[recipient_index]
                     head_entity = document.entity_index_for_mention(mention)
-                    tail_entity = document.entity_index_for_mention(document.mentions[recipient_index])
+                    tail_entity = document.entity_index_for_mention(tail_mention)
 
                     relations.append(data.Relation(
                         head_entity_index=head_entity,
                         tail_entity_index=tail_entity,
-                        tag=self._recipient
+                        tag=self._recipient,
+                        evidence=list({mention.sentence_index, tail_mention.sentence_index})
                     ))
 
         return relations
@@ -223,8 +251,10 @@ class FurtherSpecificationRule(RelationExtractionRule):
                 right_token = right_sentence.tokens[right_candidate.token_indices[0]]
                 right_start = right_token.index_in_document
 
-                source_start = document.sentences[mention.sentence_index].tokens[min(mention.token_indices)].index_in_document
-                source_end = document.sentences[mention.sentence_index].tokens[max(mention.token_indices)].index_in_document
+                source_start = document.sentences[mention.sentence_index].tokens[
+                    min(mention.token_indices)].index_in_document
+                source_end = document.sentences[mention.sentence_index].tokens[
+                    max(mention.token_indices)].index_in_document
 
                 distance_to_left = source_start - left_end
                 distance_to_right = right_start - source_end
@@ -233,13 +263,15 @@ class FurtherSpecificationRule(RelationExtractionRule):
                 else:
                     chosen_index = right_index
 
-            head_entity = document.entity_index_for_mention(document.mentions[chosen_index])
+            head_mention = document.mentions[chosen_index]
+            head_entity = document.entity_index_for_mention(head_mention)
             tail_entity = document.entity_index_for_mention(mention)
 
             relations.append(data.Relation(
                 head_entity_index=head_entity,
                 tail_entity_index=tail_entity,
-                tag=self._tag
+                tag=self._tag,
+                evidence=list({mention.sentence_index, head_mention.sentence_index})
             ))
 
         return relations
@@ -266,13 +298,15 @@ class UsesRelationRule(RelationExtractionRule):
             if activity_index is None or document.mentions[activity_index].sentence_index != mention.sentence_index:
                 continue
 
-            head_entity = document.entity_index_for_mention(document.mentions[activity_index])
+            head_mention = document.mentions[activity_index]
+            head_entity = document.entity_index_for_mention(head_mention)
             tail_entity = document.entity_index_for_mention(mention)
 
             r = data.Relation(
                 head_entity_index=head_entity,
                 tail_entity_index=tail_entity,
-                tag=self._tag
+                tag=self._tag,
+                evidence=list({mention.sentence_index, head_mention.sentence_index})
             )
             relations.append(r)
 
