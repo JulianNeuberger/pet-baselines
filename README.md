@@ -30,11 +30,15 @@ After you installed the basic dependencies, you will then have to
 change to the directory, where this file is located, and then run 
 
 ```bash
-pip install en_core_web_md==2.3.1
+python -m spacy download en_core_web_md-2.3.1 --direct
 git clone https://github.com/huggingface/neuralcoref.git
 cd neuralcoref
+pip install -r requirements.txt
 pip install -e .
 ```
+
+In case of errors that may occur during installation of neuralcoref, 
+please refer to https://github.com/huggingface/neuralcoref
 
 ## Running
 
