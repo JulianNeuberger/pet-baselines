@@ -51,6 +51,9 @@ def build_data():
 
         pandas.to_pickle(dataframe, 'negative_sampling_rate_data.pkl')
 
+        if index % 5 == 0:
+            plot_data(f'{index}')
+
 
 def plot_data(name: str, fig_size=(6.4, 4.8)):
     df: pd.DataFrame = pandas.read_pickle('negative_sampling_rate_data.pkl')
@@ -68,5 +71,5 @@ def plot_data(name: str, fig_size=(6.4, 4.8)):
 
 
 if __name__ == '__main__':
-    build_data()
+    #build_data()
     plot_data('p-vs-r-vs-f1', fig_size=(6.4, 2.2))

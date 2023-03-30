@@ -347,24 +347,21 @@ def catboost_debug():
     train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
 
+    print('Running pipeline with neural entity resolution, and cat-boost relation extraction')
     cross_validate_pipeline(
-        p=pipeline.Pipeline(name='cat-boost-no-pos', steps=[
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=False,
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0,
-                                                    verbose=False, seed=42)
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
+            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency'),
+            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
+                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
         ]),
         train_folds=train_folds,
-        test_folds=test_folds
-    )
-
-    cross_validate_pipeline(
-        p=pipeline.Pipeline(name='cat-boost-with-pos', steps=[
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=True,
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0,
-                                                    verbose=False, seed=42)
-        ]),
-        train_folds=train_folds,
-        test_folds=test_folds
+        test_folds=test_folds,
+        save_results=False
     )
 
 
@@ -440,12 +437,12 @@ def scenario_2_3():
 
 
 def main():
-    #ablation_studies()
-    #catboost_debug()
+    # ablation_studies()
+    catboost_debug()
 
-    #scenario_1()
-    scenario_2_3()
-    #scenario_4_5_6()
+    # scenario_1()
+    # scenario_2_3()
+    # scenario_4_5_6()
 
 
 if __name__ == '__main__':
