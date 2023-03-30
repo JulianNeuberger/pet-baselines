@@ -26,9 +26,11 @@ conda env create -f env.yaml
 conda activate pet-baseline
 ```
 
-Change to the directory, where this file is located, and then run 
+After you installed the basic dependencies, you will then have to
+change to the directory, where this file is located, and then run 
 
 ```bash
+pip install en_core_web_md==2.3.1
 git clone https://github.com/huggingface/neuralcoref.git
 cd neuralcoref
 pip install -e .
