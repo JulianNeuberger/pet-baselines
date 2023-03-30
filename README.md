@@ -10,11 +10,25 @@ method and reproduce results.
 
 # Install
 
-Requires an installation of conda, e.g., https://docs.conda.io/en/latest/miniconda.html
+You can either install dependencies (including the correct python version) via
+conda, which requires an installation of conda, e.g., 
+https://docs.conda.io/en/latest/miniconda.html.
+
+Or you can install the dependencies manually, e.g., via pip. In this
+case please refer to the contents of env.yaml to get a list of
+dependencies and python version.
+
+Below you can find instructions for installing dependencies with conda.
+Beware that this may take several (> 5) minutes, depending on your machine!
 
 ```bash
 conda env create -f env.yaml
 conda activate pet-baseline
+```
+
+Change to the directory, where this file is located, and then run 
+
+```bash
 git clone https://github.com/huggingface/neuralcoref.git
 cd neuralcoref
 pip install -e .
