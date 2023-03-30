@@ -22,6 +22,7 @@ class NaiveCoRefSolver:
             # resolve mentions starting with best matches
             # noinspection PyTypeChecker
             all_match_items: typing.List[typing.Tuple[int, typing.Dict[int, float]]] = list(all_matches.items())
+            all_match_items = [i for i in all_match_items if len(i[1].values()) > 0]
             all_match_items.sort(key=lambda item: max(item[1].values()), reverse=True)
 
             entities: typing.Dict[int, data.Entity] = {}

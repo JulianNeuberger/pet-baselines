@@ -17,8 +17,10 @@ class CatBoostRelationEstimator:
                  context_size: int,
                  relation_tags: typing.List[str],
                  ner_tags: typing.List[str],
-                 verbose: bool):
-        self._model = catboost.CatBoostClassifier(iterations=num_trees, verbose=False)
+                 use_pos_features: bool,
+                 verbose: bool,
+                 seed: int = 42):
+        self._model = catboost.CatBoostClassifier(iterations=num_trees, verbose=False, random_state=seed)
         self._negative_rate = negative_sampling_rate
         self._target_tags = [t.lower() for t in relation_tags]
         self._ner_tags = [t.lower() for t in ner_tags]
@@ -26,8 +28,11 @@ class CatBoostRelationEstimator:
         self._verbose = verbose
         self._name = name
         self._context_size = context_size
+        self._use_pos_features = use_pos_features
+        self._seed = seed
 
     def train(self, documents: typing.List[data.Document]) -> 'CatBoostRelationEstimator':
+        random.seed(self._seed)
         samples = []
         for document in documents:
             samples_in_document = 0
@@ -64,7 +69,12 @@ class CatBoostRelationEstimator:
         xs = [x for x, _ in samples]
         ys = [y for _, y in samples]
 
-        cat_features = [2, 3, *range(4, 4 + self._context_size * 4)]
+        num_cat_features = 2
+        if self._use_pos_features:
+            num_cat_features += 2
+        num_cat_features += self._context_size * 4
+
+        cat_features = list(range(2, 2 + num_cat_features))
         try:
             self._model.fit(xs, ys, cat_features=cat_features)
         except catboost.CatboostError as e:
@@ -163,6 +173,9 @@ class CatBoostRelationEstimator:
         head = document.mentions[head_mention_index]
         tail = document.mentions[tail_mention_index]
 
+        head_pos = head.get_tokens(document)[0].pos_tag[:2]
+        tail_pos = tail.get_tokens(document)[0].pos_tag[:2]
+
         context = []
         for i in range(-self._context_size, self._context_size + 1):
             if i == 0:
@@ -184,15 +197,24 @@ class CatBoostRelationEstimator:
             else:
                 context.append(document.mentions[mention_index])
 
-        return [
+        features = [
             tail_mention_index - head_mention_index,
             tail.sentence_index - head.sentence_index,
             head.ner_tag,
             tail.ner_tag,
-            *[
-                m.ner_tag if m is not None else '' for m in context
-            ]
         ]
+
+        if self._use_pos_features:
+            features += [
+                head_pos,
+                tail_pos,
+            ]
+
+        features += [
+            m.ner_tag if m is not None else '' for m in context
+        ]
+
+        return features
 
     def _ner_tag_to_one_hot(self, ner_tag: str) -> np.ndarray:
         one_hot = np.zeros(len(self._ner_tags), )

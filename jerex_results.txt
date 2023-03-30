@@ -1,0 +1,283 @@
+--- Entity Mentions ---
+
+type	precision	recall	f1-score	support
+Binary	67.86	38.60	49.21	443
+
+micro	67.86	38.60	49.21	443
+macro	67.86	38.60	49.21	443
+
+--- Clusters (Coreference Resolution) ---
+
+type	precision	recall	f1-score	support
+Binary	51.28	30.30	38.10	330
+
+micro	51.28	30.30	38.10	330
+macro	51.28	30.30	38.10	330
+
+--- Entities ---
+
+type	precision	recall	f1-score	support
+Further Specification	0.00	0.00	0.00	10
+Activity	67.05	43.38	52.68	136
+Condition Specification	0.00	0.00	0.00	26
+XOR Gateway	90.48	54.29	67.86	35
+Activity Data	30.00	18.07	22.56	83
+Actor	19.44	19.44	19.44	36
+AND Gateway	0.00	0.00	0.00	4
+
+micro	51.28	30.30	38.10	330
+macro	29.57	19.31	23.22	330
+
+--- Relations ---
+Without entity type
+
+type	precision	recall	f1-score	support
+actor recipient	19.05	9.30	12.50	43
+actor performer	3.70	1.41	2.04	71
+further specification	0.00	0.00	0.00	10
+uses	24.24	6.15	9.82	130
+flow	35.48	16.75	22.76	197
+same gateway	45.45	38.46	41.67	13
+
+micro	27.57	10.99	15.72	464
+macro	21.32	12.01	14.80	464
+
+With entity type
+
+type	precision	recall	f1-score	support
+actor recipient	19.05	9.30	12.50	43
+actor performer	3.70	1.41	2.04	71
+further specification	0.00	0.00	0.00	10
+uses	24.24	6.15	9.82	130
+flow	35.48	16.75	22.76	197
+same gateway	45.45	38.46	41.67	13
+
+micro	27.57	10.99	15.72	464
+macro	21.32	12.01	14.80	464
+
+--- Entity Mentions ---
+
+type	precision	recall	f1-score	support
+Binary	88.40	37.04	52.20	432
+
+micro	88.40	37.04	52.20	432
+macro	88.40	37.04	52.20	432
+
+--- Clusters (Coreference Resolution) ---
+
+type	precision	recall	f1-score	support
+Binary	77.54	31.20	44.49	343
+
+micro	77.54	31.20	44.49	343
+macro	77.54	31.20	44.49	343
+
+--- Entities ---
+
+type	precision	recall	f1-score	support
+XOR Gateway	100.00	70.37	82.61	27
+Activity	86.67	50.78	64.04	128
+Condition Specification	0.00	0.00	0.00	20
+Further Specification	0.00	0.00	0.00	27
+Actor	31.82	15.56	20.90	45
+AND Gateway	0.00	0.00	0.00	1
+Activity Data	72.73	16.84	27.35	95
+
+micro	77.54	31.20	44.49	343
+macro	41.60	21.94	27.84	343
+
+--- Relations ---
+Without entity type
+
+type	precision	recall	f1-score	support
+flow	33.33	14.37	20.08	174
+same gateway	15.22	87.50	25.93	8
+uses	65.00	10.83	18.57	120
+actor performer	0.00	0.00	0.00	81
+further specification	0.00	0.00	0.00	27
+actor recipient	36.36	9.09	14.55	44
+
+micro	25.79	10.79	15.22	454
+macro	24.99	20.30	13.19	454
+
+With entity type
+
+type	precision	recall	f1-score	support
+flow	33.33	14.37	20.08	174
+same gateway	15.22	87.50	25.93	8
+uses	65.00	10.83	18.57	120
+actor performer	0.00	0.00	0.00	81
+further specification	0.00	0.00	0.00	27
+actor recipient	36.36	9.09	14.55	44
+
+micro	25.79	10.79	15.22	454
+macro	24.99	20.30	13.19	454
+
+--- Entity Mentions ---
+
+type	precision	recall	f1-score	support
+Binary	88.76	58.52	70.54	270
+
+micro	88.76	58.52	70.54	270
+macro	88.76	58.52	70.54	270
+
+--- Clusters (Coreference Resolution) ---
+
+type	precision	recall	f1-score	support
+Binary	70.45	46.50	56.02	200
+
+micro	70.45	46.50	56.02	200
+macro	70.45	46.50	56.02	200
+
+--- Entities ---
+
+type	precision	recall	f1-score	support
+Activity	92.96	79.52	85.71	83
+Further Specification	0.00	0.00	0.00	14
+Condition Specification	0.00	0.00	0.00	12
+XOR Gateway	83.33	88.24	85.71	17
+Activity Data	32.00	18.60	23.53	43
+AND Gateway	0.00	0.00	0.00	1
+Actor	22.22	13.33	16.67	30
+
+micro	70.45	46.50	56.02	200
+macro	32.93	28.53	30.23	200
+
+--- Relations ---
+Without entity type
+
+type	precision	recall	f1-score	support
+uses	25.00	10.39	14.68	77
+further specification	0.00	0.00	0.00	14
+flow	37.27	40.20	38.68	102
+actor recipient	12.00	10.71	11.32	28
+same gateway	0.00	0.00	0.00	6
+actor performer	11.90	9.80	10.75	51
+
+micro	27.27	20.50	23.41	278
+macro	14.36	11.85	12.57	278
+
+With entity type
+
+type	precision	recall	f1-score	support
+uses	25.00	10.39	14.68	77
+further specification	0.00	0.00	0.00	14
+flow	37.27	40.20	38.68	102
+actor recipient	12.00	10.71	11.32	28
+same gateway	0.00	0.00	0.00	6
+actor performer	11.90	9.80	10.75	51
+
+micro	27.27	20.50	23.41	278
+macro	14.36	11.85	12.57	278			
+				
+--- Entity Mentions ---
+
+type	precision	recall	f1-score	support
+Binary	69.57	66.90	68.21	287
+
+micro	69.57	66.90	68.21	287
+macro	69.57	66.90	68.21	287
+
+--- Clusters (Coreference Resolution) ---
+
+type	precision	recall	f1-score	support
+Binary	57.73	51.38	54.37	218
+
+micro	57.73	51.38	54.37	218
+macro	57.73	51.38	54.37	218
+
+--- Entities ---
+
+type	precision	recall	f1-score	support
+Condition Specification	100.00	25.00	40.00	12
+Further Specification	0.00	0.00	0.00	10
+AND Gateway	0.00	0.00	0.00	2
+Activity	66.98	80.68	73.20	88
+XOR Gateway	100.00	75.00	85.71	20
+Activity Data	34.04	29.63	31.68	54
+Actor	30.43	21.88	25.45	32
+
+micro	57.73	51.38	54.37	218
+macro	47.35	33.17	36.58	218
+
+--- Relations ---
+Without entity type
+
+type	precision	recall	f1-score	support
+actor performer	6.25	8.06	7.04	62
+same gateway	12.90	66.67	21.62	6
+further specification	0.00	0.00	0.00	10
+flow	30.61	38.14	33.96	118
+uses	21.92	20.00	20.92	80
+actor recipient	36.84	28.00	31.82	25
+
+micro	22.00	25.58	23.66	301
+macro	18.09	26.81	19.23	301
+
+With entity type
+
+type	precision	recall	f1-score	support
+actor performer	6.25	8.06	7.04	62
+same gateway	12.90	66.67	21.62	6
+further specification	0.00	0.00	0.00	10
+flow	30.61	38.14	33.96	118
+uses	21.92	20.00	20.92	80
+actor recipient	36.84	28.00	31.82	25
+
+micro	22.00	25.58	23.66	301
+macro	18.09	26.81	19.23	301			
+		
+--- Entity Mentions ---
+
+type	precision	recall	f1-score	support
+Binary	83.33	67.98	74.88	228
+
+micro	83.33	67.98	74.88	228
+macro	83.33	67.98	74.88	228
+
+--- Clusters (Coreference Resolution) ---
+
+type	precision	recall	f1-score	support
+Binary	68.79	57.06	62.38	170
+
+micro	68.79	57.06	62.38	170
+macro	68.79	57.06	62.38	170
+
+--- Entities ---
+
+type	precision	recall	f1-score	support
+XOR Gateway	68.00	94.44	79.07	18
+Activity	90.16	83.33	86.61	66
+Actor	38.46	32.26	35.09	31
+Further Specification	0.00	0.00	0.00	3
+Condition Specification	0.00	0.00	0.00	10
+Activity Data	48.28	33.33	39.44	42
+
+micro	68.09	56.47	61.74	170
+macro	40.82	40.56	40.03	170
+
+--- Relations ---
+Without entity type
+
+type	precision	recall	f1-score	support
+actor recipient	33.33	25.00	28.57	24
+further specification	0.00	0.00	0.00	3
+flow	35.48	39.76	37.50	83
+same gateway	28.57	88.89	43.24	9
+actor performer	29.27	25.53	27.27	47
+uses	31.71	21.31	25.49	61
+
+micro	32.58	31.72	32.14	227
+macro	26.39	33.42	27.01	227
+
+With entity type
+
+type	precision	recall	f1-score	support
+actor recipient	33.33	25.00	28.57	24
+further specification	0.00	0.00	0.00	3
+flow	35.48	39.76	37.50	83
+same gateway	28.57	88.89	43.24	9
+actor performer	29.27	25.53	27.27	47
+uses	31.71	21.31	25.49	61
+
+micro	32.58	31.72	32.14	227
+macro	26.39	33.42	27.01	227

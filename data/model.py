@@ -56,6 +56,16 @@ class Document:
             ret.extend(s.tokens)
         return ret
 
+    def to_json_serializable(self):
+        return {
+            'text': self.text,
+            'name': self.name,
+            'sentences': [s.to_json_serializable() for s in self.sentences],
+            'mentions': [m.to_json_serializable() for m in self.mentions],
+            'entities': [e.to_json_serializable() for e in self.entities],
+            'relations': [r.to_json_serializable() for r in self.relations]
+        }
+
 
 @dataclasses.dataclass
 class Sentence:
@@ -67,6 +77,9 @@ class Sentence:
 
     def copy(self) -> 'Sentence':
         return Sentence([t.copy() for t in self.tokens])
+
+    def to_json_serializable(self):
+        return [t.text for t in self.tokens]
 
 
 @dataclasses.dataclass
@@ -103,6 +116,13 @@ class Mention:
             token_indices=[i for i in self.token_indices]
         )
 
+    def to_json_serializable(self):
+        return {
+            'tag': self.ner_tag,
+            'sentence_index': self.sentence_index,
+            'token_indices': self.token_indices
+        }
+
 
 @dataclasses.dataclass
 class Entity:
@@ -118,8 +138,18 @@ class Entity:
             mention_indices=[i for i in self.mention_indices]
         )
 
+    def get_tag(self, document: Document) -> str:
+        tags = list(set([document.mentions[m].ner_tag for m in self.mention_indices]))
+        assert len(tags) == 1
+        return tags[0]
+
     def pretty_print(self, document: Document):
         return f'Entity [{[document.mentions[m].pretty_print(document) for m in self.mention_indices]}]'
+
+    def to_json_serializable(self):
+        return {
+            'mention_indices': self.mention_indices
+        }
 
 
 @dataclasses.dataclass
@@ -152,6 +182,14 @@ class Relation:
         return f'[{head_mention.pretty_print(document)} (+{len(head_entity.mention_indices) - 1})]' \
                f'--[{self.tag}]-->' \
                f'[{tail_mention.pretty_print(document)} (+{len(tail_entity.mention_indices) - 1})]'
+
+    def to_json_serializable(self):
+        return {
+            'head': self.head_entity_index,
+            'tail': self.tail_entity_index,
+            'tag': self.tag,
+            'evidence': self.evidence
+        }
 
 
 @dataclasses.dataclass

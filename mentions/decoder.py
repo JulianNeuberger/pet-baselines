@@ -7,7 +7,7 @@ def decode_predictions(document: data.Document,
                        predictions: typing.List[typing.List[str]]) -> data.Document:
     assert len(document.sentences) == len(predictions)
 
-    decoded_document: data.Document = data.Document(name=document.text, text=document.text)
+    decoded_document: data.Document = data.Document(name=document.name, text=document.text)
 
     for sent_id, (sentence, predicted_tags) in enumerate(zip(document.sentences, predictions)):
         decoded_sentence = data.Sentence()

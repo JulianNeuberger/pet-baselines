@@ -13,7 +13,7 @@ from eval import metrics
 @dataclasses.dataclass
 class PipelineStepResult:
     predictions: typing.List[data.Document]
-    f1_metrics: typing.Dict[str, metrics.Scores]
+    stats: typing.Dict[str, metrics.Stats]
 
 
 class PipelineStep(abc.ABC):
@@ -44,7 +44,7 @@ class PipelineStep(abc.ABC):
 
     def _eval(self, *,
               predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         raise NotImplementedError()
 
     def _run(self, *,
@@ -54,15 +54,21 @@ class PipelineStep(abc.ABC):
 
 
 class CatBoostRelationExtractionStep(PipelineStep):
-    def __init__(self, name: str, num_trees: int, negative_sampling_rate: float, context_size: int):
+    def __init__(self, name: str, num_trees: int, negative_sampling_rate: float, context_size: int,
+                 use_pos_features: bool = False,
+                 verbose: bool = False, seed: int = 42):
         super().__init__(name)
         self._num_trees = num_trees
         self._negative_sampling = negative_sampling_rate
         self._context_size = context_size
+        self._verbose = verbose
+        self._seed = seed
+        self._use_pos_features = use_pos_features
 
     def _eval(self, *, predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
-        return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
+        return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth,
+                                         verbose=self._verbose)
 
     def _run(self, *, train_documents: typing.List[data.Document],
              test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
@@ -71,11 +77,13 @@ class CatBoostRelationExtractionStep(PipelineStep):
         relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
         estimator = relations.CatBoostRelationEstimator(negative_sampling_rate=self._negative_sampling,
                                                         num_trees=self._num_trees,
-                                                        verbose=False,
+                                                        use_pos_features=self._use_pos_features,
                                                         context_size=self._context_size,
                                                         relation_tags=relation_tags,
                                                         ner_tags=ner_tags,
-                                                        name=self._name)
+                                                        name=self._name,
+                                                        seed=self._seed,
+                                                        verbose=False)
         estimator.train(train_documents)
         test_documents = [d.copy(clear_relations=True) for d in test_documents]
         return estimator.predict(test_documents)
@@ -83,7 +91,7 @@ class CatBoostRelationExtractionStep(PipelineStep):
 
 class RuleBasedRelationExtraction(PipelineStep):
     def _eval(self, *, predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
 
     def _run(self, *, train_documents: typing.List[data.Document],
@@ -124,7 +132,7 @@ class RuleBasedRelationExtraction(PipelineStep):
 class CrfMentionEstimatorStep(PipelineStep):
     def _eval(self, *,
               predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         return metrics.mentions_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
 
     def _run(self, *,
@@ -147,8 +155,10 @@ class NeuralCoReferenceResolutionStep(PipelineStep):
 
     def _eval(self, *,
               predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
-        return metrics.entity_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
+        return metrics.entity_f1_stats(predicted_documents=predictions,
+                                       only_tags=self._resolved_tags,
+                                       ground_truth_documents=ground_truth)
 
     def _run(self, *,
              train_documents: typing.List[data.Document],
@@ -169,8 +179,10 @@ class NaiveCoReferenceResolutionStep(PipelineStep):
 
     def _eval(self, *,
               predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
-        return metrics.entity_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
+        return metrics.entity_f1_stats(predicted_documents=predictions,
+                                       only_tags=self._resolved_tags,
+                                       ground_truth_documents=ground_truth)
 
     def _run(self, *,
              train_documents: typing.List[data.Document],

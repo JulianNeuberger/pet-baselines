@@ -54,7 +54,7 @@ class ConditionalRandomFieldsEstimator:
 
         return predicted_documents
 
-    def test(self, test_documents: typing.List[data.Document]) -> typing.Dict[str, metrics.Scores]:
+    def test(self, test_documents: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         predicted_documents = self.predict(test_documents)
         ground_truth_documents = []
 
