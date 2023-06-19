@@ -1,7 +1,7 @@
 import copy
 import data
 import pandas as pd
-from experiments import run_experiment, evaluate_experiment_bleu, evaluate_unaugmented_data
+from experiments_trafo.experiments import run_experiment, evaluate_experiment_bleu, evaluate_unaugmented_data
 import augment
 import matplotlib.pyplot as plt
 import seaborn as sns
