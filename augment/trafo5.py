@@ -1,11 +1,14 @@
 import copy
+from random import random
+
 from augment import base
 from nltk.corpus import wordnet
 from data import model
 
 
 class Trafo5Step(base.AugmentationStep):
-
+    def __init__(self, p):
+        self.p = p
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
         # Choose from Adjectives and Adverbs
@@ -32,7 +35,7 @@ class Trafo5Step(base.AugmentationStep):
                         if token_2 not in token_list:
                             token_list.append(token_2)
             # if there is even number of adjectives or adverbs and if list are synonyms or antonyms --> replace tokens
-            if len(token_list) % 2 == 0 and not Trafo5Step.is_ant_syn(self, token_list):
+            if len(token_list) % 2 == 0 and not Trafo5Step.is_ant_syn(self, token_list) and random() < self.p:
                 for token_2 in token_list:
                     for token in sentence.tokens:
                         if token_2.index_in_document == token.index_in_document:

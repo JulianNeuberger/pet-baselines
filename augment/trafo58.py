@@ -1,4 +1,5 @@
 import copy
+from random import random
 
 from transformers import pipeline
 
@@ -9,44 +10,60 @@ from transformations import tokenmanager
 
 class Trafo54Step(base.AugmentationStep):
 
-    def __init__(self, adj_adv: bool, nn: bool, vb: bool, lang: str = "de"):
-        self.adj_adv = adj_adv
-        self.nn = nn
-        self.vb = vb
+    def __init__(self, p: int = 1, lang: str = "de"):
         self.lang = lang
+        self.p = p
 
     def do_augment(self, doc: model.Document):
-        pos_tags = []
-        #  put the wanted POS Tags in the list, to filter
-        if self.adj_adv:
-            pos_tags.extend(["JJ", "JJS", "JJR", "RB", "RBR", "RBS"])
-        if self.nn:
-            pos_tags.extend(["NN", "NNS", "NNP", "NNPS"])
-        if self.vb:
-            pos_tags.extend(["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"])
         for sentence in doc.sentences:
             i = 0
-            while i < len(sentence.tokens):
+            while i < len(sentence.tokens) - 1:
                 token = sentence.tokens[i]
-                if token.pos_tag in pos_tags:
-                    translated_text = self.back_translate(token.text)
-                    translated_list = translated_text.split()
-                    token.text = translated_list[0].lower()
-                    token.pos_tag = tokenmanager.get_pos_tag([translated_list[0].lower()])[0]
-                    #  when the returned text has more than 1 word, new tokens must be created
+                current_bio = tokenmanager.get_bio_tag_short(token.bio_tag)
+                text_before = ""
+                j = 0
+                while tokenmanager.get_bio_tag_short(sentence.tokens[i + j].bio_tag) == current_bio:
+                    if i + j < len(sentence.tokens) - 1:
+                        if j == 0:
+                            text_before += sentence.tokens[i + j].text
+                        else:
+                            text_before += " "
+                            text_before += sentence.tokens[i + j].text
+                    j += 1
+                    if i + j > len(sentence.tokens) - 1:
+                        break
+
+                if random() >= self.p:
+                    i += j
+                    continue
+                translated = self.back_translate(text_before)
+                text_before_list = text_before.split()
+                translated_list = translated.split()
+                diff = len(translated_list) - len(text_before_list)
+                if diff > 0:
+                    token.text = translated_list[0]
+                    token.pos_tag = tokenmanager.get_pos_tag([token.text])[0]
                     if len(translated_list) > 1:
-                        print(translated_list)
-                        m = copy.deepcopy(i)
-                        for j in range(1, len(translated_list)):
-                            if m + j < len(sentence.tokens):
-                                tok = model.Token(text=translated_list[j],
-                                                  index_in_document=sentence.tokens[m + j].index_in_document,
-                                                  pos_tag=tokenmanager.get_pos_tag([translated_list[j].lower()])[0],
-                                                  bio_tag=tokenmanager.get_bio_tag_based_on_left_token(token.bio_tag),
-                                                  sentence_index=token.sentence_index)
-                                tokenmanager.create_token(doc, tok, m + j)
-                                i += 1
-                i += 1
+                        for k in range(1, len(translated_list)):
+                            tok = model.Token(text=translated_list[k],
+                                              index_in_document=token.index_in_document + i + k,
+                                              pos_tag=tokenmanager.get_pos_tag([token.text])[0],
+                                              bio_tag=tokenmanager.get_bio_tag_based_on_left_token(token.bio_tag),
+                                              sentence_index=token.sentence_index)
+                            tokenmanager.create_token(doc, tok, i + k)
+                elif diff == 0:
+                    for k in range(0, len(translated_list)):
+                        print(i)
+                        index_in_doc = token.index_in_document
+                        sentence.tokens[i + k].text = translated_list[k]
+                        sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag([token.text])[0]
+                else:
+                    for k in range(len(translated_list)):
+                        sentence.tokens[i + k].text = translated_list[k]
+                        sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag([token.text])[0]
+                    for k in range(len(translated_list), len(text_before_list)):
+                        tokenmanager.delete_token(doc, sentence.tokens[i + len(translated_list)].index_in_document)
+                i = i + j + diff
         return doc
 
     #  returns the back translated text, when it's not working, it returns the old text

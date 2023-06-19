@@ -1,5 +1,5 @@
 
-from random import randint
+from random import randint, random
 from augment import base
 from data import model
 from transformations import tokenmanager
@@ -7,6 +7,9 @@ from collections import defaultdict
 
 
 class Trafo33Step(base.AugmentationStep):
+
+    def __init__(self, p: int = 1):
+        self.p = p
     def do_augment(self, doc: model.Document):
         together = Trafo33Step.separate(self)
         # old list, to search the matching text in the Document, new list is the text that replaces the old text
@@ -28,7 +31,7 @@ class Trafo33Step(base.AugmentationStep):
                                         is_equal = False
                                         continue
                         # if it's got found, replace it with a random text from the new list
-                        if is_equal:
+                        if is_equal and random() < self.p:
                             randi = randint(0, len(new_list[k]))
                             new = new_list[k][randi].split()
                             #  iterate over the words of the new text

@@ -9,8 +9,8 @@ from data import model
 from transformations import tokenmanager
 
 class Trafo100Step(base.AugmentationStep):
-    def __init__(self, pos_type, seed=0, prob=1):
-        self.seed = seed
+    def __init__(self, pos_type, prob=1):
+        self.seed = 0
         self.prob = prob
         self.pos_type = pos_type
         self.stopwords = stopwords.words("english")

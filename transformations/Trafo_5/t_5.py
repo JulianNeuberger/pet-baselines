@@ -11,10 +11,7 @@ docs: typing.List[model.Document] = data.loader.read_documents_from_json('../../
 
 def generate(max_outputs=1):
 
-    upos_wn_dict = {
-        "JJ": "s",
-        #"RB": "r",
-         }
+
 
     for _ in range(max_outputs):
 

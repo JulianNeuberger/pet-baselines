@@ -199,6 +199,14 @@ def get_bio_tag_based_on_left_token(tag:str):  # passed
         bio_tag = "I-" + bio[1]
     return bio_tag
 
+def get_bio_tag_short(tag:str):  # passed
+
+    bio = tag.split("-")
+    if len(bio) > 1:
+        bio_tag = bio[1]
+    else:
+        bio_tag = bio[0]
+    return bio_tag
 
 def get_index_in_sentence(sent: model.Sentence, text: typing.List, index_in_doc: int = None):  # passed
     word_count = 0

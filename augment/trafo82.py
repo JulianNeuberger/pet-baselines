@@ -1,5 +1,5 @@
 import typing
-from random import randint
+from random import randint, random
 from augment import base
 from data import model
 from transformations import tokenmanager
@@ -7,10 +7,11 @@ from transformations import tokenmanager
 
 class Trafo82Step(base.AugmentationStep):
 
-    def __init__(self, short_to_long, long_to_short, bank):
+    def __init__(self, short_to_long, long_to_short, p, bank=1):
         self.short_to_long = short_to_long
         self.long_to_short = long_to_short
         self.bank = bank
+        self.p = p
 
     def do_augment(self, doc: model.Document):
         #  when Bank is 0, take the Bank from Trafo 82, the Bank is always split in contracted and expanded list
@@ -31,7 +32,7 @@ class Trafo82Step(base.AugmentationStep):
         token_text_sentence = []
         index_in_doc_blacklist = []
         # search for contracted Abbreviation and replace with the expanded form
-        if self.short_to_long:
+        if self.short_to_long and random() < self.p:
             for sentence in doc.sentences:
                 index_in_sentence = 0
                 for token in sentence.tokens:
@@ -75,7 +76,7 @@ class Trafo82Step(base.AugmentationStep):
                                                           index_in_sentence=index_in_sentence + j,
                                                           mention_index=mention_id[0])
         # search for expanded abbreviations
-        if self.long_to_short:
+        if self.long_to_shortand and random() < self.p:
             expanded_double_list = []
             #  create a list of the expanded Abbreviations which are word for word stored as a list, --> 2D list
             for m in range(len(expanded_list)):
