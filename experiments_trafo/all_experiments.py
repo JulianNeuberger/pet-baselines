@@ -1029,7 +1029,7 @@ def experiment3_2():
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 10):
+    for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Trafo3Step(prob=0.5, no_dupl=False, max_adj=i)
 
@@ -1182,7 +1182,7 @@ def experiment86_2():
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 10):
+    for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Trafo86Step(no_dupl=False, prob=0.5, max_noun=i, kind_of_replace=2)
 
@@ -1379,7 +1379,7 @@ def experiment103_2():
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 10):
+    for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=i)
 
@@ -1674,6 +1674,6 @@ def experiment40_4():
 
 #experiment1_1()
 #experiment101_1()
-experiment3_1()
+#experiment3_1()
 experiment3_2()
 experiment3_3()
