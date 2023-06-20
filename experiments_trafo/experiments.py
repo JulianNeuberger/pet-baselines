@@ -22,9 +22,9 @@ def run_experiment(name: str, aug_train_folds, test_folds):
                                                      cluster_overlap=.5,
                                                      mention_overlap=.8,
                                                      ner_strategy='frequency'),
-            pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
-            #pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
-                                                    #num_trees=100, negative_sampling_rate=40.0)
+            #pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+            pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                    num_trees=100, negative_sampling_rate=40.0)
         ]),
         train_folds=aug_train_folds,
         test_folds=test_folds
