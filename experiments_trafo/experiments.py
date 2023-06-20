@@ -181,7 +181,7 @@ def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score):
         new_df_ucer_series = metrics.calculate_ttr_trigram(i)
         df_ucer = df_ucer.append(new_df_ucer_series, ignore_index=True)
 
-        # get Bleu
+        # get Bert
         new_df_bert_series = metrics.calculate_bert(i)
         df_bert = df_bert.append(new_df_bert_series, ignore_index=True)
 

@@ -1,13 +1,15 @@
 from augment import base
 import operator
-from transformations import tokenmanager
+
 from data import model
+from transformations import tokenmanager
 
 
-class Filter9Step(base.AugmentationStep):
-    def __init__(self, length: int=7, op: str="<"):
+class Filter10Step(base.AugmentationStep):
+    def __init__(self, length: int=3, op: str="<", bio: str="Activity"):
         self.length = length
-        self.op = Filter9Step.parse_operator(op)
+        self.op = Filter10Step.parse_operator(op)
+        self.bio = bio
 
     @staticmethod
     def parse_operator(op):
@@ -24,8 +26,12 @@ class Filter9Step(base.AugmentationStep):
         i = 0
         while i < len(doc.sentences):
             sentence = doc.sentences[i]
-            condition = self.op(len(sentence.tokens), self.length)
-            print(condition)
+            named_entities_in_sentence = 0
+            for token in sentence.tokens:
+                if tokenmanager.get_bio_tag_short(token.bio_tag) == self.bio:
+                    named_entities_in_sentence += 1
+
+            condition = self.op(named_entities_in_sentence, self.length)
             if condition:
                 tokenmanager.delete_sentence(doc, i)
                 i -= 1

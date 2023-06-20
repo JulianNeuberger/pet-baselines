@@ -3,10 +3,11 @@ import random
 import typing
 from scipy.stats import gmean
 import pandas as pd
-
+import bert_score
 from data import model
 
 from nltk.translate.bleu_score import sentence_bleu
+
 
 class Metrics:
     def __init__(self, train_set: typing.List[model.Document], unaug_train_set: typing.List[model.Document]):
@@ -83,7 +84,7 @@ class Metrics:
         return new_series
 
     def calculate_bert(self, fold_number):
-        predictions =[]
+        predictions = []
         references = []
         for doc in self.train_set[fold_number]:
             curr_sentence = ""
@@ -92,15 +93,15 @@ class Metrics:
                     curr_sentence += " "
                     curr_sentence += token.text
                 predictions.append(curr_sentence)
-        for doc in self.unaug_train_set:
+        for doc in self.unaug_train_set[fold_number]:
             curr_sentence = ""
             for sentence in doc.sentences:
                 for token in sentence.tokens:
                     curr_sentence += " "
                     curr_sentence += token.text
                 references.append(curr_sentence)
-        #results = bert_score.score(predictions, references, lang="en")
-        return True #results
+        results = bert_score.score(predictions, references, lang="en", device=0)
+        return results[2]
 
     def calculate_bleu(self, fold_number):
         tup = []

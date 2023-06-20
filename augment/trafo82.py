@@ -7,7 +7,7 @@ from transformations import tokenmanager
 
 class Trafo82Step(base.AugmentationStep):
 
-    def __init__(self, short_to_long, long_to_short, p, bank=1):
+    def __init__(self, short_to_long=True, long_to_short=True, p=1, bank=1):
         self.short_to_long = short_to_long
         self.long_to_short = long_to_short
         self.bank = bank
@@ -76,7 +76,7 @@ class Trafo82Step(base.AugmentationStep):
                                                           index_in_sentence=index_in_sentence + j,
                                                           mention_index=mention_id[0])
         # search for expanded abbreviations
-        if self.long_to_shortand and random() < self.p:
+        if self.long_to_short and random() < self.p:
             expanded_double_list = []
             #  create a list of the expanded Abbreviations which are word for word stored as a list, --> 2D list
             for m in range(len(expanded_list)):
@@ -119,7 +119,7 @@ class Trafo82Step(base.AugmentationStep):
             List of pairs of contracted and expanded abbreviations.
         """
         with open(
-                f"../transformations/trafo82/{bank}"
+                f"./transformations/trafo82/{bank}"
                 ,
                 "r", encoding='utf-8'
         ) as fd:
@@ -136,7 +136,7 @@ class Trafo82Step(base.AugmentationStep):
         temp_acronyms = []
         contracted = []
         expanded = []
-        with open("../transformations/trafo82/acronyms.tsv", "r", encoding="utf-8") as file:
+        with open("./transformations/trafo82/acronyms.tsv", "r", encoding="utf-8") as file:
             for line in file:
                 key, value = line.strip().split(sep)
                 #temp_acronyms[key] = value

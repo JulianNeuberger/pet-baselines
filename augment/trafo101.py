@@ -8,7 +8,7 @@ import numpy as np
 
 class Trafo101Step(base.AugmentationStep):
 
-    def __init__(self, prob: float = 1, type=False, no_dupl=True):
+    def __init__(self, prob: float = 1, type=True, no_dupl=True):
         self.prob = prob
         self.type = type
         self.no_dupl = no_dupl

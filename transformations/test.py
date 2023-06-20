@@ -4,7 +4,7 @@ import data
 import matplotlib.pyplot as pp
 from collections import Counter
 
-docs: typing.List[model.Document] = data.loader.read_documents_from_json('./complete.json')
+docs: typing.List[model.Document] = data.loader.read_documents_from_json('../complete.json')
 
 
 def create_graph(actor_count, activity_count, activity_data_count, further_count, xor_count, cond_count, and_count,

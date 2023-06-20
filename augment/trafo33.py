@@ -8,7 +8,7 @@ from collections import defaultdict
 
 class Trafo33Step(base.AugmentationStep):
 
-    def __init__(self, p: int = 1):
+    def __init__(self, p: float = 1):
         self.p = p
     def do_augment(self, doc: model.Document):
         together = Trafo33Step.separate(self)

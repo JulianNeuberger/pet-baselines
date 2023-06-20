@@ -8,9 +8,9 @@ from augment import base
 from transformations import tokenmanager
 
 
-class Trafo54Step(base.AugmentationStep):
+class Trafo58Step(base.AugmentationStep):
 
-    def __init__(self, p: int = 1, lang: str = "de"):
+    def __init__(self, p: float = 1, lang: str = "de"):
         self.lang = lang
         self.p = p
 
