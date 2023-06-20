@@ -100,7 +100,7 @@ class Metrics:
                     curr_sentence += " "
                     curr_sentence += token.text
                 references.append(curr_sentence)
-        results = bert_score.score(predictions, references, lang="en", device=0)
+        results = bert_score.score(predictions, references, lang="en")
         return results[2]
 
     def calculate_bleu(self, fold_number):
