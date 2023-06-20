@@ -204,7 +204,7 @@ def experiment101_3():  # if duplicates are allowed
             df.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.3/{names[k]}_{dupl}.json", indent=4)
 
     df_complete.index = ["True", "False"]
-    df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp101.3/{names[0]}.json", indent=4)
+    df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.3/{names[0]}.json", indent=4)
 
 
 def experiment33_1():  # Probability of replacement
@@ -1683,8 +1683,8 @@ def experiment40_4():
 #experiment86_3()
 #experiment86_4()
 #experiment33_1()
-experiment101_1()
-experiment101_2()
+#experiment101_1()
+#experiment101_2()
 experiment101_3()
 experiment58_1()
 experiment58_2()
