@@ -5,7 +5,7 @@ from scipy.stats import gmean
 import pandas as pd
 import bert_score
 from data import model
-
+import torch
 from nltk.translate.bleu_score import sentence_bleu
 
 
@@ -83,6 +83,29 @@ class Metrics:
         new_series = pd.Series(data=ttr_list)
         return new_series
 
+    def calculate_bert_old(self, fold_number):
+        predictions = []
+        references = []
+        for doc in self.train_set[fold_number]:
+            curr_sentence = ""
+            for sentence in doc.sentences:
+                for token in sentence.tokens:
+                    curr_sentence += " "
+                    curr_sentence += token.text
+                predictions.append(curr_sentence)
+        for doc in self.unaug_train_set[fold_number]:
+            curr_sentence = ""
+            for sentence in doc.sentences:
+                for token in sentence.tokens:
+                    curr_sentence += " "
+                    curr_sentence += token.text
+                references.append(curr_sentence)
+        results = bert_score.score(predictions, references, lang="en", verbose=True)
+        bert_list = {"Bert Score": results[2]}
+        new_series = pd.Series(data=bert_list)
+        return new_series
+
+
     def calculate_bert(self, fold_number):
         predictions = []
         references = []
@@ -100,10 +123,13 @@ class Metrics:
                     curr_sentence += " "
                     curr_sentence += token.text
                 references.append(curr_sentence)
-        results = bert_score.score(predictions, references, lang="en")
-        bert_list = {"Bert Score": results[2]}
+        results = bert_score.score(predictions, references, lang="en", verbose=True)
+        mean = torch.mean(results[2])
+        mean_as_float = float(mean)
+        bert_list = {"Bert Score": mean_as_float}
         new_series = pd.Series(data=bert_list)
         return new_series
+
 
     def calculate_bleu(self, fold_number):
         tup = []
@@ -229,6 +255,10 @@ doc3 = model.Document(
     mentions=[],
     entities=[],
     relations=[])
-train_set2 = [doc2]
-train_set3 = [doc3]
+train_set2 = [doc2, doc2]
+train_set3 = [doc3, doc3]
 met = Metrics(train_set=train_set3, unaug_train_set=train_set2)
+
+
+
+#print(ergebnis)
