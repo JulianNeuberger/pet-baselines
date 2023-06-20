@@ -101,7 +101,9 @@ class Metrics:
                     curr_sentence += token.text
                 references.append(curr_sentence)
         results = bert_score.score(predictions, references, lang="en")
-        return results[2]
+        bert_list = {"Bert Score": results[2]}
+        new_series = pd.Series(data=bert_list)
+        return new_series
 
     def calculate_bleu(self, fold_number):
         tup = []
