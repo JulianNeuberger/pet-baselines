@@ -212,7 +212,7 @@ def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score):
     }
     new_df_ucer_mean_series = pd.Series(new_df_ucer_mean_dict)
     df_ucer_mean = df_ucer_mean.append(new_df_ucer_mean_series, ignore_index=True)
-
+    print(df_bert)
     # get mean bleu
     bert_mean = df_bert['Bert Score'].mean()
 
