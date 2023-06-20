@@ -32,7 +32,7 @@ class Trafo33Step(base.AugmentationStep):
                                         continue
                         # if it's got found, replace it with a random text from the new list
                         if is_equal and random() < self.p:
-                            randi = randint(0, len(new_list[k]))
+                            randi = randint(0, len(new_list[k]) - 1)
                             new = new_list[k][randi].split()
                             #  iterate over the words of the new text
                             for j in range(len(new)):
