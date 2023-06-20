@@ -1674,6 +1674,6 @@ def experiment40_4():
 
 #experiment1_1()
 #experiment101_1()
-#experiment3_1()
+experiment3_1()
 experiment3_2()
 experiment3_3()
