@@ -1,9 +1,11 @@
 import collections
 import typing
 
+import spacy_experimental.coref.coref_util
+
 import data
-import neuralcoref
 import spacy
+from spacy import tokens
 
 from coref import util
 
@@ -12,9 +14,7 @@ class NeuralCoRefSolver:
     # loading an english SpaCy model
     nlp = spacy.load('en_core_web_md')
 
-    # load NeuralCoref and add it to the pipe of SpaCy's model
-    coref = neuralcoref.NeuralCoref(nlp.vocab)
-    nlp.add_pipe(coref, name='neuralcoref')
+    coref = nlp.add_pipe("experimental_coref")
     nlp.tokenizer = nlp.tokenizer.tokens_from_list
 
     def __init__(self, co_referencable_tags: typing.List[str],
@@ -144,8 +144,12 @@ class NeuralCoRefSolver:
         All token indices are document level!
         """
 
-        clusters: typing.List[neuralcoref.neuralcoref.Cluster]
-        clusters = self.nlp([token.text for token in document.tokens])._.coref_clusters
+        doc = tokens.Doc(self.nlp.vocab, [token.text for token in document.tokens])
+        clusters: typing.List[spacy_experimental.coref.coref_util.MentionClusters]
+        clusters = self.coref.predict([doc])
+
+        print(clusters)
+
         entities = []
         for cluster in clusters:
             entity = []
