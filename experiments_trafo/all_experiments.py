@@ -1676,16 +1676,16 @@ def experiment40_4():
 #experiment3_1() #
 #experiment3_2() #
 #experiment3_3() #
-experiment39_1()
-experiment86_1()
-experiment86_2()
-experiment86_3()
-experiment86_4()
+#experiment39_1() #
+#experiment86_1() #
+#experiment86_2() #
+#experiment86_3() #
+#experiment86_4() #
 #experiment33_1() #
 #experiment101_1() #
 #experiment101_2() #
 #experiment101_3()
-#experiment58_1()
+experiment58_1()
 #experiment58_2()
 #experiment5_1()
 #experiment82_1()

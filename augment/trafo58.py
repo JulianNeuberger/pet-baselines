@@ -53,7 +53,6 @@ class Trafo58Step(base.AugmentationStep):
                             tokenmanager.create_token(doc, tok, i + k)
                 elif diff == 0:
                     for k in range(0, len(translated_list)):
-                        print(i)
                         index_in_doc = token.index_in_document
                         sentence.tokens[i + k].text = translated_list[k]
                         sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag([token.text])[0]
