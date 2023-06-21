@@ -350,14 +350,48 @@ def catboost_debug():
     print('Running pipeline with neural entity resolution, and cat-boost relation extraction')
     cross_validate_pipeline(
         p=pipeline.Pipeline(name='complete-cat-boost', steps=[
-            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            # pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            # pipeline.NaiveCoReferenceResolutionStep(name='naive coreference resolution',
+            #                                         resolved_tags=['Actor', 'Activity Data'],
+            #                                         mention_overlap=.8)
+            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.5,
+                                                     ner_strategy='frequency'),
+            # pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
+            #                                         context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds,
+        save_results=False
+    )
+
+
+def coref_debug():
+    train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
+
+    print('neural entity resolution on perfect mentions')
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
                                                      mention_overlap=.8,
-                                                     ner_strategy='frequency'),
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+                                                     ner_strategy='frequency')
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds,
+        save_results=False
+    )
+
+    print('naive entity resolution on perfect mentions')
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
+            pipeline.NaiveCoReferenceResolutionStep(name='naive coreference resolution',
+                                                    resolved_tags=['Actor', 'Activity Data'],
+                                                    mention_overlap=.8)
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
@@ -438,7 +472,8 @@ def scenario_2_3():
 
 def main():
     # ablation_studies()
-    catboost_debug()
+    # catboost_debug()
+    coref_debug()
 
     # scenario_1()
     # scenario_2_3()

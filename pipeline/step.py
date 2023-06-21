@@ -158,6 +158,7 @@ class NeuralCoReferenceResolutionStep(PipelineStep):
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         return metrics.entity_f1_stats(predicted_documents=predictions,
                                        only_tags=self._resolved_tags,
+                                       min_num_mentions=2,
                                        ground_truth_documents=ground_truth)
 
     def _run(self, *,
@@ -182,6 +183,7 @@ class NaiveCoReferenceResolutionStep(PipelineStep):
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         return metrics.entity_f1_stats(predicted_documents=predictions,
                                        only_tags=self._resolved_tags,
+                                       min_num_mentions=2,
                                        ground_truth_documents=ground_truth)
 
     def _run(self, *,
