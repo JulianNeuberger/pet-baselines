@@ -31,13 +31,14 @@ class Trafo86Step(base.AugmentationStep):
                 if token.pos_tag in ["NN", "NNS", "NNP", "NNPS"]:
                     if self.no_dupl:
                         if not token.text in dupl_list:
-                            tok_list.append(token)
+                            tok_list.append(copy.deepcopy(token))
+
                             index_in_sentence_list.append(counter)
-                            dupl_list.append(token.text)
+                            dupl_list.append(copy.deepcopy(token.text))
                     else:
-                        tok_list.append(token)
+                        tok_list.append(copy.deepcopy(token))
                         index_in_sentence_list.append(counter)
-                        dupl_list.append(token.text)
+                        dupl_list.append(copy.deepcopy(token.text))
                 counter += 1
 
             # sentence must contain a noun
@@ -48,7 +49,10 @@ class Trafo86Step(base.AugmentationStep):
 
                 # shuffle noun-list for random noun selection
                 shuffle(token_list)
-
+                print("=================")
+                print(tok_list)
+                print(token_list)
+                print(token.text)
                 # if more than the actual number of nouns should be replaced, set maxi_noun to the actual number of nouns
                 maxi_noun = self.max_noun
                 if maxi_noun > len(tok_list):
@@ -65,6 +69,10 @@ class Trafo86Step(base.AugmentationStep):
 
                         # search for the index in sentence
                         index_in_sentence = None
+                        print("------------------")
+                        print(tok_list)
+                        print(token_list)
+                        print(token.text)
                         for i in range(0, len(tok_list)):
                             if token.text == tok_list[i].text:
                                 index_in_sentence = index_in_sentence_list[i]
@@ -115,7 +123,9 @@ class Trafo86Step(base.AugmentationStep):
                             # set the text and pos_tag of the first token
                             token.text = text[0]
                             token.pos_tag = tokenmanager.get_pos_tag([text[0]])[0]
-
+                            print(index_in_sentence)
+                            print(change_pos)
+                            print("----------------")
                             # set the first token
                             sentence.tokens[index_in_sentence + change_pos].text = token.text
                             sentence.tokens[index_in_sentence + change_pos].pos_tag = token.pos_tag

@@ -1,511 +1,643 @@
 from transformations.tokenmanager import get_pos_tag, get_bio_tag_based_on_left_token, insert_token_in_mentions, \
-    create_token, get_index_in_sentence, get_mentions, insert_token_in_tokens, summe
+    create_token, get_index_in_sentence, get_mentions, insert_token_in_tokens, delete_token_from_tokens, \
+    delete_token_from_mention_token_indices, change_mention_indices_in_entities, delete_mention_from_entity, \
+    delete_relations, delete_sentence
 from data import model
-import mockito
+import copy
 
 
-
-def test_get_pos_tag():  # passed
-    # Arrange
+def test_get_pos_tag():
+    # ARRANGE
     p1 = []
     p2 = ["my"]
     p3 = ["my", "name", "is"]
 
-    # Act
+    # ACT
     t1 = get_pos_tag(p1)
     t2 = get_pos_tag(p2)
     t3 = get_pos_tag(p3)
 
-    # Assert
+    # ASSERT
     assert t1 == []
     assert t2 == ['PRP$']
     assert t3 == ['PRP$', 'NN', 'VBZ']
 
 
-def test_get_bio_tag_based_on_left_token():  # passed
-    # Arrange
+def test_get_bio_tag_based_on_left_token():
+    # ARRANGE
     p1 = "O"
     p2 = "B-Actor"
     p3 = "I-Actor"
 
-    # Act
+    # ACT
     t1 = get_bio_tag_based_on_left_token(p1)
     t2 = get_bio_tag_based_on_left_token(p2)
     t3 = get_bio_tag_based_on_left_token(p3)
 
-    # Assert
+    # ASSERT
     assert t1 == p1
     assert t2 == p3
     assert t3 == p3
 
 
-def test_get_index_in_sentence():  # passed
-    # Arrange
-
-    # sentence does not exist
+def test_get_index_in_sentence():
+    # ARRANGE
+    # test1 - sentence does not exist
     sent1 = model.Sentence(tokens=[])
     text1 = ["I", "am"]
+    ind_in_doc1 = 0
 
-    # text does not exist
+    # test2 - text does not exist
     toks2 = []
     toks2.append(model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0))
-
     sent2 = model.Sentence(tokens=toks2)
     text2 = []
+    ind_in_doc2 = 0
 
-    # both exist, text is not in sentence
+    # test3 - both exist, text is not in sentence
     toks3 = []
     toks3.append(model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0))
-    toks3.append(model.Token(text="am", index_in_document=0,
-                             pos_tag="", bio_tag="",
-                             sentence_index=0))
-    toks3.append(model.Token(text="the", index_in_document=0,
-                             pos_tag="", bio_tag="",
-                             sentence_index=0))
-    toks3.append(model.Token(text="best", index_in_document=0,
-                             pos_tag="", bio_tag="",
-                             sentence_index=0))
+    toks3.append(model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0))
+    toks3.append(model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0))
+    toks3.append(model.Token(text="I", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0))
     sent3 = model.Sentence(tokens=toks3)
     text3 = ["am", "the", "worst"]
+    ind_in_doc3 = 0
 
-    # both exist, text is in sentence
+    # test4 - both exist, text is in sentence
     sent4 = model.Sentence(tokens=toks3)
     text4 = ["am", "the"]
+    ind_in_doc4 = 1
+
+    # test5 - both exist, text is twice in sentence
+    sent5 = copy.deepcopy(sent4)
+    sent5.tokens.append(model.Token(text="am", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0))
+    sent5.tokens.append(model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0))
+    text5 = ["am", "the"]
+    ind_in_doc5 = 4
 
     # Act
-    i1 = get_index_in_sentence(sent1, text1)
-    i2 = get_index_in_sentence(sent2, text2)
-    i3 = get_index_in_sentence(sent3, text3)
-    i4 = get_index_in_sentence(sent4, text4)
+    i1 = get_index_in_sentence(sent1, text1, ind_in_doc1)
+    i2 = get_index_in_sentence(sent2, text2, ind_in_doc2)
+    i3 = get_index_in_sentence(sent3, text3, ind_in_doc3)
+    i4 = get_index_in_sentence(sent4, text4, ind_in_doc4)
+    i5 = get_index_in_sentence(sent5, text5, ind_in_doc5)
 
     # Assert
     assert i1 is None
     assert i2 is None
     assert i3 is None
     assert i4 == 1
+    assert i5 == 4
 
 
-def test_get_mentions():  # passed
-    # Arrange
-    tokens = []
-    tokens.append(model.Token(text="I", index_in_document=0,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="am", index_in_document=1,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=2,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="chief", index_in_document=3,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="of", index_in_document=4,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=5,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="department", index_in_document=6,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text=".", index_in_document=7,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
+def test_get_mentions():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="chief", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+
     sentence = model.Sentence(tokens=tokens)
     mention = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3])
-    doc = model.Document(text="I am the chief of the department.", name="1", sentences=[sentence], mentions=[mention],
-                         entities=[],
-                         relations=[])
 
-    # token is not in mentions
+    doc = model.Document(text="I am the chief of the department.", name="1", sentences=[sentence], mentions=[mention],
+                         entities=[], relations=[])
+
+    # test1 - token is not in mentions
     ind_in_sent1 = 5
     sent_ind1 = 0
 
-    # token is in mentions
+    # test2 - token is in mentions
     ind_in_sent2 = 2
     sent_ind2 = 0
 
-    # Act
+    # ACT
     ment1 = get_mentions(doc, ind_in_sent1, sent_ind1)
     ment2 = get_mentions(doc, ind_in_sent2, sent_ind2)
 
-    # Assert
+    # ASSERT
     assert ment1 == []
     assert ment2 == [0]
 
 
-def test_insert_token_in_mentions():  # passed
-    # Arrange
-    tokens = []
-    tokens.append(model.Token(text="I", index_in_document=0,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="am", index_in_document=1,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=2,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="chief", index_in_document=3,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="of", index_in_document=4,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=5,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="department", index_in_document=6,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text=".", index_in_document=7,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
+def test_insert_token_in_mentions():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="chief", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+
     sentence = model.Sentence(tokens=tokens)
-    mention = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3])
-    doc = model.Document(text="I am the chief of the department.", name="1", sentences=[sentence], mentions=[mention],
-                         entities=[],
-                         relations=[])
-    # mention_id does not exist (index_in_sentence is always ok due to the prior method)
+
+    mention1 = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3])
+    mention2 = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3, 5])
+
+    doc = model.Document(text="I am the chief of the department.", name="1", sentences=[sentence], mentions=[mention1],
+                         entities=[], relations=[])
+    doc2 = model.Document(text="I am the chief of the department.", name="1", sentences=[sentence], mentions=[mention2],
+                          entities=[], relations=[])
+
+    # test1 - mention_id does not exist (index_in_sentence is always ok due to the prior method)
     ment_id1 = 2
     index_in_sent1 = 5
+    doc_to_aug1 = copy.deepcopy(doc)
+    doc_sol1 = copy.deepcopy(doc)
 
-    # mention_id exists
+    # test2 - mention_id exists
     ment_id2 = 0
     index_in_sent2 = 5
-    mention = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3, 5])
-    doc2 = model.Document(text="I am the chief of the department.", name="1", sentences=[sentence], mentions=[mention],
-                          entities=[],
-                          relations=[])
+    doc_to_aug2 = copy.deepcopy(doc)
+    doc_sol2 = copy.deepcopy(doc2)
 
-    # no duplicate index_in_sentence_id
+    # test3 - no duplicate index_in_sentence_id
     ment_id3 = 0
     index_in_sent3 = 5
+    doc_to_aug3 = copy.deepcopy(doc2)
+    doc_sol3 = copy.deepcopy(doc2)
 
-    # Act
-    doc1 = doc.copy()
-    insert_token_in_mentions(doc1, index_in_sent1, ment_id1)
+    # ACT
+    # test1
+    insert_token_in_mentions(doc_to_aug1, index_in_sent1, ment_id1)
 
-    doc3 = doc.copy()
-    insert_token_in_mentions(doc3, index_in_sent2, ment_id2)
+    # test2
+    insert_token_in_mentions(doc_to_aug2, index_in_sent2, ment_id2)
 
-    doc4 = doc2.copy()
-    insert_token_in_mentions(doc4, index_in_sent3, ment_id3)
+    # test3
+    insert_token_in_mentions(doc_to_aug3, index_in_sent3, ment_id3)
 
-    # Assert
-    assert doc1 == doc
-    assert doc3 == doc2
-    assert doc4 == doc2
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+    assert doc_to_aug2 == doc_sol2
+    assert doc_to_aug3 == doc_sol3
 
 
-def test_insert_token_in_tokens():  # passed
-    # Arrange
-    tokens = []
-    tokens.append(model.Token(text="I", index_in_document=0,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="am", index_in_document=1,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=2,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="chief", index_in_document=3,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="of", index_in_document=4,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=5,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="department", index_in_document=6,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text=".", index_in_document=7,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
+def test_insert_token_in_tokens():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="chief", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+    tokens1 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="can", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=10, pos_tag="", bio_tag="",  sentence_index=1),
+               model.Token(text="everything", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens2 = [model.Token(text="The", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+
     sentence = model.Sentence(tokens=tokens)
-
-    tokens1 = []
-    tokens1.append(model.Token(text="I", index_in_document=8,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text="can", index_in_document=9,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text="do", index_in_document=10,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text="everything", index_in_document=11,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text=".", index_in_document=12,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
     sentence1 = model.Sentence(tokens=tokens1)
-
-    tokens2 = []
-    tokens2.append(model.Token(text="The", index_in_document=13,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text="job", index_in_document=14,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text="is", index_in_document=15,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text="nice", index_in_document=16,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text=".", index_in_document=17,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
     sentence2 = model.Sentence(tokens=tokens2)
 
-    mention = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3])
-    mention1 = model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1])
-    mention2 = model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])
+    mentions1 = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                 model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1]),
+                 model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
+
     doc = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
-                         sentences=[sentence, sentence1, sentence2], mentions=[mention, mention1, mention2],
-                         entities=[],
-                         relations=[])
+                         sentences=[sentence, sentence1, sentence2], mentions=mentions1, entities=[], relations=[])
 
-    # index in sentence is not correct
-    tok1 = model.Token(text="The", index_in_document=0,
-                       pos_tag="", bio_tag="",
-                       sentence_index=0)
+    # test1 - index in sentence is not correct
+    tok1 = model.Token(text="The", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0)
     ind_in_sent1 = -1
+    doc_to_aug1 = copy.deepcopy(doc)
+    doc_sol1 = copy.deepcopy(doc)
 
-    # token.sentence_index is not correct
-    tok2 = model.Token(text="The", index_in_document=0,
-                       pos_tag="", bio_tag="",
-                       sentence_index=3)
+    # test2 - token.sentence_index is not correct
+    tok2 = model.Token(text="The", index_in_document=0, pos_tag="", bio_tag="", sentence_index=3)
     ind_in_sent2 = 1
+    doc_to_aug2 = copy.deepcopy(doc)
+    doc_sol2 = copy.deepcopy(doc)
 
-    # both are correct, token hast to be inserted
-    tok3 = model.Token(text="Hallo", index_in_document=9,
-                       pos_tag="", bio_tag="",
-                       sentence_index=1)
+    # test3 - both are correct, token hast to be inserted
+    tok3 = model.Token(text="Hallo", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1)
     ind_in_sent3 = 1
-    tokens3 = []
-    tokens3.append(model.Token(text="I", index_in_document=8,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(tok3)
-    tokens3.append(model.Token(text="can", index_in_document=10,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(model.Token(text="do", index_in_document=11,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(model.Token(text="everything", index_in_document=12,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(model.Token(text=".", index_in_document=13,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    sentence3 = model.Sentence(tokens=tokens3)
+    doc_to_aug3 = copy.deepcopy(doc)
 
-    tokens4 = []
-    tokens4.append(model.Token(text="The", index_in_document=14,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text="job", index_in_document=15,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text="is", index_in_document=16,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text="nice", index_in_document=17,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text=".", index_in_document=18,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
+    tokens3 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               tok3,
+               model.Token(text="can", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=13, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens4 = [model.Token(text="The", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=18, pos_tag="", bio_tag="", sentence_index=2)]
+
+    sentence3 = model.Sentence(tokens=tokens3)
     sentence4 = model.Sentence(tokens=tokens4)
 
-    mention1 = model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 2])
-    doc3 = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
-                          sentences=[sentence, sentence3, sentence4], mentions=[mention, mention1, mention2],
-                          entities=[], relations=[])
+    mentions2 = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                 model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 2]),
+                 model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
 
-    # Act
-    doc1 = doc.copy()
-    insert_token_in_tokens(doc1, tok1, ind_in_sent1)
+    doc_sol3 = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
+                          sentences=[sentence, sentence3, sentence4], mentions=mentions2, entities=[], relations=[])
 
-    doc2 = doc.copy()
-    insert_token_in_tokens(doc2, tok2, ind_in_sent2)
+    # ACT
+    # test1
+    insert_token_in_tokens(doc_to_aug1, tok1, ind_in_sent1)
 
-    doc4 = doc.copy()
-    insert_token_in_tokens(doc4, tok3, ind_in_sent3)
+    # test2
+    insert_token_in_tokens(doc_to_aug2, tok2, ind_in_sent2)
 
-    # Assert
-    assert doc1 == doc
-    assert doc2 == doc
-    assert doc3 == doc4
+    # test3
+    insert_token_in_tokens(doc_to_aug3, tok3, ind_in_sent3)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+    assert doc_to_aug2 == doc_sol2
+    assert doc_to_aug3 == doc_sol3
 
 
-def test_create_token():  # passed
+def test_create_token():
 
-    # Arrange
-    tokens = []
-    tokens.append(model.Token(text="I", index_in_document=0,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="am", index_in_document=1,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=2,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="chief", index_in_document=3,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="of", index_in_document=4,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="the", index_in_document=5,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text="department", index_in_document=6,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
-    tokens.append(model.Token(text=".", index_in_document=7,
-                              pos_tag="", bio_tag="",
-                              sentence_index=0))
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="chief", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+    tokens1 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="can", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens2 = [model.Token(text="The", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+
     sentence = model.Sentence(tokens=tokens)
-
-    tokens1 = []
-    tokens1.append(model.Token(text="I", index_in_document=8,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text="can", index_in_document=9,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text="do", index_in_document=10,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text="everything", index_in_document=11,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens1.append(model.Token(text=".", index_in_document=12,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
     sentence1 = model.Sentence(tokens=tokens1)
-
-    tokens2 = []
-    tokens2.append(model.Token(text="The", index_in_document=13,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text="job", index_in_document=14,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text="is", index_in_document=15,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text="nice", index_in_document=16,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens2.append(model.Token(text=".", index_in_document=17,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
     sentence2 = model.Sentence(tokens=tokens2)
 
-    mention = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3])
-    mention1 = model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1])
-    mention2 = model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
+
     doc = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
-                         sentences=[sentence, sentence1, sentence2], mentions=[mention, mention1, mention2],
-                         entities=[],
-                         relations=[])
+                         sentences=[sentence, sentence1, sentence2], mentions=mentions, entities=[], relations=[])
 
-    # index in sentence is not valid
+    # test1 - index in sentence is not valid
     ind_in_sent1 = 8
-    tok = model.Token(text="Hallo", index_in_document=9,
-                      pos_tag="", bio_tag="",
-                      sentence_index=1)
+    tok = model.Token(text="Hallo", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1)
     ment_ind1 = None
+    doc_to_augment1 = copy.deepcopy(doc)
 
-    # mention id is not valid
+    # test2 - mention id is not valid
     ind_in_sent2 = 2
     ment_ind2 = 5
+    doc_to_augment2 = copy.deepcopy(doc)
 
-    # both ids are valid, don't change mention
+    # test3 - both ids are valid, don't change mention
     ind_in_sent3 = 1
+    doc_to_augment3 = copy.deepcopy(doc)
 
-    tokens3 = []
-    tokens3.append(model.Token(text="I", index_in_document=8,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(tok)
-    tokens3.append(model.Token(text="can", index_in_document=10,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(model.Token(text="do", index_in_document=11,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(model.Token(text="everything", index_in_document=12,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
-    tokens3.append(model.Token(text=".", index_in_document=13,
-                               pos_tag="", bio_tag="",
-                               sentence_index=1))
+    tokens3 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1), tok,
+               model.Token(text="can", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=13, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens4 = [model.Token(text="The", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=16,  pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=18, pos_tag="", bio_tag="", sentence_index=2)]
+
     sentence3 = model.Sentence(tokens=tokens3)
-
-    tokens4 = []
-    tokens4.append(model.Token(text="The", index_in_document=14,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text="job", index_in_document=15,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text="is", index_in_document=16,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text="nice", index_in_document=17,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
-    tokens4.append(model.Token(text=".", index_in_document=18,
-                               pos_tag="", bio_tag="",
-                               sentence_index=2))
     sentence4 = model.Sentence(tokens=tokens4)
 
-    mention = model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3])
-    mention2 = model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])
-    mention1 = model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 2])
-    doc4 = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
-                          sentences=[sentence, sentence3, sentence4], mentions=[mention, mention1, mention2],
-                          entities=[], relations=[])
+    mentions1 = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                 model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 2]),
+                 model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
 
-    # both are valid, don't change mention
+    doc_sol3 = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
+                          sentences=[sentence, sentence3, sentence4], mentions=mentions1, entities=[], relations=[])
+
+    # test4 - both are valid, don't change mention
     ind_in_sent4 = 1
     ment_ind4 = 1
-    mention3 = model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1, 2])
-    doc6 = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
-                          sentences=[sentence, sentence3, sentence4], mentions=[mention, mention3, mention2],
-                          entities=[], relations=[])
+    doc_to_augment4 = copy.deepcopy(doc)
+    mentions2 = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                 model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1, 2]),
+                 model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
 
-    # Act
-    doc1 = doc.copy()
-    create_token(doc1, tok, ind_in_sent1, ment_ind1)
+    doc_sol4 = model.Document(text="I am the chief of the department. I can do everything. The job is nice.", name="1",
+                          sentences=[sentence, sentence3, sentence4], mentions=mentions2, entities=[], relations=[])
 
-    doc2 = doc.copy()
-    create_token(doc2, tok, ind_in_sent2, ment_ind2)
+    # ACT
+    # test1
+    create_token(doc_to_augment1, tok, ind_in_sent1, ment_ind1)
 
-    doc3 = doc.copy()
-    create_token(doc3, tok, ind_in_sent3, None)
+    # test2
+    create_token(doc_to_augment2, tok, ind_in_sent2, ment_ind2)
 
-    doc5 = doc.copy()
-    create_token(doc5, tok, ind_in_sent4, ment_ind4)
+    # test3
+    create_token(doc_to_augment3, tok, ind_in_sent3, None)
 
-    # Assert
-    assert doc1 == doc
-    assert doc2 == doc
-    assert doc3 == doc4
-    assert doc5 == doc6
+    # test4
+    create_token(doc_to_augment4, tok, ind_in_sent4, ment_ind4)
 
-def test_summe():
-    # Act
-    mockito.when()
+    # ASSERT
+    assert doc_to_augment1 == doc
+    assert doc_to_augment2 == doc
+    assert doc_to_augment3 == doc_sol3
+    assert doc_to_augment4 == doc_sol4
+
+
+def test_delete_token_from_tokens():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="head", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+    tokens1 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="can", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens2 = [model.Token(text="The", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+
+    sentence = model.Sentence(tokens=tokens)
+    sentence1 = model.Sentence(tokens=tokens1)
+    sentence2 = model.Sentence(tokens=tokens2)
+
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
+
+    doc = model.Document(text="I am the head of the department. I can do everything. The job is nice.", name="1",
+                         sentences=[sentence, sentence1, sentence2], mentions=mentions, entities=[], relations=[])
+
+    # test1 - index_in_document does not exist
+    ind_in_doc1 = 20
+    doc_sol1 = copy.deepcopy(doc)
+    doc_to_aug1 = copy.deepcopy(doc)
+
+    # test2 - index_in_document does exist
+    ind_in_doc2 = 10
+    doc_to_aug2 = copy.deepcopy(doc)
+    doc_sol2 = model.Document(text="I am the head of the department. I can do everything. The job is nice.", name="1",
+                              sentences=[sentence, sentence1, sentence2], mentions=mentions, entities=[], relations=[])
+    doc_sol2.sentences[1].tokens.pop(2)
+    doc_sol2.sentences[1].tokens[2].index_in_document = 10
+    doc_sol2.sentences[1].tokens[3].index_in_document = 11
+    doc_sol2.sentences[2].tokens[0].index_in_document = 12
+    doc_sol2.sentences[2].tokens[1].index_in_document = 13
+    doc_sol2.sentences[2].tokens[2].index_in_document = 14
+    doc_sol2.sentences[2].tokens[3].index_in_document = 15
+    doc_sol2.sentences[2].tokens[4].index_in_document = 16
+
+    # ACT
+    # test1
+    index1 = delete_token_from_tokens(doc_to_aug1, ind_in_doc1)
+
+    # test2
+    index2 = delete_token_from_tokens(doc_to_aug2, ind_in_doc2)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+    assert index1 == []
+
+    assert doc_to_aug2 == doc_sol2
+    assert index2 == [2, 1]
+
+
+def test_delete_token_from_mention_token_indices():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="head", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+    tokens1 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="can", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens2 = [model.Token(text="The", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+
+    sentence = model.Sentence(tokens=tokens)
+    sentence1 = model.Sentence(tokens=tokens1)
+    sentence2 = model.Sentence(tokens=tokens2)
+
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1, 2]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
+
+    doc = model.Document(text="I am the head of the department. I can do everything. The job is nice.", name="1",
+                         sentences=[sentence, sentence1, sentence2], mentions=mentions, entities=[], relations=[])
+
+    # test1
+    ind_in_sent1 = 1
+    sent_ind1 = 1
+
+    doc_sol1 = copy.deepcopy(doc)
+    mentions_new = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                    model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1]),
+                    model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1, 2]),
+                    model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4])]
+    doc_sol1.mentions = mentions_new
+
+    # ACT
+    # test1
+    doc_to_aug1 = copy.deepcopy(doc)
+    mention_to_delete = delete_token_from_mention_token_indices(doc_to_aug1, ind_in_sent1, sent_ind1)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+    assert mention_to_delete == 1
+
+
+def test_change_mention_indices_in_entities():
+    # ARRANGE
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1, 2])]
+
+    entities = [model.Entity(mention_indices=[0, 1]),
+                model.Entity(mention_indices=[1]),
+                model.Entity(mention_indices=[2, 3, 4])]
+
+    doc = model.Document(text="I ", name="1", sentences=[], mentions=mentions, entities=entities, relations=[])
+
+    # test1
+    ment_id = 1
+    doc_to_aug1 = copy.deepcopy(doc)
+
+    doc_sol1 = copy.deepcopy(doc)
+    doc_sol1.entities[2].mention_indices.pop()
+    doc_sol1.entities[2].mention_indices.insert(0, 1)
+
+    # ACT
+    # test1
+    change_mention_indices_in_entities(doc_to_aug1, ment_id)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+
+
+def test_delete_mention_from_entity():
+    # ARRANGE
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[1, 2])]
+
+    entities = [model.Entity(mention_indices=[0, 1]),
+                model.Entity(mention_indices=[1]),
+                model.Entity(mention_indices=[2, 3, 4])]
+
+    doc = model.Document(text="I ", name="1", sentences=[], mentions=mentions, entities=entities, relations=[])
+
+    # test1
+    ment_ind = 1
+    doc_to_aug1 = copy.deepcopy(doc)
+
+    doc_sol1 = copy.deepcopy(doc)
+    doc_sol1.entities.pop(1)
+    doc_sol1.entities[0].mention_indices.pop()
+
+    # ACT
+    # test1
+    delete_mention_from_entity(doc_to_aug1, ment_ind)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+
+
+def test_delete_relations():
+    # ARRANGE
+    entity_index = 2
+    relations = [model.Relation(head_entity_index=2, tail_entity_index=3, tag="", evidence=[]),
+                 model.Relation(head_entity_index=1, tail_entity_index=2, tag="", evidence=[]),
+                 model.Relation(head_entity_index=3, tail_entity_index=4, tag="", evidence=[])]
+
+    doc = model.Document(text="I ", name="1", sentences=[], mentions=[], entities=[], relations=relations)
+
+    # test1
+    doc_to_aug1 = copy.deepcopy(doc)
+
+    doc_sol1 = copy.deepcopy(doc)
+    doc_sol1.relations.pop(0)
+    doc_sol1.relations.pop(0)
+
+    # ACT
+    # test1
+    delete_relations(doc_to_aug1, entity_index)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1
+
+
+def test_delete_sentence():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="chief", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+    tokens1 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="can", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens2 = [model.Token(text="The", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+    tokens3 = [model.Token(text="I", index_in_document=18, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text="like", index_in_document=19, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text="the", index_in_document=20, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text="job", index_in_document=21, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text=".", index_in_document=22, pos_tag="", bio_tag="", sentence_index=3)]
+
+    sentence = model.Sentence(tokens=tokens)
+    sentence1 = model.Sentence(tokens=tokens1)
+    sentence2 = model.Sentence(tokens=tokens2)
+    sentence3 = model.Sentence(tokens=tokens3)
+
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0, 1]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4]),
+                model.Mention(ner_tag="Actor", sentence_index=3, token_indices=[1, 2])]
+
+    doc = model.Document(text="I am the chief of the department. I can do everything. The job is nice. I like the job.",
+                         name="1", sentences=[sentence, sentence1, sentence2, sentence3],
+                         mentions=mentions, entities=[], relations=[])
+
+    # test1 - delete second sentence
+    doc_to_aug1 = copy.deepcopy(doc)
+    doc_sol1 = copy.deepcopy(doc)
+    sent_index1 = 1
+
+    del doc_sol1.sentences[sent_index1]
+
+    tokens4 = [model.Token(text="The", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="job", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="is", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="nice", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens5 = [model.Token(text="I", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="like", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="the", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+    mentions2 = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                 model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[4]),
+                 model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[1, 2])]
+
+    doc_sol1.sentences[1].tokens = tokens4
+    doc_sol1.sentences[2].tokens = tokens5
+    doc_sol1.mentions = mentions2
+
+    # ACT
+    # test1
+    delete_sentence(doc_to_aug1, sent_index1)
+
+    # ASSERT
+    assert doc_to_aug1 == doc_sol1

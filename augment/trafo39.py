@@ -34,6 +34,7 @@ class Trafo39Step(base.AugmentationStep):
         sentence_idx = 0
         changes_counter = 0
         for sentence in doc.sentences:
+            changes_counter = 0
             assert len(token_sequences[sentence_idx]) == len(tag_sequences[
                                                                  sentence_idx]), f"token_sequence and tag_sequence should have same length! {len(token_sequences[sentence_idx])}!={len(tag_sequences[sentence_idx])}"
 
