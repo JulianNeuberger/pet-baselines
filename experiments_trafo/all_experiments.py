@@ -255,7 +255,7 @@ def experiment58_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    print(1)
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -263,6 +263,7 @@ def experiment58_1():  # Probability of replacement
 
         # actual augmentation
         for j in range(5):
+            print(j)
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
@@ -271,6 +272,7 @@ def experiment58_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
+        print(2)
         f_1_score = run_experiment("Experiment 58.1", augmented_train_folds, test_folds)
 
         # evaluation
@@ -1686,7 +1688,7 @@ def experiment40_4():
 #experiment101_2() #
 #experiment101_3()
 experiment58_1()
-#experiment58_2()
+experiment58_2()
 #experiment5_1()
 #experiment82_1()
 #experiment82_2()

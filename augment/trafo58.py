@@ -36,7 +36,11 @@ class Trafo58Step(base.AugmentationStep):
                 if random() >= self.p:
                     i += j
                     continue
-                translated = self.back_translate(text_before)
+                print("test")
+                if text_before in [",", ".", "?", "!", ":", "#", "-"]:
+                    translated = text_before
+                else:
+                    translated = self.back_translate(text_before)
                 text_before_list = text_before.split()
                 translated_list = translated.split()
                 diff = len(translated_list) - len(text_before_list)

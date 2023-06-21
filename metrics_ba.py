@@ -127,7 +127,6 @@ class Metrics:
         mean = torch.mean(results[2])
         mean_as_float = float(mean)
         bert_list = {"Bert Score": mean_as_float}
-        #bert_list = {"Bert Score": 0.5}
         new_series = pd.Series(data=bert_list)
         return new_series
 
