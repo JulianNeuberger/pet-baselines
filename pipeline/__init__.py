@@ -3,7 +3,7 @@ import typing
 
 import data
 from pipeline.step import PipelineStep, PipelineStepResult
-from pipeline.step import CatBoostRelationExtractionStep, RuleBasedRelationExtraction
+from pipeline.step import CatBoostRelationExtractionStep, RuleBasedRelationExtraction, NeuralRelationExtraction
 from pipeline.step import CrfMentionEstimatorStep
 from pipeline.step import NeuralCoReferenceResolutionStep, NaiveCoReferenceResolutionStep
 

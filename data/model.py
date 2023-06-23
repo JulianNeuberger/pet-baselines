@@ -12,6 +12,9 @@ class Document:
     entities: typing.List['Entity'] = dataclasses.field(default_factory=list)
     relations: typing.List['Relation'] = dataclasses.field(default_factory=list)
 
+    def token_offset_for_sentence(self, sentence: int) -> int:
+        return sum([s.num_tokens for s in self.sentences[:sentence]])
+
     def relation_exists_between(self, head_entity_index: int, tail_entity_index: int) -> bool:
         for r in self.relations:
             if r.head_entity_index == head_entity_index and r.tail_entity_index == tail_entity_index:
@@ -87,6 +90,10 @@ class Mention:
     ner_tag: str
     sentence_index: int
     token_indices: typing.List[int] = dataclasses.field(default_factory=list)
+
+    def document_level_token_indices(self, document: Document) -> typing.List[int]:
+        offset = document.token_offset_for_sentence(self.sentence_index)
+        return [t + offset for t in self.token_indices]
 
     def get_tokens(self, document: Document) -> typing.List['Token']:
         return [document.sentences[self.sentence_index].tokens[i] for i in self.token_indices]

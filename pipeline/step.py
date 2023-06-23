@@ -89,6 +89,36 @@ class CatBoostRelationExtractionStep(PipelineStep):
         return estimator.predict(test_documents)
 
 
+class NeuralRelationExtraction(PipelineStep):
+    def __init__(self, name: str, negative_sampling_rate: float,
+                 verbose: bool = False, seed: int = 42):
+        super().__init__(name)
+        self._negative_sampling = negative_sampling_rate
+        self._verbose = verbose
+        self._seed = seed
+
+    def _eval(self, *,
+              predictions: typing.List[data.Document],
+              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
+        return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth,
+                                         verbose=self._verbose)
+
+    def _run(self, *,
+             train_documents: typing.List[data.Document],
+             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+        ner_tags = ['Activity', 'Actor', 'Activity Data', 'Condition Specification',
+                    'Further Specification', 'AND Gateway', 'XOR Gateway']
+        relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
+        estimator = relations.NeuralRelationEstimator(
+            checkpoint='allenai/longformer-base-4096',
+            entity_tags=ner_tags,
+            relation_tags=relation_tags
+        )
+        estimator.train(train_documents)
+        test_documents = [d.copy(clear_relations=True) for d in test_documents]
+        return estimator.predict(test_documents)
+
+
 class RuleBasedRelationExtraction(PipelineStep):
     def _eval(self, *, predictions: typing.List[data.Document],
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:

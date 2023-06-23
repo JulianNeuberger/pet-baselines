@@ -368,6 +368,21 @@ def catboost_debug():
     )
 
 
+def neural_rel_debug():
+    train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
+
+    print('Running pipeline with neural entity resolution, and cat-boost relation extraction')
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
+            pipeline.NeuralRelationExtraction(name='neural relation extraction', negative_sampling_rate=40.0)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds,
+        save_results=False
+    )
+
+
 def coref_debug():
     train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
@@ -473,7 +488,8 @@ def scenario_2_3():
 def main():
     # ablation_studies()
     # catboost_debug()
-    coref_debug()
+    # coref_debug()
+    neural_rel_debug()
 
     # scenario_1()
     # scenario_2_3()
