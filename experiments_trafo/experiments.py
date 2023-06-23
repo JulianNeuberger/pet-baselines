@@ -14,24 +14,35 @@ from metrics_ba import Metrics
 
 def run_experiment(name: str, aug_train_folds, test_folds):
     print(f'building scores for {name}')
-    res = cross_validate_pipeline_macro(
-        p=pipeline.Pipeline(name=name, steps=[
-            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
-            pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+    crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
+    neural_ext = pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
                                                      mention_overlap=.8,
-                                                     ner_strategy='frequency'),
-            #pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
-            pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                     ner_strategy='frequency')
+    #rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
                                                     num_trees=100, negative_sampling_rate=40.0)
-        ]),
+    res = cross_validate_pipeline_macro(
+        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext]),
         train_folds=aug_train_folds,
         test_folds=test_folds
     )
-    scores = list(res.values())[0]
-    f_score = scores.overall_scores.f1
-    return f_score
+    print(res)
+    scores_crf = res[crf_ext]
+    scores_neural = res[neural_ext]
+    #scores_rel_rule = res[rel_ext_rule]
+    scores_rel = res[rel_ext]
+
+    #scores = list(res.values())[0]
+
+    f_score_crf = scores_crf.overall_scores.f1
+    f_score_neural = scores_neural.overall_scores.f1
+    #f_score_rel_rule = scores_rel_rule.overall_scores.f1
+    f_score_rel = scores_rel.overall_scores.f1
+
+    #return [f_score_crf, f_score_neural, f_score_rel_rule]
+    return [f_score_crf, f_score_neural, f_score_rel]
 
 
 def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
@@ -93,7 +104,7 @@ def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean
 
 
-def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score):
+def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                    'Condition Specification', 'AND Gateway', 'All'])
@@ -151,7 +162,9 @@ def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score):
 
     # get df complete series
     new_dict_series = {
-         '$F_{1}$': f_score,
+         '$F_{1}_CRF$': f_score_crf,
+         '$F_{1}_Neural$': f_score_neural,
+         '$F_{1}_Relation$': f_score_rel,
          '$TTR$': df_ttr_mean['All'][0],
          '$UCER$': df_ucer_mean['All'][0],
          '$BleuScore$': bleu_mean}
@@ -160,7 +173,7 @@ def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score):
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bleu, bleu_mean
 
 
-def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score):
+def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                    'Condition Specification', 'AND Gateway', 'All'])
@@ -218,7 +231,9 @@ def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score):
 
     # get df complete series
     new_dict_series = {
-        '$F_{1}$': f_score,
+        '$F_{1}_CRF$': f_score_crf,
+         '$F_{1}_Neural$': f_score_neural,
+         '$F_{1}_Relation$': f_score_rel,
         '$TTR$': df_ttr_mean['All'][0],
         '$UCER$': df_ucer_mean['All'][0],
         '$BertScore$': bert_mean}

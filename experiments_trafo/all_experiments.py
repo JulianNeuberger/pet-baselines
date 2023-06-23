@@ -80,12 +80,12 @@ def experiment101_1():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob=i/10)  # adapt
+        augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob=i/20)  # adapt
 
         # actual augmentation
         for j in range(5):
@@ -97,19 +97,22 @@ def experiment101_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 101.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 101.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/{names[0]}.json", indent=4)
 
 
@@ -120,7 +123,7 @@ def experiment101_2():  # Type of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -144,11 +147,13 @@ def experiment101_2():  # Type of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 101.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 101.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -167,7 +172,7 @@ def experiment101_3():  # if duplicates are allowed
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -191,11 +196,13 @@ def experiment101_3():  # if duplicates are allowed
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 101.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 101.3", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -214,12 +221,12 @@ def experiment33_1():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo33Step(p=i/10)  # adapt
+        augmentation_step: augment.AugmentationStep = augment.Trafo33Step(p=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -231,19 +238,22 @@ def experiment33_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 33.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 33.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo33/exp33.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo33/exp33.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo33/exp33.1/{names[0]}.json", indent=4)
 
 
@@ -254,11 +264,11 @@ def experiment58_1():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo58Step(p=i/10)  # adapt
+        augmentation_step: augment.AugmentationStep = augment.Trafo58Step(p=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -270,19 +280,22 @@ def experiment58_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 58.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 58.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo58/exp58.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo58/exp58.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo58/exp58.1/{names[0]}.json", indent=4)
 
 
@@ -293,7 +306,7 @@ def experiment58_2():  # Language
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(5):
@@ -330,11 +343,13 @@ def experiment58_2():  # Language
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 58.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 58.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -353,12 +368,12 @@ def experiment5_1():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo5Step(p=i/10)  # adapt
+        augmentation_step: augment.AugmentationStep = augment.Trafo5Step(p=i/20)  # adapt
 
         # actual augmentation
         for j in range(5):
@@ -370,19 +385,22 @@ def experiment5_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 5.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 5.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo5/exp5.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo5/exp5.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo5/exp5.1/{names[0]}.json", indent=4)
 
 
@@ -393,12 +411,12 @@ def experiment82_1():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo82Step(p=i/10)  # adapt
+        augmentation_step: augment.AugmentationStep = augment.Trafo82Step(p=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -410,19 +428,22 @@ def experiment82_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 82.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 82.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo82/exp82.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo82/exp82.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo82/exp82.1/{names[0]}.json", indent=4)
 
 
@@ -433,7 +454,7 @@ def experiment82_2():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(3):
@@ -465,11 +486,13 @@ def experiment82_2():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 82.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 82.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -488,12 +511,12 @@ def experiment100_1():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo100Step(prob=i/10)  # adapt
+        augmentation_step: augment.AugmentationStep = augment.Trafo100Step(prob=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -505,19 +528,22 @@ def experiment100_1():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 100.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 100.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo100/exp100.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo100/exp100.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo100/exp100.1/{names[0]}.json", indent=4)
 
 
@@ -528,7 +554,7 @@ def experiment100_2():  # Probability of replacement
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -551,11 +577,13 @@ def experiment100_2():  # Probability of replacement
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 100.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 100.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -574,7 +602,7 @@ def experiment9_1():  # delete all sentences with length < i
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(3, 13):
@@ -591,11 +619,13 @@ def experiment9_1():  # delete all sentences with length < i
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 9.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 9.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -614,7 +644,7 @@ def experiment9_2():  # test different operators
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(5):
@@ -648,11 +678,13 @@ def experiment9_2():  # test different operators
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 9.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 9.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -671,7 +703,7 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(3, 12):
@@ -688,11 +720,13 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 10.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 10.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -711,7 +745,7 @@ def experiment10_2():  # test different operators with activity and count 3
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(5):
@@ -745,11 +779,13 @@ def experiment10_2():  # test different operators with activity and count 3
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 10.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 10.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -768,7 +804,7 @@ def experiment10_3():  # test different entitity types with "<" and count 3
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(7):
@@ -810,11 +846,13 @@ def experiment10_3():  # test different entitity types with "<" and count 3
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 10.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 10.3", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -834,7 +872,7 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(3, 12):
@@ -851,11 +889,13 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 19.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 19.1", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -874,7 +914,7 @@ def experiment19_2():  # test different operators with Verb and count 3
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(5):
@@ -908,11 +948,13 @@ def experiment19_2():  # test different operators with Verb and count 3
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 19.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 19.2", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -931,7 +973,7 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
     doubled_train_folds = []
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(7):
@@ -958,11 +1000,13 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_score = run_experiment("Experiment 19.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 19.3", augmented_train_folds, test_folds)
 
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -988,12 +1032,12 @@ def experiment3_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo3Step(no_dupl=False, max_adj=10, prob=i/10)
+        augmentation_step: augment.AugmentationStep = augment.Trafo3Step(no_dupl=False, max_adj=10, prob=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -1002,19 +1046,21 @@ def experiment3_1():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 3.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 3.1", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                            aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0], f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.1/{names[0]}.json", indent=4)
 
 
@@ -1025,7 +1071,7 @@ def experiment3_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
@@ -1039,11 +1085,13 @@ def experiment3_2():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 3.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 3.2", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1062,7 +1110,7 @@ def experiment3_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -1081,11 +1129,13 @@ def experiment3_3():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 3.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 3.3", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1104,12 +1154,12 @@ def experiment39_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo39Step(prob=i/10)
+        augmentation_step: augment.AugmentationStep = augment.Trafo39Step(prob=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -1118,19 +1168,22 @@ def experiment39_1():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 39.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 39.1", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo39/exp39.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo39/exp39.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo39/exp39.1/{names[0]}.json", indent=4)
 
 
@@ -1141,12 +1194,12 @@ def experiment86_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo86Step(no_dupl=False, prob=i/10, max_noun=10, kind_of_replace=2)
+        augmentation_step: augment.AugmentationStep = augment.Trafo86Step(no_dupl=False, prob=i/20, max_noun=10, kind_of_replace=2)
 
         # actual augmentation
         for j in range(5):
@@ -1155,19 +1208,22 @@ def experiment86_1():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 86.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 86.1", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.1/{names[0]}.json", indent=4)
 
 
@@ -1178,7 +1234,7 @@ def experiment86_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
@@ -1192,11 +1248,13 @@ def experiment86_2():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 86.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 86.2", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1215,7 +1273,7 @@ def experiment86_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(3):
@@ -1229,11 +1287,13 @@ def experiment86_3():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 86.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 86.3", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1259,7 +1319,7 @@ def experiment86_4():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -1278,11 +1338,13 @@ def experiment86_4():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 86.4", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 86.4", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1301,12 +1363,12 @@ def experiment90_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo90Step(prob=i/10)
+        augmentation_step: augment.AugmentationStep = augment.Trafo90Step(prob=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -1315,19 +1377,22 @@ def experiment90_1():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 90.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 90.1", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo90/exp90.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo90/exp90.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo90/exp90.1/{names[0]}.json", indent=4)
 
 
@@ -1338,12 +1403,12 @@ def experiment103_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=i/10, num_of_words=2)
+        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=i/20, num_of_words=2)
 
         # actual augmentation
         for j in range(5):
@@ -1352,19 +1417,22 @@ def experiment103_1():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 103.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 103.1", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.1/{names[0]}.json", indent=4)
 
 
@@ -1375,7 +1443,7 @@ def experiment103_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
@@ -1389,11 +1457,13 @@ def experiment103_2():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 103.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 103.2", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1412,7 +1482,7 @@ def experiment103_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     ent_list = ['JJ', 'NN', 'NNS', 'NNP', 'RB', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
@@ -1429,11 +1499,13 @@ def experiment103_3():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 103.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 103.3", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                                              aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1452,12 +1524,12 @@ def experiment40_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 11):
+    for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=i/10)
+        augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=i/20)
 
         # actual augmentation
         for j in range(5):
@@ -1466,19 +1538,22 @@ def experiment40_1():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 40.1", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 40.1", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.1/{names[k]}_{i/10}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.1/{names[k]}_{i/20}.json", indent=4)
 
-    df_complete.index = ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.1/{names[0]}.json", indent=4)
 
 
@@ -1489,7 +1564,7 @@ def experiment40_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(6):
@@ -1526,11 +1601,13 @@ def experiment40_2():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 40.2", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 40.2", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1549,7 +1626,7 @@ def experiment40_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     ent_list = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -1567,11 +1644,13 @@ def experiment40_3():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 40.3", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 40.3", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1591,7 +1670,7 @@ def experiment40_4():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(10):
@@ -1654,11 +1733,13 @@ def experiment40_4():
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
         # actual training
-        f_1_score = run_experiment("Experiment 40.4", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 40.4", augmented_train_folds, test_folds)
 
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
-                            aug_train_folds=augmented_train_folds, f_score=f_1_score)
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
 
@@ -1672,20 +1753,20 @@ def experiment40_4():
 
 
 #experiment1_1()
-#experiment3_1() #
-#experiment3_2() #
-#experiment3_3() #
-#experiment39_1() #
-#experiment86_1() #
-#experiment86_2() #
-#experiment86_3() #
-#experiment86_4() #
-#experiment33_1() #
-#experiment101_1() #
-#experiment101_2() #
+experiment3_1()
+experiment3_2()
+experiment3_3()
+experiment39_1()
+experiment86_1()
+experiment86_2()
+experiment86_3()
+experiment86_4()
+experiment33_1()
+#experiment101_1()
+#experiment101_2()
 #experiment101_3()
-experiment58_1()
-experiment58_2()
+#experiment58_1()
+#experiment58_2()
 #experiment5_1()
 #experiment82_1()
 #experiment82_2()

@@ -123,7 +123,7 @@ class Metrics:
                     curr_sentence += " "
                     curr_sentence += token.text
                 references.append(curr_sentence)
-        results = bert_score.score(predictions, references, lang="en", verbose=True)
+        results = bert_score.score(predictions, references, lang="en", verbose=True, device="cuda:0")
         mean = torch.mean(results[2])
         mean_as_float = float(mean)
         bert_list = {"Bert Score": mean_as_float}
