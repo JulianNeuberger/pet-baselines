@@ -43,7 +43,7 @@ def experiment1_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 6):
@@ -1032,7 +1032,7 @@ def experiment3_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
@@ -1071,7 +1071,7 @@ def experiment3_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
@@ -1110,7 +1110,7 @@ def experiment3_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -1154,7 +1154,7 @@ def experiment39_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
@@ -1194,7 +1194,7 @@ def experiment86_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
@@ -1234,7 +1234,7 @@ def experiment86_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
@@ -1273,7 +1273,7 @@ def experiment86_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(3):
@@ -1319,7 +1319,7 @@ def experiment86_4():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(2):
@@ -1363,7 +1363,7 @@ def experiment90_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
@@ -1403,7 +1403,7 @@ def experiment103_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
@@ -1443,7 +1443,7 @@ def experiment103_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
@@ -1482,7 +1482,7 @@ def experiment103_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     ent_list = ['JJ', 'NN', 'NNS', 'NNP', 'RB', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
@@ -1524,7 +1524,7 @@ def experiment40_1():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
@@ -1564,7 +1564,7 @@ def experiment40_2():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(6):
@@ -1626,7 +1626,7 @@ def experiment40_3():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     ent_list = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -1670,7 +1670,7 @@ def experiment40_4():
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu"]
 
     # specific for this experiment
-    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
+    df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
 
     # augment the dataset - for i in range of the parameter
     for i in range(10):
@@ -1761,7 +1761,7 @@ experiment86_1()
 experiment86_2()
 experiment86_3()
 experiment86_4()
-experiment33_1()
+#experiment33_1()
 #experiment101_1()
 #experiment101_2()
 #experiment101_3()
@@ -1772,3 +1772,19 @@ experiment33_1()
 #experiment82_2()
 #experiment100_1()
 #experiment100_2()
+#experiment103_1()
+#experiment103_2()
+#experiment103_3()
+#experiment90_1()
+#experiment40_1()
+#experiment40_2()
+#experiment40_3()
+#experiment40_4()
+#experiment9_1()
+#experiment9_2()
+#experiment10_1()
+#experiment10_2()
+#experiment10_3()
+#experiment19_1()
+#experiment19_2()
+#experiment19_3()
