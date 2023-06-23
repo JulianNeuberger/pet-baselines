@@ -1,8 +1,8 @@
 {
-    "$F_{1}$":{
-        "hyponym":null,
-        "hypernym":null,
-        "random":null
+    "$F_{1}_CRF$":{
+        "hyponym":0.5747922959,
+        "hypernym":0.5715326942,
+        "random":0.5179093285
     },
     "$F_{1}_Neural$":{
         "hyponym":0.3420517594,
@@ -28,10 +28,5 @@
         "hyponym":0.4831005802,
         "hypernym":0.5027256529,
         "random":0.5137964585
-    },
-    "$F_{1}_CRF$":{
-        "hyponym":0.5747922959,
-        "hypernym":0.5715326942,
-        "random":0.5179093285
     }
 }
