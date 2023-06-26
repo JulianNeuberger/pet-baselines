@@ -167,8 +167,7 @@ def experiment101_2():  # Type of replacement
 
     df_complete.index = ["Adjektive", "Nomen"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["Adjektive", "Nomen"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.2/all_entities_f1.json", indent=4)
 
 def experiment101_3():  # if duplicates are allowed
@@ -219,8 +218,7 @@ def experiment101_3():  # if duplicates are allowed
 
     df_complete.index = ["True", "False"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["True", "False"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.3/all_entities_f1.json", indent=4)
 
 def experiment33_1():  # Probability of replacement
@@ -376,8 +374,7 @@ def experiment58_2():  # Language
 
     df_complete.index = ["Deutsch", "Spanisch", "Chinesisch", "Französisch", "Russisch"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo58/exp58.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["Deutsch", "Spanisch", "Chinesisch", "Französisch", "Russisch"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo58/exp58.2/all_entities_f1.json", indent=4)
 
 def experiment5_1():  # Probability of replacement
@@ -528,8 +525,7 @@ def experiment82_2():  # Probability of replacement
 
     df_complete.index = ["Both", "Short to Long", "Long to Short"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo82/exp82.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["Both", "Short to Long", "Long to Short"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo82/exp82.2/all_entities_f1.json", indent=4)
 
 def experiment100_1():  # Probability of replacement
@@ -625,8 +621,7 @@ def experiment100_2():  # Probability of replacement
 
     df_complete.index = ["Nomen", "Adjektive"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo100/exp100.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["Nomen", "Adjektive"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo100/exp100.2/all_entities_f1.json", indent=4)
 
 def experiment9_1():  # delete all sentences with length < i
@@ -670,8 +665,7 @@ def experiment9_1():  # delete all sentences with length < i
 
     df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.1/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
     df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.1/all_entities_f1.json", indent=4)
 
 def experiment9_2():  # test different operators
@@ -732,8 +726,7 @@ def experiment9_2():  # test different operators
 
     df_complete.index = [">", "<", ">=", "<=", "=="]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = [">", "<", ">=", "<=", "=="]
     df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.2/all_entities_f1.json", indent=4)
 
 def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
@@ -777,8 +770,7 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
 
     df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.1/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.1/all_entities_f1.json", indent=4)
 
 def experiment10_2():  # test different operators with activity and count 3
@@ -839,8 +831,7 @@ def experiment10_2():  # test different operators with activity and count 3
 
     df_complete.index = [">", "<", ">=", "<=", "=="]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = [">", "<", ">=", "<=", "=="]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.2/all_entities_f1.json", indent=4)
 
 def experiment10_3():  # test different entitity types with "<" and count 3
@@ -910,8 +901,8 @@ def experiment10_3():  # test different entitity types with "<" and count 3
     df_complete.index = ["Actor", "Activity", "Activity Data", "Further Specification", "XOR Gateway",
                          "Condition Specification", "AND Gateway"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["Actor", "Activity", "Activity Data", "Further Specification", "XOR Gateway",
+                         "Condition Specification", "AND Gateway"]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.3/all_entities_f1.json", indent=4)
 
 def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
@@ -955,8 +946,7 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
 
     df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.1/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.1/all_entities_f1.json", indent=4)
 
 def experiment19_2():  # test different operators with Verb and count 3
@@ -1017,8 +1007,7 @@ def experiment19_2():  # test different operators with Verb and count 3
 
     df_complete.index = [">", "<", ">=", "<=", "=="]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = [">", "<", ">=", "<=", "=="]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.2/all_entities_f1.json", indent=4)
 
 def experiment19_3():  # test different Pos Types with "<" and count 3
@@ -1072,8 +1061,7 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
 
     df_complete.index = ["Nomen", "Adjektive", "Verben"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["Nomen", "Adjektive", "Verben"]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.3/all_entities_f1.json", indent=4)
 
 #######################################################
@@ -1163,8 +1151,7 @@ def experiment3_2():
 
     df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.2/all_entities_f1.json", indent=4)
 
 def experiment3_3():
@@ -1210,8 +1197,7 @@ def experiment3_3():
 
     df_complete.index = ["True", "False"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["True", "False"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.3/all_entities_f1.json", indent=4)
 
 def experiment39_1():
@@ -1338,8 +1324,7 @@ def experiment86_2():
 
     df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.2/all_entities_f1.json", indent=4)
 
 def experiment86_3():
@@ -1387,8 +1372,7 @@ def experiment86_3():
 
     df_complete.index = ["hyponym", "hypernym", "random"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["hyponym", "hypernym", "random"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.3/all_entities_f1.json", indent=4)
 
 def experiment86_4():
@@ -1434,8 +1418,7 @@ def experiment86_4():
 
     df_complete.index = ["True", "False"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.4/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["True", "False"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.4/all_entities_f1.json", indent=4)
 
 def experiment90_1():
@@ -1562,8 +1545,7 @@ def experiment103_2():
 
     df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.2/all_entities_f1.json", indent=4)
 
 def experiment103_3():
@@ -1577,8 +1559,8 @@ def experiment103_3():
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    ent_list = ['JJ', 'NN', 'NNS', 'NNP', 'RB', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
-    for i in range(12):
+    ent_list = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS', 'RB', 'RBS', 'RBR', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
+    for i in range(17):
         str = [ent_list[i]]
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1605,10 +1587,9 @@ def experiment103_3():
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.3/{names[k]}_{str_name}.json", indent=4)
 
-    df_complete.index = ['JJ', 'NN', 'NNS', 'NNP', 'RB', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
+    df_complete.index = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS', 'RB', 'RBS', 'RBR', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS', 'RB', 'RBS', 'RBR', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
     df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.3/all_entities_f1.json", indent=4)
 
 def experiment40_1():
@@ -1715,8 +1696,7 @@ def experiment40_2():
 
     df_complete.index = ["speaker", "filler", "uncertain", "speaker&filler", "speaker&uncertain", "filler&uncertain"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.2/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["speaker", "filler", "uncertain", "speaker&filler", "speaker&uncertain", "filler&uncertain"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.2/all_entities_f1.json", indent=4)
 
 def experiment40_3():
@@ -1762,8 +1742,8 @@ def experiment40_3():
     df_complete.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                    'Condition Specification', 'AND Gateway', 'All']
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.3/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                   'Condition Specification', 'AND Gateway', 'All']
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.3/all_entities_f1.json", indent=4)
 
 def experiment40_4():
@@ -1854,8 +1834,8 @@ def experiment40_4():
     df_complete.index = ["uncertain&Further", "uncertain&XOR", "uncertain&AND", "uncertain&Condition", "uncertain&Data",
                          "speaker&Further", "speaker&XOR", "speaker&AND", "speaker&Condition", "speaker&Data"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.4/{names[0]}.json", indent=4)
-    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
-                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["uncertain&Further", "uncertain&XOR", "uncertain&AND", "uncertain&Condition", "uncertain&Data",
+                         "speaker&Further", "speaker&XOR", "speaker&AND", "speaker&Condition", "speaker&Data"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.4/all_entities_f1.json", indent=4)
 
 #experiment1_1()
