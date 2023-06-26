@@ -9,7 +9,7 @@ from data import model
 from transformations import tokenmanager
 
 class Trafo100Step(base.AugmentationStep):
-    def __init__(self, pos_type=True, prob=1):
+    def __init__(self, pos_type=True, prob=0.5):
         self.seed = 0
         self.prob = prob
         self.pos_type = pos_type
