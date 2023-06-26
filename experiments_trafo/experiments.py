@@ -35,14 +35,24 @@ def run_experiment(name: str, aug_train_folds, test_folds):
     scores_rel = res[rel_ext]
 
     #scores = list(res.values())[0]
-
+    print(scores_crf.scores_by_tag["further specification"].f1)
     f_score_crf = scores_crf.overall_scores.f1
     f_score_neural = scores_neural.overall_scores.f1
     #f_score_rel_rule = scores_rel_rule.overall_scores.f1
     f_score_rel = scores_rel.overall_scores.f1
 
-    #return [f_score_crf, f_score_neural, f_score_rel_rule]
-    return [f_score_crf, f_score_neural, f_score_rel]
+    new_list = {}
+    new_list["Actor"] = scores_crf.scores_by_tag["actor"].f1
+    new_list["Activity"] = scores_crf.scores_by_tag["activity"].f1
+    new_list["Activity Data"] = scores_crf.scores_by_tag["activity data"].f1
+    new_list["Further Specification"] = scores_crf.scores_by_tag["further specification"].f1
+    new_list["XOR Gateway"] = scores_crf.scores_by_tag["xor gateway"].f1
+    new_list["Condition Specification"] = scores_crf.scores_by_tag["condition specification"].f1
+    new_list["AND Gateway"] = scores_crf.scores_by_tag["and gateway"].f1
+
+    new_series = pd.Series(data=new_list)
+    #return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
+    return [f_score_crf, f_score_neural, f_score_rel, new_series]
 
 
 def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):

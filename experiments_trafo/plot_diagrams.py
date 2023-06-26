@@ -37,6 +37,22 @@ df2 = pd.DataFrame([[0.6, 0.4], [0.65, 0.45], [0.7, 0.6],
 
                   columns=['F1 Score', 'TTR'])
 path = "./../experiment_results/trafo3/exp3.1/all_means.json"
+columns=['F1 Score', 'TTR']
 
-Plot.plot_scatter_with_regression(path)
+prob = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+f1 = [0.49, 0.51, 0.52, 0.53, 0.55, 0.58, 0.59, 0.6, 0.61, 0.63]
+bleu = [0.99, 0.975, 0.97, 0.965, 0.96, 0.955, 0.954, 0.95, 0.949, 0.94]
+bert = [0.8, 0.809, 0.83, 0.84, 0.8456, 0.86, 0.87345, 0.88, 0.889, 0.9]
+df4 = pd.DataFrame()
+sns.set_theme()
+df4["F1"] = f1
+df4["Probability"] = prob
+df4["Bert Score"] = bert
+palette = sns.color_palette("flare", n_colors=10)
+fig = sns.lineplot(x='Bert Score', y='F1', data=df4)
+figg = fig.figure
+figg.savefig("./../experiment_results/trafo3/exp3.1/test.png")
+#Plot.plot_scatter_with_regression(path)
+plt.show()
+#Plot.plot_scatter_with_regression(path)
 plt.show()

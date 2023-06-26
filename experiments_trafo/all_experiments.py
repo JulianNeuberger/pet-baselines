@@ -81,7 +81,8 @@ def experiment101_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -98,7 +99,7 @@ def experiment101_1():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 101.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -106,13 +107,15 @@ def experiment101_1():  # Probability of replacement
                                               f_score_rel=f_1_scores[2])
 
         df_complete = df_complete.append(all_scores[0], ignore_index=True)
-
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/{names[k]}_{i/20}.json", indent=4)
 
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/{names[0]}.json", indent=4)
 
 
@@ -124,7 +127,8 @@ def experiment101_2():  # Type of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(2):
         if i == 0:
@@ -163,7 +167,9 @@ def experiment101_2():  # Type of replacement
 
     df_complete.index = ["Adjektive", "Nomen"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.2/all_entities_f1.json", indent=4)
 
 def experiment101_3():  # if duplicates are allowed
     # Get the data for augmenting and training
@@ -173,7 +179,8 @@ def experiment101_3():  # if duplicates are allowed
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(2):
         if i == 0:
@@ -212,7 +219,9 @@ def experiment101_3():  # if duplicates are allowed
 
     df_complete.index = ["True", "False"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.3/all_entities_f1.json", indent=4)
 
 def experiment33_1():  # Probability of replacement
     # Get the data for augmenting and training
@@ -222,7 +231,8 @@ def experiment33_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -255,7 +265,9 @@ def experiment33_1():  # Probability of replacement
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo33/exp33.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo33/exp33.1/all_entities_f1.json", indent=4)
 
 def experiment58_1():  # Probability of replacement
     # Get the data for augmenting and training
@@ -265,6 +277,8 @@ def experiment58_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -297,7 +311,9 @@ def experiment58_1():  # Probability of replacement
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo58/exp58.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo58/exp58.1/all_entities_f1.json", indent=4)
 
 def experiment58_2():  # Language
     # Get the data for augmenting and training
@@ -307,7 +323,8 @@ def experiment58_2():  # Language
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(5):
         language = ""
@@ -359,7 +376,9 @@ def experiment58_2():  # Language
 
     df_complete.index = ["Deutsch", "Spanisch", "Chinesisch", "Französisch", "Russisch"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo58/exp58.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo58/exp58.2/all_entities_f1.json", indent=4)
 
 def experiment5_1():  # Probability of replacement
     # Get the data for augmenting and training
@@ -369,7 +388,8 @@ def experiment5_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -402,7 +422,9 @@ def experiment5_1():  # Probability of replacement
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo5/exp5.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo5/exp5.1/all_entities_f1.json", indent=4)
 
 def experiment82_1():  # Probability of replacement
     # Get the data for augmenting and training
@@ -412,7 +434,8 @@ def experiment82_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -445,7 +468,9 @@ def experiment82_1():  # Probability of replacement
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo82/exp82.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo82/exp82.1/all_entities_f1.json", indent=4)
 
 def experiment82_2():  # Probability of replacement
     # Get the data for augmenting and training
@@ -455,7 +480,8 @@ def experiment82_2():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(3):
         if i == 0:
@@ -502,7 +528,9 @@ def experiment82_2():  # Probability of replacement
 
     df_complete.index = ["Both", "Short to Long", "Long to Short"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo82/exp82.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo82/exp82.2/all_entities_f1.json", indent=4)
 
 def experiment100_1():  # Probability of replacement
     # Get the data for augmenting and training
@@ -512,7 +540,8 @@ def experiment100_1():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -545,7 +574,9 @@ def experiment100_1():  # Probability of replacement
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo100/exp100.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo100/exp100.1/all_entities_f1.json", indent=4)
 
 def experiment100_2():  # Probability of replacement
     # Get the data for augmenting and training
@@ -555,7 +586,8 @@ def experiment100_2():  # Probability of replacement
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(2):
         if i == 0:
@@ -593,7 +625,9 @@ def experiment100_2():  # Probability of replacement
 
     df_complete.index = ["Nomen", "Adjektive"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo100/exp100.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo100/exp100.2/all_entities_f1.json", indent=4)
 
 def experiment9_1():  # delete all sentences with length < i
     # Get the data for augmenting and training
@@ -603,7 +637,8 @@ def experiment9_1():  # delete all sentences with length < i
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(3, 13):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -635,7 +670,9 @@ def experiment9_1():  # delete all sentences with length < i
 
     df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.1/all_entities_f1.json", indent=4)
 
 def experiment9_2():  # test different operators
     # Get the data for augmenting and training
@@ -645,7 +682,8 @@ def experiment9_2():  # test different operators
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(5):
         if i == 0:
@@ -694,7 +732,9 @@ def experiment9_2():  # test different operators
 
     df_complete.index = [">", "<", ">=", "<=", "=="]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.2/all_entities_f1.json", indent=4)
 
 def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
     # Get the data for augmenting and training
@@ -704,7 +744,8 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(3, 12):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -736,7 +777,9 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
 
     df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.1/all_entities_f1.json", indent=4)
 
 def experiment10_2():  # test different operators with activity and count 3
     # Get the data for augmenting and training
@@ -746,7 +789,8 @@ def experiment10_2():  # test different operators with activity and count 3
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(5):
         if i == 0:
@@ -795,7 +839,9 @@ def experiment10_2():  # test different operators with activity and count 3
 
     df_complete.index = [">", "<", ">=", "<=", "=="]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.2/all_entities_f1.json", indent=4)
 
 def experiment10_3():  # test different entitity types with "<" and count 3
     # Get the data for augmenting and training
@@ -805,7 +851,8 @@ def experiment10_3():  # test different entitity types with "<" and count 3
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(7):
         if i == 0:
@@ -863,7 +910,9 @@ def experiment10_3():  # test different entitity types with "<" and count 3
     df_complete.index = ["Actor", "Activity", "Activity Data", "Further Specification", "XOR Gateway",
                          "Condition Specification", "AND Gateway"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.3/all_entities_f1.json", indent=4)
 
 def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     # Get the data for augmenting and training
@@ -873,7 +922,8 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(3, 12):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -905,7 +955,9 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
 
     df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.1/all_entities_f1.json", indent=4)
 
 def experiment19_2():  # test different operators with Verb and count 3
     # Get the data for augmenting and training
@@ -915,7 +967,8 @@ def experiment19_2():  # test different operators with Verb and count 3
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(5):
         if i == 0:
@@ -964,7 +1017,9 @@ def experiment19_2():  # test different operators with Verb and count 3
 
     df_complete.index = [">", "<", ">=", "<=", "=="]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.2/all_entities_f1.json", indent=4)
 
 def experiment19_3():  # test different Pos Types with "<" and count 3
     # Get the data for augmenting and training
@@ -974,7 +1029,8 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
     doubled_train_folds = []
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$', '$F_{1}_Neural$', '$F_{1}_Relation$', '$TTR$', '$UCER$', '$BertScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(7):
         if i == 0:
@@ -1016,7 +1072,9 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
 
     df_complete.index = ["Nomen", "Adjektive", "Verben"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.3/all_entities_f1.json", indent=4)
 
 #######################################################
 #######################################################
@@ -1033,7 +1091,8 @@ def experiment3_1():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1047,7 +1106,7 @@ def experiment3_1():
 
         # actual training
         f_1_scores = run_experiment("Experiment 3.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                             aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0], f_score_neural=f_1_scores[1],
@@ -1062,7 +1121,9 @@ def experiment3_1():
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.1/all_entities_f1.json", indent=4)
 
 def experiment3_2():
     # Get the data for augmenting and training
@@ -1072,7 +1133,8 @@ def experiment3_2():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1101,7 +1163,9 @@ def experiment3_2():
 
     df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.2/all_entities_f1.json", indent=4)
 
 def experiment3_3():
     # Get the data for augmenting and training
@@ -1111,7 +1175,8 @@ def experiment3_3():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(2):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1145,7 +1210,9 @@ def experiment3_3():
 
     df_complete.index = ["True", "False"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo3/exp3.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.3/all_entities_f1.json", indent=4)
 
 def experiment39_1():
     # Get the data for augmenting and training
@@ -1155,7 +1222,8 @@ def experiment39_1():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1185,7 +1253,9 @@ def experiment39_1():
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo39/exp39.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo39/exp39.1/all_entities_f1.json", indent=4)
 
 def experiment86_1():
     # Get the data for augmenting and training
@@ -1195,7 +1265,8 @@ def experiment86_1():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1225,7 +1296,9 @@ def experiment86_1():
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.1/all_entities_f1.json", indent=4)
 
 def experiment86_2():
     # Get the data for augmenting and training
@@ -1235,7 +1308,8 @@ def experiment86_2():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1264,7 +1338,9 @@ def experiment86_2():
 
     df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.2/all_entities_f1.json", indent=4)
 
 def experiment86_3():
     # Get the data for augmenting and training
@@ -1274,7 +1350,8 @@ def experiment86_3():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(3):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1310,7 +1387,9 @@ def experiment86_3():
 
     df_complete.index = ["hyponym", "hypernym", "random"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.3/all_entities_f1.json", indent=4)
 
 def experiment86_4():
     # Get the data for augmenting and training
@@ -1320,7 +1399,8 @@ def experiment86_4():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(2):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1354,7 +1434,9 @@ def experiment86_4():
 
     df_complete.index = ["True", "False"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo86/exp86.4/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.4/all_entities_f1.json", indent=4)
 
 def experiment90_1():
     # Get the data for augmenting and training
@@ -1364,7 +1446,8 @@ def experiment90_1():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1394,7 +1477,9 @@ def experiment90_1():
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo90/exp90.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo90/exp90.1/all_entities_f1.json", indent=4)
 
 def experiment103_1():
     # Get the data for augmenting and training
@@ -1404,7 +1489,8 @@ def experiment103_1():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1434,7 +1520,9 @@ def experiment103_1():
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.1/all_entities_f1.json", indent=4)
 
 def experiment103_2():
     # Get the data for augmenting and training
@@ -1444,7 +1532,8 @@ def experiment103_2():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1473,7 +1562,9 @@ def experiment103_2():
 
     df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.2/all_entities_f1.json", indent=4)
 
 def experiment103_3():
     # Get the data for augmenting and training
@@ -1483,7 +1574,8 @@ def experiment103_3():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     ent_list = ['JJ', 'NN', 'NNS', 'NNP', 'RB', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
     for i in range(12):
@@ -1515,7 +1607,9 @@ def experiment103_3():
 
     df_complete.index = ['JJ', 'NN', 'NNS', 'NNP', 'RB', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo103/exp103.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.3/all_entities_f1.json", indent=4)
 
 def experiment40_1():
     # Get the data for augmenting and training
@@ -1525,7 +1619,8 @@ def experiment40_1():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(1, 21):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1555,7 +1650,9 @@ def experiment40_1():
     df_complete.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.1/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.1/all_entities_f1.json", indent=4)
 
 def experiment40_2():
     # Get the data for augmenting and training
@@ -1565,7 +1662,8 @@ def experiment40_2():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(6):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1617,7 +1715,9 @@ def experiment40_2():
 
     df_complete.index = ["speaker", "filler", "uncertain", "speaker&filler", "speaker&uncertain", "filler&uncertain"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.2/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.2/all_entities_f1.json", indent=4)
 
 def experiment40_3():
     # Get the data for augmenting and training
@@ -1627,7 +1727,8 @@ def experiment40_3():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     ent_list = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                    'Condition Specification', 'AND Gateway', 'All']
@@ -1661,7 +1762,9 @@ def experiment40_3():
     df_complete.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                    'Condition Specification', 'AND Gateway', 'All']
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.3/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.3/all_entities_f1.json", indent=4)
 
 def experiment40_4():
     # Get the data for augmenting and training
@@ -1671,7 +1774,8 @@ def experiment40_4():
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(columns=['$F_{1}_CRF$','$F_{1}_Neural$','$F_{1}_Relation$', '$TTR$', '$UCER$', '$BleuScore$'])
-
+    df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
     for i in range(10):
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1750,7 +1854,9 @@ def experiment40_4():
     df_complete.index = ["uncertain&Further", "uncertain&XOR", "uncertain&AND", "uncertain&Condition", "uncertain&Data",
                          "speaker&Further", "speaker&XOR", "speaker&AND", "speaker&Condition", "speaker&Data"]
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.4/{names[0]}.json", indent=4)
-
+    df_entities.index = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
+                         "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
+    df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.4/all_entities_f1.json", indent=4)
 
 #experiment1_1()
 experiment3_1()
@@ -1772,14 +1878,14 @@ experiment86_4()
 #experiment82_2()
 #experiment100_1()
 #experiment100_2()
-#experiment103_1()
-#experiment103_2()
-#experiment103_3()
-#experiment90_1()
-#experiment40_1()
-#experiment40_2()
-#experiment40_3()
-#experiment40_4()
+experiment103_1()
+experiment103_2()
+experiment103_3()
+experiment90_1()
+experiment40_1()
+experiment40_2()
+experiment40_3()
+experiment40_4()
 #experiment9_1()
 #experiment9_2()
 #experiment10_1()
