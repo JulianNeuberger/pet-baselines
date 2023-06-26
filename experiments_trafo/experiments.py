@@ -28,14 +28,12 @@ def run_experiment(name: str, aug_train_folds, test_folds):
         train_folds=aug_train_folds,
         test_folds=test_folds
     )
-    print(res)
     scores_crf = res[crf_ext]
     scores_neural = res[neural_ext]
     #scores_rel_rule = res[rel_ext_rule]
     scores_rel = res[rel_ext]
 
     #scores = list(res.values())[0]
-    print(scores_crf.scores_by_tag["further specification"].f1)
     f_score_crf = scores_crf.overall_scores.f1
     f_score_neural = scores_neural.overall_scores.f1
     #f_score_rel_rule = scores_rel_rule.overall_scores.f1

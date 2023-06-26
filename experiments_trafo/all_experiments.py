@@ -152,7 +152,7 @@ def experiment101_2():  # Type of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 101.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -204,7 +204,7 @@ def experiment101_3():  # if duplicates are allowed
 
         # actual training
         f_1_scores = run_experiment("Experiment 101.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -249,7 +249,7 @@ def experiment33_1():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 33.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -295,7 +295,7 @@ def experiment58_1():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 58.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -361,7 +361,7 @@ def experiment58_2():  # Language
 
         # actual training
         f_1_scores = run_experiment("Experiment 58.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -406,7 +406,7 @@ def experiment5_1():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 5.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -452,7 +452,7 @@ def experiment82_1():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 82.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -513,7 +513,7 @@ def experiment82_2():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 82.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -558,7 +558,7 @@ def experiment100_1():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 100.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -610,7 +610,7 @@ def experiment100_2():  # Probability of replacement
 
         # actual training
         f_1_scores = run_experiment("Experiment 100.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -655,7 +655,7 @@ def experiment9_1():  # delete all sentences with length < i
 
         # actual training
         f_1_scores = run_experiment("Experiment 9.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -717,7 +717,7 @@ def experiment9_2():  # test different operators
 
         # actual training
         f_1_scores = run_experiment("Experiment 9.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -762,7 +762,7 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
 
         # actual training
         f_1_scores = run_experiment("Experiment 10.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -824,8 +824,8 @@ def experiment10_2():  # test different operators with activity and count 3
 
         # actual training
         f_1_scores = run_experiment("Experiment 10.2", augmented_train_folds, test_folds)
-
-        # evaluation
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
+        # eval uation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
@@ -894,7 +894,7 @@ def experiment10_3():  # test different entitity types with "<" and count 3
 
         # actual training
         f_1_scores = run_experiment("Experiment 10.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -940,7 +940,7 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
 
         # actual training
         f_1_scores = run_experiment("Experiment 19.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1002,7 +1002,7 @@ def experiment19_2():  # test different operators with Verb and count 3
 
         # actual training
         f_1_scores = run_experiment("Experiment 19.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1057,7 +1057,7 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
 
         # actual training
         f_1_scores = run_experiment("Experiment 19.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1148,7 +1148,7 @@ def experiment3_2():
 
         # actual training
         f_1_scores = run_experiment("Experiment 3.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1195,7 +1195,7 @@ def experiment3_3():
 
         # actual training
         f_1_scores = run_experiment("Experiment 3.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1237,7 +1237,7 @@ def experiment39_1():
 
         # actual training
         f_1_scores = run_experiment("Experiment 39.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1280,7 +1280,7 @@ def experiment86_1():
 
         # actual training
         f_1_scores = run_experiment("Experiment 86.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1323,7 +1323,7 @@ def experiment86_2():
 
         # actual training
         f_1_scores = run_experiment("Experiment 86.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1365,7 +1365,7 @@ def experiment86_3():
 
         # actual training
         f_1_scores = run_experiment("Experiment 86.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1419,7 +1419,7 @@ def experiment86_4():
 
         # actual training
         f_1_scores = run_experiment("Experiment 86.4", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1461,7 +1461,7 @@ def experiment90_1():
 
         # actual training
         f_1_scores = run_experiment("Experiment 90.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1504,7 +1504,7 @@ def experiment103_1():
 
         # actual training
         f_1_scores = run_experiment("Experiment 103.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1547,7 +1547,7 @@ def experiment103_2():
 
         # actual training
         f_1_scores = run_experiment("Experiment 103.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1592,7 +1592,7 @@ def experiment103_3():
 
         # actual training
         f_1_scores = run_experiment("Experiment 103.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1634,7 +1634,7 @@ def experiment40_1():
 
         # actual training
         f_1_scores = run_experiment("Experiment 40.1", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1700,7 +1700,7 @@ def experiment40_2():
 
         # actual training
         f_1_scores = run_experiment("Experiment 40.2", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1746,7 +1746,7 @@ def experiment40_3():
 
         # actual training
         f_1_scores = run_experiment("Experiment 40.3", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
@@ -1838,7 +1838,7 @@ def experiment40_4():
 
         # actual training
         f_1_scores = run_experiment("Experiment 40.4", augmented_train_folds, test_folds)
-
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_bleu(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
