@@ -1,0 +1,30 @@
+{
+    "Actor":{
+        "True":0.7215032003,
+        "False":0.7249265167
+    },
+    "Activity":{
+        "True":0.7795840059,
+        "False":0.7756839977
+    },
+    "Activity Data":{
+        "True":0.6320774242,
+        "False":0.6328752335
+    },
+    "Further Specification":{
+        "True":0.263358396,
+        "False":0.3051182688
+    },
+    "XOR Gateway":{
+        "True":0.7267096595,
+        "False":0.7318798017
+    },
+    "Condition Specification":{
+        "True":0.6320890086,
+        "False":0.6058235667
+    },
+    "AND Gateway":{
+        "True":0.3,
+        "False":0.3
+    }
+}
