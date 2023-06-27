@@ -50,7 +50,8 @@ class Trafo90Step(base.AugmentationStep):
 
                 # shuffle indeice array
                 if binomial(1, self.prob):
-                    indices_shuffeld = shuffle(indices)
+                    shuffle(indices)
+                    indices_shuffeld = indices
                 else:
                     indices_shuffeld = indices
 
