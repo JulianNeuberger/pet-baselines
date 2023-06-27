@@ -16,6 +16,7 @@ class Trafo103Step(base.AugmentationStep):
         self.kind_of_word = kind_of_word
         self.prob = prob
 
+
     def do_augment(self, doc: model.Document) -> model.Document:
         possible_sequences = []
         for i in range(len(doc.sentences)):
@@ -33,15 +34,19 @@ class Trafo103Step(base.AugmentationStep):
 
                 # index in sentence of the first word to be replaced
                 index_in_sentence = None
+                original_text = []
 
                 # case1: no pos_tags given - determine pos_tags and optional index in sentence randomly
                 if kind_of_words == None:
-
                     # choose randomly tokens with their pos_tags
                     tokens = copy.deepcopy(sentence.tokens)
+                    tokens.pop() # remove punct
+                    for i in range(num_of_words-1):
+                        tokens.pop()
                     first_token = choice(tokens)
                     pos_tags.append(first_token.pos_tag)
-                    first_index_in_sentence = tokenmanager.get_index_in_sentence(sentence, [first_token.text], first_token.index_in_document)
+                    first_index_in_sentence = tokenmanager.get_index_in_sentence(sentence, [first_token.text],
+                                                                                 first_token.index_in_document)
                     index_in_sentence = first_index_in_sentence
                     for j in range(1, num_of_words):
                         try:
@@ -53,7 +58,6 @@ class Trafo103Step(base.AugmentationStep):
                 else:
                     # case2: long enough sequence of pos-tags is given
                     # kind of words has to be the same length as the number of words to be changed
-
                     if len(kind_of_words) >= num_of_words:
                         while len(kind_of_words) > num_of_words:
                             kind_of_words.pop()
@@ -118,10 +122,10 @@ class Trafo103Step(base.AugmentationStep):
                             for sent in doc.sentences:
                                 word_c = 0
                                 seq = []
-                                for i in range(len(sent.tokens) - 1):
-                                    if sent.tokens[i].pos_tag == kind_of_words[word_c]:
+                                for m in range(len(sent.tokens)-1):
+                                    if sent.tokens[m].pos_tag == kind_of_words[word_c]:
                                         word_c += 1
-                                        seq.append(sent.tokens[i].text)
+                                        seq.append(sent.tokens[m].text)
                                         if word_c == len(kind_of_words):
                                             possible_sequences.append(seq)
                                             seq = []
@@ -138,8 +142,11 @@ class Trafo103Step(base.AugmentationStep):
                         for i in range(1, num_of_words):
                             original_text.append(sentence.tokens[index_in_sentence + i].text)
                         possible_seq = copy.deepcopy(possible_sequences)
-                        possible_seq.remove(original_text)
 
+                        try:
+                            possible_seq.remove(original_text)
+                        except:
+                            pass
                         # only if there are other possible sequences the original text can be changed
                         if len(possible_seq) > 0:
                             # choose the new text out of the possibilities
