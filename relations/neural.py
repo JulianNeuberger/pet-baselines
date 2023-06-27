@@ -59,7 +59,7 @@ class NeuralRelationEstimator:
         trainer = transformers.Trainer(
             args=train_args,
             model=self.classifier,
-            train_dataset=train_dataset
+            train_dataset=train_dataset.select([1])
         )
         trainer.train()
         return self
