@@ -1839,18 +1839,17 @@ def experiment40_4():
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.4/all_entities_f1.json", indent=4)
 
 #experiment1_1()
-experiment3_1()
-experiment3_2()
-experiment3_3()
-experiment39_1()
-experiment86_1()
-experiment86_2()
-experiment86_3()
-experiment86_4()
+#experiment3_1() #
+#experiment3_2() #
+#experiment3_3() #
+#experiment39_1() #
+#experiment86_1() #
+#experiment86_2() #
+#experiment86_3() #
+#experiment86_4() #
 #experiment33_1()
 #experiment101_1()
 #experiment101_2()
-#experiment101_3()
 #experiment58_1()
 #experiment58_2()
 #experiment5_1()
@@ -1858,9 +1857,9 @@ experiment86_4()
 #experiment82_2()
 #experiment100_1()
 #experiment100_2()
-experiment103_1()
-experiment103_2()
-experiment103_3()
+#experiment103_1()
+#experiment103_2()
+#experiment103_3()
 experiment90_1()
 experiment40_1()
 experiment40_2()
