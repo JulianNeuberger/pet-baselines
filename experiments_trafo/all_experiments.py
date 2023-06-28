@@ -101,7 +101,7 @@ def experiment101_1():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 101.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -154,7 +154,7 @@ def experiment101_2():  # Type of replacement
         f_1_scores = run_experiment("Experiment 101.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -205,7 +205,7 @@ def experiment101_3():  # if duplicates are allowed
         f_1_scores = run_experiment("Experiment 101.3", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -249,7 +249,7 @@ def experiment33_1():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 33.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -295,7 +295,7 @@ def experiment58_1():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 58.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -361,7 +361,7 @@ def experiment58_2():  # Language
         f_1_scores = run_experiment("Experiment 58.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -405,7 +405,7 @@ def experiment5_1():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 5.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -451,7 +451,7 @@ def experiment82_1():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 82.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -512,7 +512,7 @@ def experiment82_2():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 82.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -556,7 +556,7 @@ def experiment100_1():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 100.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -608,7 +608,7 @@ def experiment100_2():  # Probability of replacement
         f_1_scores = run_experiment("Experiment 100.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -652,7 +652,7 @@ def experiment9_1():  # delete all sentences with length < i
         f_1_scores = run_experiment("Experiment 9.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -713,7 +713,7 @@ def experiment9_2():  # test different operators
         f_1_scores = run_experiment("Experiment 9.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -757,7 +757,7 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
         f_1_scores = run_experiment("Experiment 10.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -818,7 +818,7 @@ def experiment10_2():  # test different operators with activity and count 3
         f_1_scores = run_experiment("Experiment 10.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # eval uation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
