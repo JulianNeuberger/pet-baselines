@@ -40,16 +40,18 @@ path = "./../experiment_results/trafo3/exp3.1/all_means.json"
 columns=['F1 Score', 'TTR']
 
 prob = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-f1 = [0.49, 0.51, 0.52, 0.53, 0.55, 0.58, 0.59, 0.6, 0.61, 0.63]
-bleu = [0.99, 0.975, 0.97, 0.965, 0.96, 0.955, 0.954, 0.95, 0.949, 0.94]
+f1 = [0.58, 0.6, 0.615, 0.592, 0.55, 0.547, 0.535, 0.534, 0.53, 0.52]
+bleu = [0.89, 0.875, 0.87, 0.865, 0.86, 0.855, 0.854, 0.85, 0.849, 0.84]
 bert = [0.8, 0.809, 0.83, 0.84, 0.8456, 0.86, 0.87345, 0.88, 0.889, 0.9]
+ttr = [0.20, 0.22, 0.23, 0.25, 0.27, 0.28, 0.29, 0.3, 0.315, 0.32]
 df4 = pd.DataFrame()
 sns.set_theme()
 df4["F1"] = f1
 df4["Probability"] = prob
-df4["Bert Score"] = bert
+df4["Bleu Score"] = bleu
+df4["TTR"] = ttr
 palette = sns.color_palette("flare", n_colors=10)
-fig = sns.lineplot(x='Bert Score', y='F1', data=df4)
+fig = sns.lineplot(x='Bleu Score', y='F1', data=df4)
 figg = fig.figure
 figg.savefig("./../experiment_results/trafo3/exp3.1/test.png")
 #Plot.plot_scatter_with_regression(path)
