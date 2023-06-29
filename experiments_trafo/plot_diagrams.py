@@ -88,8 +88,8 @@ class Plot:
     @staticmethod
     def all_means_prob_bleu():
         sns.set_theme()
-        str = "3"
-        str2 = "3.1"
+        str = "90"
+        str2 = "90.1"
         path = f"./../experiment_results/trafo{str}/exp{str2}/all_means.json"
         df = pd.read_json(path_or_buf=path)
 
@@ -138,8 +138,8 @@ class Plot:
     @staticmethod
     def all_entities_prob():
         sns.set_theme()
-        str = "3"
-        str2 = "3.1"
+        str = "90"
+        str2 = "90.1"
         path = f"./../experiment_results/trafo{str}/exp{str2}/all_entities_f1.json"
         df = pd.read_json(path_or_buf=path)
 
