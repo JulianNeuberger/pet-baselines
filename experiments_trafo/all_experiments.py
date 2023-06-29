@@ -1879,8 +1879,10 @@ def experiment101rate():  # with rate
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/rate101/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
-    df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    #df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    #df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
     df_entities.to_json(path_or_buf="./experiment_results/rate101/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate101/{names[0]}.json", indent=4)
 
