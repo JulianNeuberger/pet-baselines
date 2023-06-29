@@ -1,0 +1,32 @@
+{
+    "$F_{1}_CRF$":{
+        "Both":0.5650081203,
+        "Short to Long":0.5834851833,
+        "Long to Short":0.5727184901
+    },
+    "$F_{1}_Neural$":{
+        "Both":0.3388904843,
+        "Short to Long":0.3327378881,
+        "Long to Short":0.337266459
+    },
+    "$F_{1}_Relation$":{
+        "Both":0.3232529195,
+        "Short to Long":0.3159077386,
+        "Long to Short":0.3118382322
+    },
+    "$TTR$":{
+        "Both":0.1230602492,
+        "Short to Long":0.1226645527,
+        "Long to Short":0.119310409
+    },
+    "$UCER$":{
+        "Both":0.4293302186,
+        "Short to Long":0.4279547689,
+        "Long to Short":0.3987104267
+    },
+    "$BertScore$":{
+        "Both":0.9865786314,
+        "Short to Long":0.9866985559,
+        "Long to Short":0.9998841524
+    }
+}
