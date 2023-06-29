@@ -103,7 +103,8 @@ class Trafo82Step(base.AugmentationStep):
                                 sentence.tokens[k].pos_tag = tokenmanager.get_pos_tag([contracted_list[i]])[0]
                                 if len(expanded_double_list[i]) > 1:
                                     for j in range(1, len(expanded_double_list[i])):
-                                        tokenmanager.delete_token(doc, sentence.tokens[k + j].index_in_document)
+                                        if k + j < len(sentence.tokens):
+                                            tokenmanager.delete_token(doc, sentence.tokens[k + j].index_in_document)
                         k += 1
         return doc
 
