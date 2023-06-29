@@ -2266,10 +2266,10 @@ def experiment90test():  # with rate
 #get_unaug()
 
 #experiment101rate()
-#experiment82rate()
-experiment3rate()
-experiment90rate()
-experiment101test()
-#experiment82test()
-experiment3test()
-experiment90test()
+experiment82rate()
+#experiment3rate() #
+#experiment90rate() #
+#experiment101test() #
+experiment82test()
+#experiment3test() #
+#experiment90test() #
