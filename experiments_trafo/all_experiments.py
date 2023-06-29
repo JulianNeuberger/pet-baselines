@@ -1849,11 +1849,11 @@ def experiment40_4():
 #experiment101_2() #
 #experiment58_1()
 #experiment58_2()
-#experiment5_1()
-#experiment82_1()
-#experiment82_2()
-#experiment100_1()
-#experiment100_2()
+experiment5_1()
+experiment82_1()
+experiment82_2()
+experiment100_1()
+experiment100_2()
 #experiment90_1() #
 #experiment103_1() #
 #experiment103_2() #
@@ -1870,4 +1870,4 @@ def experiment40_4():
 #experiment19_1()
 #experiment19_2()
 #experiment19_3()
-get_unaug()
+#get_unaug()
