@@ -6,7 +6,7 @@ import numpy as np
 import data
 import pandas as pd
 from experiments_trafo.experiments import run_experiment, evaluate_experiment_bleu, evaluate_unaugmented_data, \
-    evaluate_experiment_bert, evaluate_experiment_with_rate
+    evaluate_experiment_bert, evaluate_experiment_with_rate, evaluate_experiment_with_rate_bleu
 import augment
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -1974,7 +1974,7 @@ def experiment3rate():  # with rate
         f_1_scores = run_experiment("Experiment 3", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
+        all_scores = evaluate_experiment_with_rate_bleu(unaug_train_folds=unaugmented_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -2372,12 +2372,14 @@ def experiment100test():  # with rate
 #get_unaug()
 
 #experiment101rate() #
-#experiment82rate()
 experiment3rate()
+#experiment90test()
+#experiment86rate()
+#experiment82rate()
 #experiment90rate()
 #experiment100rate()
 #experiment101test()
 #experiment82test()
 #experiment3test()
-#experiment90test()
+
 #experiment100test()

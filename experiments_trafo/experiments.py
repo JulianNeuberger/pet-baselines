@@ -411,3 +411,116 @@ def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_cr
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bert, df_ttr_un, df_ucer_un, \
         df_ttr_mean_un, df_ucer_mean_un, bert_mean
+
+
+def evaluate_experiment_with_rate_bleu(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
+    metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
+    df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                   'Condition Specification', 'AND Gateway', 'All'])
+    df_ttr_mean = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                    'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer_mean = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                         'Condition Specification', 'AND Gateway', 'All'])
+    df_bleu = pd.DataFrame(columns=['Bleu Score'])
+    df_ttr_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                   'Condition Specification', 'AND Gateway', 'All'])
+    df_ttr_mean_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                    'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer_mean_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                         'Condition Specification', 'AND Gateway', 'All'])
+
+
+    for i in range(5):
+        # get TTR
+        new_df_ttr_series = metrics.calculate_ttr(i)
+        df_ttr = df_ttr.append(new_df_ttr_series, ignore_index=True)
+
+        # get UCER
+        new_df_ucer_series = metrics.calculate_ttr_trigram(i)
+        df_ucer = df_ucer.append(new_df_ucer_series, ignore_index=True)
+
+        # get Bert
+        new_df_bleu_series = metrics.calculate_bleu(i)
+        df_bleu = df_bleu.append(new_df_bleu_series, ignore_index=True)
+
+        # get TTR
+        new_df_ttr_series_un = metrics.calculate_ttr_un(i)
+        df_ttr_un = df_ttr_un.append(new_df_ttr_series_un, ignore_index=True)
+
+        # get UCER
+        new_df_ucer_series_un = metrics.calculate_ttr_trigram_un(i)
+        df_ucer_un = df_ucer_un.append(new_df_ucer_series_un, ignore_index=True)
+
+    # get mean ttr
+    new_df_ttr_mean_dict = {
+        'Actor': df_ttr["Actor"].mean(),
+        'Activity': df_ttr["Activity"].mean(),
+        'Activity Data': df_ttr["Activity Data"].mean(),
+        'Further Specification': df_ttr["Further Specification"].mean(),
+        'XOR Gateway': df_ttr["XOR Gateway"].mean(),
+        'Condition Specification': df_ttr["Condition Specification"].mean(),
+        'AND Gateway': df_ttr["AND Gateway"].mean(),
+        'All': df_ttr["All"].mean(),
+    }
+    new_df_ttr_mean_series = pd.Series(new_df_ttr_mean_dict)
+    df_ttr_mean = df_ttr_mean.append(new_df_ttr_mean_series, ignore_index=True)
+
+    # get mean ttr
+    new_df_ttr_mean_dict_un = {
+        'Actor': df_ttr_un["Actor"].mean(),
+        'Activity': df_ttr_un["Activity"].mean(),
+        'Activity Data': df_ttr_un["Activity Data"].mean(),
+        'Further Specification': df_ttr_un["Further Specification"].mean(),
+        'XOR Gateway': df_ttr_un["XOR Gateway"].mean(),
+        'Condition Specification': df_ttr_un["Condition Specification"].mean(),
+        'AND Gateway': df_ttr_un["AND Gateway"].mean(),
+        'All': df_ttr_un["All"].mean(),
+    }
+    new_df_ttr_mean_series_un = pd.Series(new_df_ttr_mean_dict_un)
+    df_ttr_mean_un = df_ttr_mean_un.append(new_df_ttr_mean_series_un, ignore_index=True)
+
+    # get mean ucer
+    new_df_ucer_mean_dict = {
+        'Actor': df_ucer["Actor"].mean(),
+        'Activity': df_ucer["Activity"].mean(),
+        'Activity Data': df_ucer["Activity Data"].mean(),
+        'Further Specification': df_ucer["Further Specification"].mean(),
+        'XOR Gateway': df_ucer["XOR Gateway"].mean(),
+        'Condition Specification': df_ucer["Condition Specification"].mean(),
+        'AND Gateway': df_ucer["AND Gateway"].mean(),
+        'All': df_ucer["All"].mean(),
+    }
+    new_df_ucer_mean_series = pd.Series(new_df_ucer_mean_dict)
+    df_ucer_mean = df_ucer_mean.append(new_df_ucer_mean_series, ignore_index=True)
+
+    # get mean ucer
+    new_df_ucer_mean_dict_un = {
+        'Actor': df_ucer_un["Actor"].mean(),
+        'Activity': df_ucer_un["Activity"].mean(),
+        'Activity Data': df_ucer_un["Activity Data"].mean(),
+        'Further Specification': df_ucer_un["Further Specification"].mean(),
+        'XOR Gateway': df_ucer_un["XOR Gateway"].mean(),
+        'Condition Specification': df_ucer_un["Condition Specification"].mean(),
+        'AND Gateway': df_ucer_un["AND Gateway"].mean(),
+        'All': df_ucer_un["All"].mean(),
+    }
+    new_df_ucer_mean_series_un = pd.Series(new_df_ucer_mean_dict_un)
+    df_ucer_mean_un = df_ucer_mean_un.append(new_df_ucer_mean_series_un, ignore_index=True)
+
+    bleu_mean = df_bleu['Bleu Score'].mean()
+    # get df complete series
+    new_dict_series = {
+        'F1 CRF': f_score_crf,
+         'F1 Neural': f_score_neural,
+         'F1 Relation': f_score_rel,
+        'TTR': df_ttr_mean['All'][0],
+        'UCER': df_ucer_mean['All'][0],
+        'BleuScore': bleu_mean}
+    new_df_complete_series = pd.Series(data=new_dict_series)
+
+    return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bleu, df_ttr_un, df_ucer_un, \
+        df_ttr_mean_un, df_ucer_mean_un, bleu_mean
