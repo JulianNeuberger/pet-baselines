@@ -5,6 +5,8 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import norm
+from scipy.stats import chi2
+import json
 class Plot:
     def __init__(self):
         pass
@@ -195,12 +197,12 @@ class Plot:
     @staticmethod
     def f1_norm():
         sns.set_theme()
-        str = "3"
+        str = "101"
         str2 = "3"
         path = f"./../experiment_results/rate{str}/all_means.json"
         df = pd.read_json(path_or_buf=path)
         #rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
-        rate = [0.0, 1.0, 2.0, 3.0, 4.0]
+        rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
         df["Aug Rate"] = rate
 
         #fig = plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
@@ -239,31 +241,83 @@ class Plot:
         mean = np.mean(df["F1 CRF"])
         print(mean)
         print(std)
-        x = np.linspace(0, 4, 5000) # an x achse verschieben und wie viele unterteilungen
+        x = np.linspace(0, 10, 5000) # an x achse verschieben und wie viele unterteilungen
         fig, ax = plt.subplots()
         ax.plot(x, norm.pdf(x, 3, mean))
         plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
         plt.show()
+        figg = fig.figure
+        figg.savefig("./../experiment_results/rate101/f1_norm.png")
+        figg.savefig("./../experiment_results/rate101/f1_norm.pdf")
 
+    @staticmethod
+    def f1_chi2():
+        sns.set_theme()
+        str = "101"
+        path = f"./../experiment_results/rate{str}/all_means.json"
+        df = pd.read_json(path_or_buf=path)
+        min = np.min(df["F1 CRF"])
+        df5 = copy.deepcopy(df)
+        for i in range(len(df["F1 CRF"])):
+            df5["F1 CRF"][i] = df5["F1 CRF"][i] - min
+        rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+        df5["Aug Rate"] = rate
+        std = np.std(df5["F1 CRF"], ddof=1)
+        mean = np.mean(df5["F1 CRF"])
+        print(mean)
+        print(std)
+        x = np.linspace(0, 10, 5000)  # an x achse verschieben und wie viele unterteilungen
+        fig, ax = plt.subplots()
+        ax.plot(x, chi2.pdf(x, 5))
+        plt.scatter(x=df5["Aug Rate"], y=df5["F1 CRF"])
+        plt.show()
+        figg = fig.figure
+        figg.savefig("./../experiment_results/rate101/f1_chi2.png")
+        figg.savefig("./../experiment_results/rate101/f1_chi2.pdf")
 
     @staticmethod
     def calc_pearson():
-        str = "3"
+        str = "101"
         str2 = "3"
         path = f"./../experiment_results/rate{str}/all_means.json"
         df = pd.read_json(path_or_buf=path)
         # rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
         df2 = copy.deepcopy(df)
-        rate = [0.0, 1.0, 2.0, 3.0, 4.0]
+        rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
 
-        rateindex = ["0.0", "1.0", "2.0", "3.0", "4.0"]
+        rateindex = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
         df2.index = rateindex
         df2["Aug Rate"] = rate
 
-        df2 = df2.drop(labels=["0.0"], axis=0)
+        df2 = df2.drop(labels=[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], axis=0)
         print(df2)
         pear = scipy.stats.pearsonr(x=df2["Aug Rate"], y=df2["F1 CRF"])
         print(pear)
+        df_pear = pd.DataFrame()
+        df_pear["Pear"] = [pear[0], pear[1]]
+        df_pear.to_json(path_or_buf=f"./../experiment_results/rate{str}/Pearson.json", indent=4)
+
+    @staticmethod
+    def plot_rate_f1():
+        sns.set_theme()
+        str = "101"
+        str2 = "3"
+        path = f"./../experiment_results/rate{str}/all_means.json"
+        df = pd.read_json(path_or_buf=path)
+        # rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+        rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+        df["Aug Rate"] = rate
+        fig = sns.lineplot(x=df["Aug Rate"], y=df["F1 CRF"], data=df)
+        plt.show()
+        figg = fig.figure
+        figg.savefig("./../experiment_results/rate101/f1_rate_lineplot.png")
+        figg.savefig("./../experiment_results/rate101/f1_rate_lineplot.pdf")
+        plt.figure()
+        fig2 = plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
+        plt.show()
+        figg2 = fig2.figure
+        figg2.savefig("./../experiment_results/rate101/f1_rate_scatter.png")
+        figg2.savefig("./../experiment_results/rate101/f1_rate_scatter.pdf")
 
 
 sns.set_theme()
@@ -283,7 +337,8 @@ df["Aug Rate"] = rate
 #fii.savefig("./../experiment_results/rate100/f1_rate.pdf")
 #fii.savefig("./../experiment_results/rate100/f1_rate.png")
 #plt.show()
-#Plot.f1_norm()
+#Plot.plot_rate_f1()
 #Plot.all_means_prob_bleu()
 #Plot.all_entities_prob()
 Plot.calc_pearson()
+#Plot.f1_chi2()

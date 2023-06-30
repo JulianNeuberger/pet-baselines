@@ -1943,13 +1943,12 @@ def experiment82rate():  # with rate
     df_complete.to_json(path_or_buf=f"./experiment_results/rate82/{names[0]}.json", indent=4)
 
 
-
 def experiment3rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
-    names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]
-    doubled_train_folds = []
+    names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert", "ttr_un", "ucer_un", "ttr_mean_un", "ucer_mean_un"]
+
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(
         columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'BertScore'])
@@ -1957,25 +1956,25 @@ def experiment3rate():  # with rate
         columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                  'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    rate = np.linspace(0,4,9)
+    rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
     for i in rate:
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo3Step(max_adj=10, prob=0.5)  # adapt
+        unaugmented_train_folds = copy.deepcopy(train_folds)
+        augmentation_step: augment.AugmentationStep = augment.Trafo3Step(prob=0.5, max_adj=10)  # adapt
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
-            #augmented_train_set.extend(train_folds[j])
+            augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
+            augmented_train_set = augmented_train_sets[0]
+            unaugmented_train_set = augmented_train_sets[1]
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+            unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
 
         # actual training
         f_1_scores = run_experiment("Experiment 3", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -1985,12 +1984,12 @@ def experiment3rate():  # with rate
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/rate3/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
-    # df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
-    df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
-    # df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    df_complete.index = ["0.0", "0.1", "0.2","0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0", "7.0", "10.0"]
+    df_entities.index = ["0.0", "0.1", "0.2","0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0", "7.0", "10.0"]
+
     df_entities.to_json(path_or_buf="./experiment_results/rate3/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate3/{names[0]}.json", indent=4)
+
 
 def experiment90rate():  # with rate
     # Get the data for augmenting and training
@@ -2372,13 +2371,13 @@ def experiment100test():  # with rate
 #experiment19_3()
 #get_unaug()
 
-experiment101rate() #
+#experiment101rate() #
 #experiment82rate()
-#experiment3rate() #
-#experiment90rate() #
+experiment3rate()
+#experiment90rate()
 #experiment100rate()
-#experiment101test() #
+#experiment101test()
 #experiment82test()
-#experiment3test() #
-#experiment90test() #
+#experiment3test()
+#experiment90test()
 #experiment100test()
