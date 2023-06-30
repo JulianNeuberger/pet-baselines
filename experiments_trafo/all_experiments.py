@@ -2900,8 +2900,8 @@ def experiment103test():  # with rate
 #experiment86_4() #
 #experiment101_1() #
 #experiment101_2() #
-experiment58_1()
-#experiment58_2()
+#experiment58_1() # trafo581
+experiment58_2() #trafo582
 #experiment5_1() #
 #experiment82_1() #
 #experiment82_2() #
