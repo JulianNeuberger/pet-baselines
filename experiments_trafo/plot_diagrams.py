@@ -1,8 +1,9 @@
 import copy
-
+import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.stats import norm
 class Plot:
     def __init__(self):
         pass
@@ -190,6 +191,46 @@ class Plot:
         figg1.savefig(f"./../experiment_results/trafo{str}/exp{str2}/plots/all_ent_prob_and.pdf")
         plt.figure()
 
+    @staticmethod
+    def f1_norm():
+        sns.set_theme()
+        str = "3"
+        str2 = "3"
+        path = f"./../experiment_results/rate{str}/all_means.json"
+        df = pd.read_json(path_or_buf=path)
+        #rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+        rate = [0.0, 1.0, 2.0, 3.0, 4.0]
+        df["Aug Rate"] = rate
+        fig = plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
+        #plt.show()
+        #fig, ax = plt.subplots(1, 1)
+        mean, var, skew, kurt = norm.stats(moments='mvsk')
+       # x = np.linspace(norm.ppf(0.01), norm.ppf(0.99), 100)
+        #fig.plot(x, norm.pdf(x), 'r-', lw=5, alpha=0.6, label='norm pdf')
+        #ax.plot(x, norm.pdf(x), 'r-', lw=5, alpha=0.6, label='norm pdf')
+        # rv = norm()
+        # ax.plot(x, rv.pdf(x), 'k-', lw=2, label='frozen pdf')
+        # r = norm.rvs(size=1000)
+        #plt.hist(df["F1 CRF"], density=True, bins='auto', histtype='stepfilled', alpha=0.2)
+        #ax.set_xlim([x[0], x[-1]])
+        #ax.legend(loc='best', frameon=False)
+        # plt.show()
+        #fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
+
+        std= np.std(df["F1 CRF"], ddof=1)
+        mean = np.mean(df["F1 CRF"])
+        domainx = np.linspace(np.min(df["F1 CRF"]), np.max(df["F1 CRF"]))
+        domainy = np.linspace(np.min(df["F1 CRF"]), np.max(df["F1 CRF"]))
+        #domain = np.linspace()
+        plt.plot(domain, domain, norm.pdf(domain, mean, std))
+        plt.hist(df["F1 CRF"], edgecolor="black", alpha = 0.5, density=True)
+        plt.title("normal fit")
+        plt.xlabel("Aug Faktor")
+        plt.ylabel("Density")
+        plt.legend()
+        plt.show()
+
+
 sns.set_theme()
 str = "3"
 str2 = "3.1"
@@ -202,11 +243,11 @@ rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 #df["Probability"] = prob_list
 df["Aug Rate"] = rate
 print(df)
-fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
-fii = fig.figure
-fii.savefig("./../experiment_results/rate100/f1_rate.pdf")
-fii.savefig("./../experiment_results/rate100/f1_rate.png")
-plt.show()
-
+#fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
+#fii = fig.figure
+#fii.savefig("./../experiment_results/rate100/f1_rate.pdf")
+#fii.savefig("./../experiment_results/rate100/f1_rate.png")
+#plt.show()
+Plot.f1_norm()
 #Plot.all_means_prob_bleu()
 #Plot.all_entities_prob()
