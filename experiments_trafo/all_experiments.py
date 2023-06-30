@@ -2913,8 +2913,8 @@ def experiment103test():  # with rate
 #experiment103_3() #
 #experiment40_1() #
 #experiment40_2()# trafo402
-experiment40_3()# trafo403
-#experiment40_4()# trafo404
+#experiment40_3()# trafo403
+experiment40_4()# trafo404
 #experiment9_1()
 #experiment9_2()
 #experiment10_1()
