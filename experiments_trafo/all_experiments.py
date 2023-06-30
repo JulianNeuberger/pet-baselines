@@ -1,5 +1,6 @@
 import copy
 
+import nltk
 import numpy as np
 
 import data
@@ -2035,6 +2036,8 @@ def experiment90rate():  # with rate
 
 def experiment100rate():  # with rate
     # Get the data for augmenting and training
+
+    nltk.download('stopwords')
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
     names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert"]

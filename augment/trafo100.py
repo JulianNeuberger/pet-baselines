@@ -16,6 +16,8 @@ class Trafo100Step(base.AugmentationStep):
         self.stopwords = stopwords.words("english")
 
     def do_augment(self,  doc: model.Document):
+
+
         random.seed(self.seed)
         if self.pos_type:
             pos_wordnet_dict = {
