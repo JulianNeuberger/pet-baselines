@@ -1676,7 +1676,7 @@ def experiment40_2():
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
@@ -1721,7 +1721,7 @@ def experiment40_3():
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
@@ -1813,7 +1813,7 @@ def experiment40_4():
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
