@@ -2049,7 +2049,7 @@ def experiment100rate():  # with rate
         columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                  'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    rate = np.linspace(0,4,5)
+    rate = np.linspace(0,4,9)
     for i in rate:
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Trafo100Step(prob=0.5)  # adapt
@@ -2077,10 +2077,10 @@ def experiment100rate():  # with rate
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/rate100/{names[k]}_{i}.json", indent=4)
 
-    #df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
-    df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
-    #df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
-    df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    #df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    #df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
     df_entities.to_json(path_or_buf="./experiment_results/rate100/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/{names[0]}.json", indent=4)
 
@@ -2374,4 +2374,4 @@ experiment100rate()
 #experiment82test()
 #experiment3test() #
 #experiment90test() #
-experiment100test()
+#experiment100test()
