@@ -2904,7 +2904,7 @@ def experiment103test():  # with rate
 #experiment58_2()
 #experiment5_1() #
 #experiment82_1() #
-experiment82_2() ###
+#experiment82_2() #
 #experiment100_1() ####################
 #experiment100_2()  ###################
 #experiment90_1() #
@@ -2928,7 +2928,7 @@ experiment82_2() ###
 #experiment101rate() #
 #experiment3rate() #
 #experiment86rate() #
-#experiment82rate()
+experiment82rate()
 #experiment90rate() #
 #experiment100rate() #rate1002
 #experiment5rate() #
