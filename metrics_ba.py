@@ -158,6 +158,73 @@ class Metrics:
         #return gmean(trigram)
         return new_series
 
+    def calculate_ttr_un(self, fold_number):
+        ttr_list = {}
+        for ner in self.entity_list:
+            entity_counter = 0
+            all_counter = 0
+            unique_token = []
+            unique_token_all = []
+            entity_ttr = 0
+            for doc in self.unaug_train_set[fold_number]:
+                for sentence in doc.sentences:
+                    for token in sentence.tokens:
+                        if token.bio_tag != "O":
+                            bio_list = token.bio_tag.split("-")
+                            if len(bio_list) > 1:
+                                all_counter += 1
+                                bio = bio_list[1]
+                                lower_text_all = token.text.lower()
+                                if lower_text_all not in unique_token_all:
+                                    unique_token_all.append(lower_text_all)
+                                if bio == ner:
+                                    entity_counter += 1
+                                    lower_text = token.text.lower()
+                                    if lower_text not in unique_token:
+                                        unique_token.append(lower_text)
+            if entity_counter != 0:
+                entity_ttr = len(unique_token) / entity_counter
+                ttr_list[ner] = entity_ttr
+            else:
+                ttr_list[ner] = 0
+            ttr_list["All"] = len(unique_token_all) / all_counter
+        # print(ttr_list)
+        new_series = pd.Series(data=ttr_list)
+        return new_series
+
+    def calculate_ttr_trigram_un(self, fold_number):
+        ttr_list = {}
+        for ner in self.entity_list:
+            unique_trigrams_list = []
+            unique_trigrams_list_all = []
+            entity_counter = 0
+            all_counter = 0
+            for doc in self.unaug_train_set[fold_number]:
+                for sentence in doc.sentences:
+                    for i in range(len(sentence.tokens)):
+                        if 0 < i < len(sentence.tokens):
+                            if sentence.tokens[i].bio_tag != "O":
+                                bio_list = sentence.tokens[i].bio_tag.split("-")
+                                if len(bio_list) > 1:
+                                    bio = bio_list[1]
+                                    all_counter += 1
+                                    trigram = [sentence.tokens[i - 1].text.lower(), sentence.tokens[i].text.lower(),
+                                               sentence.tokens[i + 1].text.lower()]
+                                    if trigram not in unique_trigrams_list_all:
+                                        unique_trigrams_list_all.append(trigram)
+                                    if bio == ner:
+                                        entity_counter += 1
+                                        if trigram not in unique_trigrams_list:
+                                            unique_trigrams_list.append(trigram)
+            if entity_counter != 0:
+                entity_ttr = len(unique_trigrams_list) / entity_counter
+                ttr_list[ner] = entity_ttr
+            else:
+                ttr_list[ner] = 0
+            ttr_list["All"] = len(unique_trigrams_list_all) / all_counter
+        new_series = pd.Series(data=ttr_list)
+        return new_series
+
 tokens = [model.Token(text="I", index_in_document=0,
                       pos_tag="PRP",
                       bio_tag="B-Actor",

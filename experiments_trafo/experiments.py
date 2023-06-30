@@ -170,12 +170,12 @@ def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score_crf, f_
 
     # get df complete series
     new_dict_series = {
-         '$F_{1}_CRF$': f_score_crf,
-         '$F_{1}_Neural$': f_score_neural,
-         '$F_{1}_Relation$': f_score_rel,
-         '$TTR$': df_ttr_mean['All'][0],
-         '$UCER$': df_ucer_mean['All'][0],
-         '$BleuScore$': bleu_mean}
+         'F1 CRF': f_score_crf,
+         'F1 Neural': f_score_neural,
+         'F1 Relation': f_score_rel,
+         'TTR': df_ttr_mean['All'][0],
+         'UCER': df_ucer_mean['All'][0],
+         'BleuScore': bleu_mean}
     new_df_complete_series = pd.Series(data=new_dict_series)
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bleu, bleu_mean
@@ -239,12 +239,12 @@ def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score_crf, f_
 
     # get df complete series
     new_dict_series = {
-        '$F_{1}_CRF$': f_score_crf,
-         '$F_{1}_Neural$': f_score_neural,
-         '$F_{1}_Relation$': f_score_rel,
-        '$TTR$': df_ttr_mean['All'][0],
-        '$UCER$': df_ucer_mean['All'][0],
-        '$BertScore$': bert_mean}
+        'F1 CRF': f_score_crf,
+         'F1 Neural': f_score_neural,
+         'F1 Relation': f_score_rel,
+        'TTR': df_ttr_mean['All'][0],
+        'UCER': df_ucer_mean['All'][0],
+        'BertScore': bert_mean}
     new_df_complete_series = pd.Series(data=new_dict_series)
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bert, bert_mean
@@ -310,6 +310,16 @@ def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_cr
                                     'Condition Specification', 'AND Gateway', 'All'])
     df_ucer_mean = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                          'Condition Specification', 'AND Gateway', 'All'])
+    df_bert = pd.DataFrame(columns=['Bert Score'])
+    df_ttr_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                   'Condition Specification', 'AND Gateway', 'All'])
+    df_ttr_mean_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                    'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer_mean_un = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                         'Condition Specification', 'AND Gateway', 'All'])
+
 
     for i in range(5):
         # get TTR
@@ -320,6 +330,17 @@ def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_cr
         new_df_ucer_series = metrics.calculate_ttr_trigram(i)
         df_ucer = df_ucer.append(new_df_ucer_series, ignore_index=True)
 
+        # get Bert
+        new_df_bert_series = metrics.calculate_bert(i)
+        df_bert = df_bert.append(new_df_bert_series, ignore_index=True)
+
+        # get TTR
+        new_df_ttr_series_un = metrics.calculate_ttr_un(i)
+        df_ttr_un = df_ttr_un.append(new_df_ttr_series_un, ignore_index=True)
+
+        # get UCER
+        new_df_ucer_series_un = metrics.calculate_ttr_trigram_un(i)
+        df_ucer_un = df_ucer_un.append(new_df_ucer_series_un, ignore_index=True)
 
     # get mean ttr
     new_df_ttr_mean_dict = {
@@ -335,6 +356,20 @@ def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_cr
     new_df_ttr_mean_series = pd.Series(new_df_ttr_mean_dict)
     df_ttr_mean = df_ttr_mean.append(new_df_ttr_mean_series, ignore_index=True)
 
+    # get mean ttr
+    new_df_ttr_mean_dict_un = {
+        'Actor': df_ttr_un["Actor"].mean(),
+        'Activity': df_ttr_un["Activity"].mean(),
+        'Activity Data': df_ttr_un["Activity Data"].mean(),
+        'Further Specification': df_ttr_un["Further Specification"].mean(),
+        'XOR Gateway': df_ttr_un["XOR Gateway"].mean(),
+        'Condition Specification': df_ttr_un["Condition Specification"].mean(),
+        'AND Gateway': df_ttr_un["AND Gateway"].mean(),
+        'All': df_ttr_un["All"].mean(),
+    }
+    new_df_ttr_mean_series_un = pd.Series(new_df_ttr_mean_dict_un)
+    df_ttr_mean_un = df_ttr_mean_un.append(new_df_ttr_mean_series_un, ignore_index=True)
+
     # get mean ucer
     new_df_ucer_mean_dict = {
         'Actor': df_ucer["Actor"].mean(),
@@ -349,13 +384,30 @@ def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_cr
     new_df_ucer_mean_series = pd.Series(new_df_ucer_mean_dict)
     df_ucer_mean = df_ucer_mean.append(new_df_ucer_mean_series, ignore_index=True)
 
+    # get mean ucer
+    new_df_ucer_mean_dict_un = {
+        'Actor': df_ucer_un["Actor"].mean(),
+        'Activity': df_ucer_un["Activity"].mean(),
+        'Activity Data': df_ucer_un["Activity Data"].mean(),
+        'Further Specification': df_ucer_un["Further Specification"].mean(),
+        'XOR Gateway': df_ucer_un["XOR Gateway"].mean(),
+        'Condition Specification': df_ucer_un["Condition Specification"].mean(),
+        'AND Gateway': df_ucer_un["AND Gateway"].mean(),
+        'All': df_ucer_un["All"].mean(),
+    }
+    new_df_ucer_mean_series_un = pd.Series(new_df_ucer_mean_dict_un)
+    df_ucer_mean_un = df_ucer_mean_un.append(new_df_ucer_mean_series_un, ignore_index=True)
+
+    bert_mean = df_bert['Bert Score'].mean()
     # get df complete series
     new_dict_series = {
-        '$F_{1}_CRF$': f_score_crf,
-         '$F_{1}_Neural$': f_score_neural,
-         '$F_{1}_Relation$': f_score_rel,
-        '$TTR$': df_ttr_mean['All'][0],
-        '$UCER$': df_ucer_mean['All'][0]}
+        'F1 CRF': f_score_crf,
+         'F1 Neural': f_score_neural,
+         'F1 Relation': f_score_rel,
+        'TTR': df_ttr_mean['All'][0],
+        'UCER': df_ucer_mean['All'][0],
+        'BertScore': bert_mean}
     new_df_complete_series = pd.Series(data=new_dict_series)
 
-    return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean
+    return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bert, df_ttr_un, df_ucer_un, \
+        df_ttr_mean_un, df_ucer_mean_un, bert_mean
