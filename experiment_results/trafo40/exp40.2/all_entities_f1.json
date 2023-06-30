@@ -1,0 +1,58 @@
+{
+    "Actor":{
+        "speaker":0.6730274818,
+        "filler":0.701727752,
+        "uncertain":0.690697009,
+        "speaker&filler":0.6951975771,
+        "speaker&uncertain":0.6789328104,
+        "filler&uncertain":0.6915526915
+    },
+    "Activity":{
+        "speaker":0.7526190024,
+        "filler":0.779126663,
+        "uncertain":0.7935792897,
+        "speaker&filler":0.7750078982,
+        "speaker&uncertain":0.779154506,
+        "filler&uncertain":0.7878189434
+    },
+    "Activity Data":{
+        "speaker":0.6203886583,
+        "filler":0.626859052,
+        "uncertain":0.6273081934,
+        "speaker&filler":0.6299784098,
+        "speaker&uncertain":0.6325610186,
+        "filler&uncertain":0.618137737
+    },
+    "Further Specification":{
+        "speaker":0.2447826087,
+        "filler":0.237235023,
+        "uncertain":0.2341528406,
+        "speaker&filler":0.2197542243,
+        "speaker&uncertain":0.2328829994,
+        "filler&uncertain":0.2150854701
+    },
+    "XOR Gateway":{
+        "speaker":0.7059637947,
+        "filler":0.723798627,
+        "uncertain":0.6924545455,
+        "speaker&filler":0.7051278099,
+        "speaker&uncertain":0.7194353473,
+        "filler&uncertain":0.7124292616
+    },
+    "Condition Specification":{
+        "speaker":0.6155140088,
+        "filler":0.6474534161,
+        "uncertain":0.60632399,
+        "speaker&filler":0.6026978679,
+        "speaker&uncertain":0.6407442225,
+        "filler&uncertain":0.6197716009
+    },
+    "AND Gateway":{
+        "speaker":0.1,
+        "filler":0.28,
+        "uncertain":0.28,
+        "speaker&filler":0.3,
+        "speaker&uncertain":0.3,
+        "filler&uncertain":0.28
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "F1 CRF":{
+        "Actor":0.5788647284,
+        "Activity":0.5788647284,
+        "Activity Data":0.5788647284,
+        "Further Specification":0.5788647284,
+        "XOR Gateway":0.5788647284,
+        "Condition Specification":0.5788647284,
+        "AND Gateway":0.5788647284,
+        "All":0.5788647284
+    },
+    "F1 Neural":{
+        "Actor":0.3286362852,
+        "Activity":0.3286362852,
+        "Activity Data":0.3286362852,
+        "Further Specification":0.3286362852,
+        "XOR Gateway":0.3286362852,
+        "Condition Specification":0.3286362852,
+        "AND Gateway":0.3286362852,
+        "All":0.3286362852
+    },
+    "F1 Relation":{
+        "Actor":0.3189439674,
+        "Activity":0.3189439674,
+        "Activity Data":0.3189439674,
+        "Further Specification":0.3189439674,
+        "XOR Gateway":0.3189439674,
+        "Condition Specification":0.3189439674,
+        "AND Gateway":0.3189439674,
+        "All":0.3189439674
+    },
+    "TTR":{
+        "Actor":0.1189255963,
+        "Activity":0.1189255963,
+        "Activity Data":0.1189255963,
+        "Further Specification":0.1189255963,
+        "XOR Gateway":0.1189255963,
+        "Condition Specification":0.1189255963,
+        "AND Gateway":0.1189255963,
+        "All":0.1189255963
+    },
+    "UCER":{
+        "Actor":0.3973498751,
+        "Activity":0.3973498751,
+        "Activity Data":0.3973498751,
+        "Further Specification":0.3973498751,
+        "XOR Gateway":0.3973498751,
+        "Condition Specification":0.3973498751,
+        "AND Gateway":0.3973498751,
+        "All":0.3973498751
+    },
+    "BleuScore":{
+        "Actor":1.0,
+        "Activity":1.0,
+        "Activity Data":1.0,
+        "Further Specification":1.0,
+        "XOR Gateway":1.0,
+        "Condition Specification":1.0,
+        "AND Gateway":1.0,
+        "All":1.0
+    }
+}
