@@ -1951,7 +1951,7 @@ def experiment5rate():  # with rate
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(
-        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'Bert Score'])
+        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'BertScore'])
     df_entities = pd.DataFrame(
         columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                  'Condition Specification', 'AND Gateway'])
@@ -1998,7 +1998,7 @@ def experiment3rate():  # with rate
 
     # specific for this experiment
     df_complete: pd.DataFrame = pd.DataFrame(
-        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'Bleu Score'])
+        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'BleuScore'])
     df_entities = pd.DataFrame(
         columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                  'Condition Specification', 'AND Gateway'])
