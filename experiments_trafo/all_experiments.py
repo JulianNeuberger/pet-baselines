@@ -2911,10 +2911,10 @@ def experiment103test():  # with rate
 #experiment103_1() #
 #experiment103_2() #
 #experiment103_3() #
-experiment40_1()###
-#experiment40_2()###
-#experiment40_3()###
-#experiment40_4()###
+#experiment40_1() #
+experiment40_2()# trafo402
+#experiment40_3()# trafo403
+#experiment40_4()# trafo404
 #experiment9_1()
 #experiment9_2()
 #experiment10_1()
@@ -2927,15 +2927,15 @@ experiment40_1()###
 
 #experiment101rate() #
 #experiment3rate() #
-#experiment86rate() #rate86
+#experiment86rate() #
 #experiment82rate()
-#experiment90rate() #rate90
+#experiment90rate() #
 #experiment100rate() #rate100
-#experiment5rate() #rate5
+#experiment5rate() #
 #experiment58rate()
 #experiment39rate() #rate39
-#experiment40rate()
-#experiment103rate() #rate103
+#experiment40rate() # rate40
+#experiment103rate() #
 
 #experiment101test()
 #experiment82test()
