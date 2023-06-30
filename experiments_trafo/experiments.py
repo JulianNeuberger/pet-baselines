@@ -24,7 +24,7 @@ def run_experiment(name: str, aug_train_folds, test_folds):
     rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
                                                     num_trees=100, negative_sampling_rate=40.0)
     res = cross_validate_pipeline_macro(
-        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext_rule]),
+        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext]),
         train_folds=aug_train_folds,
         test_folds=test_folds
     )
