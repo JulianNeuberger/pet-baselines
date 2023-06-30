@@ -193,19 +193,19 @@ class Plot:
 sns.set_theme()
 str = "3"
 str2 = "3.1"
-path = f"./../experiment_results/rate101/all_means.json"
+path = f"./../experiment_results/rate100/all_means.json"
 df = pd.read_json(path_or_buf=path)
 
 prob_list = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5", "0.55", "0.6",
              "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
-rate = [0.0, 1.0, 2.0, 3.0, 4.0]
+rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 #df["Probability"] = prob_list
 df["Aug Rate"] = rate
 print(df)
 fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
 fii = fig.figure
-fii.savefig("./../experiment_results/rate101/f1_rate.pdf")
-fii.savefig("./../experiment_results/rate101/f1_rate.png")
+fii.savefig("./../experiment_results/rate100/f1_rate.pdf")
+fii.savefig("./../experiment_results/rate100/f1_rate.png")
 plt.show()
 
 #Plot.all_means_prob_bleu()
