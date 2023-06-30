@@ -42,8 +42,8 @@ def run_augmentation(dataset: typing.List[model.Document], step: base.Augmentati
         indices2.append(i)
     print(len(indices2))
     shuffle(indices2)
-    unaug_dataset_shuff = copy.deepcopy(unaug_dataset)
-    aug_dataset_shuff = copy.deepcopy(aug_data)
+    unaug_dataset_shuff = []
+    aug_dataset_shuff = []
     for i in range(len(indices2)):
         unaug_dataset_shuff.append(unaug_dataset[indices2[i]])
         aug_dataset_shuff.append(aug_data[indices2[i]])
