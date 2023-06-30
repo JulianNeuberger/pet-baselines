@@ -2930,13 +2930,13 @@ def experiment103test():  # with rate
 #experiment90test()
 #experiment86rate()
 #experiment82rate()
-#experiment90rate()
+experiment90rate() #rate90
 #experiment100rate() #rate100
 #experiment5rate() #rate5
 #experiment58rate()
 #experiment39rate() #rate39
 #experiment40rate()
-experiment103rate() #rate103
+#experiment103rate() #rate103
 
 #experiment101test()
 #experiment82test()
