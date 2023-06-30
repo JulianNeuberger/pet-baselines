@@ -1,5 +1,6 @@
 import copy
 import numpy as np
+import scipy.stats
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -201,7 +202,8 @@ class Plot:
         #rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
         rate = [0.0, 1.0, 2.0, 3.0, 4.0]
         df["Aug Rate"] = rate
-        fig = plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
+
+        #fig = plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
         #plt.show()
         #fig, ax = plt.subplots(1, 1)
         mean, var, skew, kurt = norm.stats(moments='mvsk')
@@ -217,18 +219,51 @@ class Plot:
         # plt.show()
         #fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
 
-        std= np.std(df["F1 CRF"], ddof=1)
-        mean = np.mean(df["F1 CRF"])
-        domainx = np.linspace(np.min(df["F1 CRF"]), np.max(df["F1 CRF"]))
-        domainy = np.linspace(np.min(df["F1 CRF"]), np.max(df["F1 CRF"]))
+        # plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
+        # plt.show()
+        # std= np.std(df["F1 CRF"], ddof=1)
+        # mean = np.mean(df["F1 CRF"])
+        # domainx = np.linspace(np.min(df["F1 CRF"]), np.max(df["F1 CRF"]))
+        #domainy = np.linspace(np.min(df["F1 CRF"]), np.max(df["F1 CRF"]))
         #domain = np.linspace()
-        plt.plot(domain, domain, norm.pdf(domain, mean, std))
-        plt.hist(df["F1 CRF"], edgecolor="black", alpha = 0.5, density=True)
-        plt.title("normal fit")
-        plt.xlabel("Aug Faktor")
-        plt.ylabel("Density")
-        plt.legend()
+        # plt.plot(domainx, norm.pdf(domainx, mean, std))
+        # df2 = pd.DataFrame()
+        #
+        # plt.hist(df["F1 CRF"], edgecolor="black", alpha = 0.5, density=True)
+        # plt.title("normal fit")
+        # plt.xlabel("Aug Faktor")
+        # plt.ylabel("F1")
+        # plt.legend()
+        # plt.show()
+        std = np.std(df["F1 CRF"], ddof=1)
+        mean = np.mean(df["F1 CRF"])
+        print(mean)
+        print(std)
+        x = np.linspace(0, 4, 5000) # an x achse verschieben und wie viele unterteilungen
+        fig, ax = plt.subplots()
+        ax.plot(x, norm.pdf(x, 3, mean))
+        plt.scatter(x=df["Aug Rate"], y=df["F1 CRF"])
         plt.show()
+
+
+    @staticmethod
+    def calc_pearson():
+        str = "3"
+        str2 = "3"
+        path = f"./../experiment_results/rate{str}/all_means.json"
+        df = pd.read_json(path_or_buf=path)
+        # rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+        df2 = copy.deepcopy(df)
+        rate = [0.0, 1.0, 2.0, 3.0, 4.0]
+
+        rateindex = ["0.0", "1.0", "2.0", "3.0", "4.0"]
+        df2.index = rateindex
+        df2["Aug Rate"] = rate
+
+        df2 = df2.drop(labels=["0.0"], axis=0)
+        print(df2)
+        pear = scipy.stats.pearsonr(x=df2["Aug Rate"], y=df2["F1 CRF"])
+        print(pear)
 
 
 sns.set_theme()
@@ -242,12 +277,13 @@ prob_list = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45",
 rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 #df["Probability"] = prob_list
 df["Aug Rate"] = rate
-print(df)
+#print(df)
 #fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
 #fii = fig.figure
 #fii.savefig("./../experiment_results/rate100/f1_rate.pdf")
 #fii.savefig("./../experiment_results/rate100/f1_rate.png")
 #plt.show()
-Plot.f1_norm()
+#Plot.f1_norm()
 #Plot.all_means_prob_bleu()
 #Plot.all_entities_prob()
+Plot.calc_pearson()
