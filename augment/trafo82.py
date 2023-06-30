@@ -47,7 +47,6 @@ class Trafo82Step(base.AugmentationStep):
                     #  when there is an expanded form, replace the token with the new one and create new ones
                     if all_abb != []:
                         #  select a random expanded form from the list and split in tokens
-                        print(token.bio_tag)
                         rand_int = randint(0, len(all_abb) - 1)
                         expanded_list_splitted = expanded_list[all_abb[rand_int] - 1].split()
                         token_list = []

@@ -502,7 +502,7 @@ def experiment82_2():  # Probability of replacement
                                                                               long_to_short=long_to_short)  # adapt
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
             train_fold = copy.deepcopy(train_folds[j])
@@ -2904,9 +2904,9 @@ def experiment103test():  # with rate
 #experiment58_2()
 #experiment5_1() #
 #experiment82_1() #
-#experiment82_2() ###
-#experiment100_1()
-#experiment100_2()
+experiment82_2() ###
+#experiment100_1() ####################
+#experiment100_2()  ###################
 #experiment90_1() #
 #experiment103_1() #
 #experiment103_2() #
@@ -2934,7 +2934,7 @@ def experiment103test():  # with rate
 #experiment5rate() #
 #experiment58rate()
 #experiment39rate() #rate392
-experiment40rate() # rate40
+#experiment40rate() # rate40
 #experiment103rate() #
 
 #experiment101test()
