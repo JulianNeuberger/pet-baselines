@@ -546,7 +546,7 @@ def experiment100_1():  # Probability of replacement
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
             train_fold = copy.deepcopy(train_folds[j])
@@ -598,7 +598,7 @@ def experiment100_2():  # Probability of replacement
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
             train_fold = copy.deepcopy(train_folds[j])
@@ -2905,16 +2905,16 @@ def experiment103test():  # with rate
 #experiment5_1() #
 #experiment82_1() #
 #experiment82_2() #
-#experiment100_1() ####################
+experiment100_1() ####################
 #experiment100_2()  ###################
 #experiment90_1() #
 #experiment103_1() #
 #experiment103_2() #
 #experiment103_3() #
 #experiment40_1() #
-#experiment40_2()# trafo402
-#experiment40_3()# trafo403
-#experiment40_4()# trafo404
+#experiment40_2()#
+#experiment40_3()#
+#experiment40_4()#
 #experiment9_1()
 #experiment9_2()
 #experiment10_1()
@@ -2928,13 +2928,13 @@ def experiment103test():  # with rate
 #experiment101rate() #
 #experiment3rate() #
 #experiment86rate() #
-experiment82rate()
+#experiment82rate()
 #experiment90rate() #
-#experiment100rate() #rate1002
+#experiment100rate() #
 #experiment5rate() #
 #experiment58rate()
-#experiment39rate() #rate392
-#experiment40rate() # rate40
+#experiment39rate() #
+#experiment40rate() #
 #experiment103rate() #
 
 #experiment101test()
