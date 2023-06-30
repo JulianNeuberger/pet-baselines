@@ -1610,7 +1610,7 @@ def experiment40_1():
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
 
@@ -2911,7 +2911,7 @@ def experiment103test():  # with rate
 #experiment103_1() #
 #experiment103_2() #
 #experiment103_3() #
-#experiment40_1()###
+experiment40_1()###
 #experiment40_2()###
 #experiment40_3()###
 #experiment40_4()###
@@ -2930,7 +2930,7 @@ def experiment103test():  # with rate
 #experiment86rate() #rate86
 #experiment82rate()
 #experiment90rate() #rate90
-experiment100rate() #rate100
+#experiment100rate() #rate100
 #experiment5rate() #rate5
 #experiment58rate()
 #experiment39rate() #rate39

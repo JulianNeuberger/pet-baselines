@@ -18,7 +18,8 @@ class Trafo40Step(base.AugmentationStep):
 
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
-
+        for mention in doc.mentions:
+            assert max(mention.token_indices) < len(doc.sentences[mention.sentence_index].tokens), "broken before trafo 40"
         # Speaker opinion/mental state phrases
         # Taken from Kovatchev et al. (2021)
         speaker_phrases = [
@@ -71,11 +72,10 @@ class Trafo40Step(base.AugmentationStep):
         # Add filler phrases, if enabled
         if self.filler_p:
             all_fill += fill_phrases
-
-        for sentence in doc.sentences:
+        for sentence_counter, sentence in enumerate(doc.sentences):
             # token counter to determine the sentence index and skip inserted words
             token_counter = 0
-            sentence_counter = 0
+
             while token_counter < len(sentence.tokens) - 1:  # -1 so that nothing can be inserted after the point
                 token = sentence.tokens[token_counter]
                 # only if tags are given the tokens should be checked for tags
@@ -108,6 +108,8 @@ class Trafo40Step(base.AugmentationStep):
 
                         # increase the token_counter so that the inserted words get skipped
                         token_counter += 1
+
                 token_counter += 1
-            sentence_counter += 1
+        for mention in doc.mentions:
+            assert max(mention.token_indices) < len(doc.sentences[mention.sentence_index].tokens), "broken after trafo 40"
         return doc
