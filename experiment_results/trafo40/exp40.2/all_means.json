@@ -1,0 +1,50 @@
+{
+    "F1 CRF":{
+        "speaker":0.5303279364,
+        "filler":0.5708857904,
+        "uncertain":0.560645124,
+        "speaker&filler":0.5611091124,
+        "speaker&uncertain":0.5691015577,
+        "filler&uncertain":0.5606851006
+    },
+    "F1 Neural":{
+        "speaker":0.32268088,
+        "filler":0.3115681364,
+        "uncertain":0.3174719796,
+        "speaker&filler":0.3247495281,
+        "speaker&uncertain":0.3253554171,
+        "filler&uncertain":0.3122404199
+    },
+    "F1 Relation":{
+        "speaker":0.2935707263,
+        "filler":0.2985145572,
+        "uncertain":0.2979403515,
+        "speaker&filler":0.2957562355,
+        "speaker&uncertain":0.3054122313,
+        "filler&uncertain":0.2947822492
+    },
+    "TTR":{
+        "speaker":0.0776466116,
+        "filler":0.0942805612,
+        "uncertain":0.0924077411,
+        "speaker&filler":0.0860030272,
+        "speaker&uncertain":0.0830159136,
+        "filler&uncertain":0.0943016123
+    },
+    "UCER":{
+        "speaker":0.644215058,
+        "filler":0.7617152479,
+        "uncertain":0.7281821708,
+        "speaker&filler":0.72911666,
+        "speaker&uncertain":0.7015954324,
+        "filler&uncertain":0.7747806609
+    },
+    "BleuScore":{
+        "speaker":0.0000000011,
+        "filler":0.0,
+        "uncertain":0.0000000001,
+        "speaker&filler":0.0,
+        "speaker&uncertain":0.0000000045,
+        "filler&uncertain":0.0000000052
+    }
+}
