@@ -1935,7 +1935,7 @@ def experiment5rate():  # with rate
         f_1_scores = run_experiment("Experiment 5", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate_bleu(unaug_train_folds=unaugmented_train_folds,
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -1982,7 +1982,7 @@ def experiment58rate():  # with rate
         f_1_scores = run_experiment("Experiment 58", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate_bleu(unaug_train_folds=unaugmented_train_folds,
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -2029,7 +2029,7 @@ def experiment82rate():  # with rate
         f_1_scores = run_experiment("Experiment 82", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate_bleu(unaug_train_folds=unaugmented_train_folds,
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -2077,7 +2077,7 @@ def experiment100rate():  # with rate
         f_1_scores = run_experiment("Experiment 100", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate_bleu(unaug_train_folds=unaugmented_train_folds,
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -2927,12 +2927,11 @@ def experiment103test():  # with rate
 
 #experiment101rate() #
 #experiment3rate() #
-#experiment90test()
-experiment86rate() #rate86
+#experiment86rate() #rate86
 #experiment82rate()
 #experiment90rate() #rate90
 #experiment100rate() #rate100
-#experiment5rate() #rate5
+experiment5rate() #rate5
 #experiment58rate()
 #experiment39rate() #rate39
 #experiment40rate()
@@ -2944,3 +2943,4 @@ experiment86rate() #rate86
 #experiment40test() ###
 #experiment103test() ###
 #experiment100test()
+#experiment90test()
