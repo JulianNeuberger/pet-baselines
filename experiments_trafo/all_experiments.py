@@ -2064,7 +2064,7 @@ def experiment100rate():  # with rate
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_scores = run_experiment("Experiment 90", augmented_train_folds, test_folds)
+        f_1_scores = run_experiment("Experiment 100", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
@@ -2306,7 +2306,7 @@ def experiment100test():  # with rate
             doubled_train_folds.append(train_fold)
 
         # actual training
-        f_1_scores = run_experiment("Experiment 90", augmented_train_folds, augmented_train_folds)
+        f_1_scores = run_experiment("Experiment 100", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
         all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
