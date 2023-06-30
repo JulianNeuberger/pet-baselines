@@ -103,7 +103,10 @@ class Trafo82Step(base.AugmentationStep):
                                 if len(expanded_double_list[i]) > 1:
                                     for j in range(1, len(expanded_double_list[i])):
                                         if k + j < len(sentence.tokens):
-                                            tokenmanager.delete_token(doc, sentence.tokens[k + j].index_in_document)
+                                            if k == len(sentence.tokens) - 1 and sentence.tokens[k + j].text == ".":
+                                                pass
+                                            else:
+                                                tokenmanager.delete_token(doc, sentence.tokens[k + j].index_in_document)
                         k += 1
         return doc
 
