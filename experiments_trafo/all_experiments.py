@@ -285,7 +285,7 @@ def experiment58_1():  # Probability of replacement
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
             train_fold = copy.deepcopy(train_folds[j])
@@ -351,7 +351,7 @@ def experiment58_2():  # Language
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_set.extend(train_folds[j])
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
             train_fold = copy.deepcopy(train_folds[j])
@@ -2900,13 +2900,13 @@ def experiment103test():  # with rate
 #experiment86_4() #
 #experiment101_1() #
 #experiment101_2() #
-#experiment58_1()
+experiment58_1()
 #experiment58_2()
 #experiment5_1() #
 #experiment82_1() #
 #experiment82_2() #
 #experiment100_1() # trafo1001
-experiment100_2()  # trafo1002
+#experiment100_2()  # trafo1002
 #experiment90_1() #
 #experiment103_1() #
 #experiment103_2() #
