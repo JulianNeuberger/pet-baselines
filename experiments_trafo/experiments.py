@@ -444,7 +444,7 @@ def evaluate_experiment_with_rate_bleu(unaug_train_folds, aug_train_folds, f_sco
         df_ucer = df_ucer.append(new_df_ucer_series, ignore_index=True)
 
         # get Bert
-        new_df_bleu_series = metrics.calculate_bleu(i)
+        new_df_bleu_series = metrics.calculate_bleu_rate(i)
         df_bleu = df_bleu.append(new_df_bleu_series, ignore_index=True)
 
         # get TTR

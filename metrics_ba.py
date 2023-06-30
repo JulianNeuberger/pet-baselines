@@ -225,6 +225,28 @@ class Metrics:
         new_series = pd.Series(data=ttr_list)
         return new_series
 
+
+    def calculate_bleu_rate(self, fold_number):
+        tup = []
+        # per document
+        for j in range(len(self.train_set[fold_number])):
+            # per sentence in document
+            for i in range(len(self.train_set[fold_number][j].sentences)):
+                sentence1 = []
+                for token in self.train_set[fold_number][j].sentences[i].tokens:
+                    sentence1.append(token.text)
+                sentence2 = []
+                for token in self.unaug_train_set[fold_number][j].sentences[i].tokens:
+                    sentence2.append(token.text)
+                tup.append((sentence1, sentence2))
+        trigram = []
+        for tu in tup:
+            trigram.append(sentence_bleu([tu[0]], tu[1], weights=(1, 0, 1, 0)))
+        bleu_list = {"Bleu Score": gmean(trigram)}
+        new_series = pd.Series(data=bleu_list)
+        #return gmean(trigram)
+        return new_series
+
 tokens = [model.Token(text="I", index_in_document=0,
                       pos_tag="PRP",
                       bio_tag="B-Actor",
