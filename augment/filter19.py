@@ -3,7 +3,7 @@ import operator
 
 from data import model
 from transformations import tokenmanager
-
+import copy
 
 class Filter19Step(base.AugmentationStep):
     def __init__(self, length: int=3, op: str="<", pos: str="N"):
@@ -30,7 +30,8 @@ class Filter19Step(base.AugmentationStep):
             "V": ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"],  # Verben
         }
         return pos_tags[pos_tag]
-    def do_augment(self, doc: model.Document) -> model.Document:
+    def do_augment(self, doc2: model.Document) -> model.Document:
+        doc = copy.deepcopy(doc2)
         i = 0
         while i < len(doc.sentences):
             sentence = doc.sentences[i]

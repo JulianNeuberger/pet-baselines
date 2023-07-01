@@ -1,3 +1,5 @@
+import copy
+
 from augment import base
 import operator
 from transformations import tokenmanager
@@ -20,7 +22,8 @@ class Filter9Step(base.AugmentationStep):
         }
         return ops[op]
 
-    def do_augment(self, doc: model.Document) -> model.Document:
+    def do_augment(self, doc2: model.Document) -> model.Document:
+        doc = copy.deepcopy(doc2)
         i = 0
         while i < len(doc.sentences):
             sentence = doc.sentences[i]

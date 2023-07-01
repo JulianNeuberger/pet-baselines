@@ -15,8 +15,8 @@ class Trafo100Step(base.AugmentationStep):
         self.pos_type = pos_type
         self.stopwords = stopwords.words("english")
 
-    def do_augment(self,  doc: model.Document):
-
+    def do_augment(self,  doc2: model.Document):
+        doc = copy.deepcopy(doc2)
 
         random.seed(self.seed)
         if self.pos_type:

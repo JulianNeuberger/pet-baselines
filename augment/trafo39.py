@@ -1,3 +1,5 @@
+import copy
+
 from augment import base
 from data import model
 from transformations import tokenmanager
@@ -13,8 +15,8 @@ class Trafo39Step(base.AugmentationStep):
     def __init__(self, prob=0.5):
         self.prob = prob
 
-    def do_augment(self, doc: model.Document):
-
+    def do_augment(self, doc2: model.Document):
+        doc = copy.deepcopy(doc2)
         # prepare token and tag sequences
         token_sequences = []
         tag_sequences = []

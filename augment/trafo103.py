@@ -17,7 +17,8 @@ class Trafo103Step(base.AugmentationStep):
         self.prob = prob
 
 
-    def do_augment(self, doc: model.Document) -> model.Document:
+    def do_augment(self, doc2: model.Document) -> model.Document:
+        doc = copy.deepcopy(doc2)
         possible_sequences = []
         for i in range(len(doc.sentences)):
             num_of_words = self.num_of_words

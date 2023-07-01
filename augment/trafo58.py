@@ -14,7 +14,8 @@ class Trafo58Step(base.AugmentationStep):
         self.lang = lang
         self.p = p
 
-    def do_augment(self, doc: model.Document):
+    def do_augment(self, doc2: model.Document):
+        doc = copy.deepcopy(doc2)
         for sentence in doc.sentences:
             i = 0
             while i < len(sentence.tokens) - 1:

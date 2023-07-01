@@ -3,7 +3,7 @@ import operator
 
 from data import model
 from transformations import tokenmanager
-
+import copy
 
 class Filter10Step(base.AugmentationStep):
     def __init__(self, length: int=3, op: str="<", bio: str="Activity"):
@@ -22,7 +22,8 @@ class Filter10Step(base.AugmentationStep):
         }
         return ops[op]
 
-    def do_augment(self, doc: model.Document) -> model.Document:
+    def do_augment(self, doc2: model.Document) -> model.Document:
+        doc = copy.deepcopy(doc2)
         i = 0
         while i < len(doc.sentences):
             sentence = doc.sentences[i]

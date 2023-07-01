@@ -4393,8 +4393,8 @@ def experiment103test():  # with rate
 #experiment58_1() # trafo581
 #experiment58_2() #trafo582
 #experiment5_1() #
-#experiment82_1() #
-#experiment82_2() #
+#experiment82_1()
+#experiment82_2()
 #experiment100_1() #
 #experiment100_2()  #
 #experiment90_1() #
@@ -4418,18 +4418,18 @@ def experiment103test():  # with rate
 #experiment101rate() #
 #experiment3rate() #
 #experiment86rate() #
-experiment82rate() # rate82
+#experiment82rate() # rate82
 #experiment90rate() #
-#experiment100rate() #
+experiment100rate() #-
 #experiment5rate() #
 #experiment58rate()
-#experiment39rate() #
+#experiment39rate() #-
 #experiment40rate() #
-#experiment103rate() #
+#experiment103rate() #-
 
-#experiment101rate025()
-#experiment3rate025()
-#experiment86rate025()
+#experiment101rate025() #
+#experiment3rate025() #
+#experiment86rate025() #
 #experiment82rate025()
 #experiment90rate025()
 #experiment100rate025()
