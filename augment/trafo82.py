@@ -1,3 +1,4 @@
+import copy
 import typing
 from random import randint, random
 from augment import base
@@ -13,8 +14,11 @@ class Trafo82Step(base.AugmentationStep):
         self.bank = bank
         self.p = p
 
-    def do_augment(self, doc: model.Document):
+    def do_augment(self, doc2: model.Document):
         #  when Bank is 0, take the Bank from Trafo 82, the Bank is always split in contracted and expanded list
+        doc = copy.deepcopy(doc2)
+        if doc.name == "doc-10.10":
+            print(doc)
         if self.bank == 0:
             abb_list = Trafo82Step.load(self, "abb.txt")
             contracted_list = Trafo82Step.separate_into_contracted_and_expanded_form(self, abb_list, True)[0]
@@ -73,7 +77,9 @@ class Trafo82Step(base.AugmentationStep):
                             else:
                                 tokenmanager.create_token(doc, token_list[j],
                                                           index_in_sentence=index_in_sentence + j,
+
                                                           mention_index=mention_id[0])
+                assert sentence.tokens[len(sentence.tokens) - 1].text == ".", "letzter Token ist kein Punkt 1"
         # search for expanded abbreviations
         if self.long_to_short and random() < self.p:
             expanded_double_list = []
@@ -108,6 +114,7 @@ class Trafo82Step(base.AugmentationStep):
                                             else:
                                                 tokenmanager.delete_token(doc, sentence.tokens[k + j].index_in_document)
                         k += 1
+                    assert sentence.tokens[len(sentence.tokens) - 1].text == ".", "letzter Token ist kein Punkt 2"
         return doc
 
     def load(self, bank) -> typing.List[typing.List[str]]:
