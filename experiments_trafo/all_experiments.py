@@ -4251,15 +4251,16 @@ def experiment40test():  # with rate
     for i in rate:
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5)  # adapt
-
+        augmented_test_fold = []
         # actual augmentation
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
+            train_fold.extend(copy.deepcopy(train_folds[j]))
             doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 40", augmented_train_folds, augmented_train_folds)
@@ -4462,7 +4463,7 @@ def experiment103test():  # with rate
 #experiment101test()
 #experiment82test()
 #experiment3test()
-experiment40test() ###
+experiment40test() ### running
 #experiment103test() ###
 #experiment100test()
 #experiment90test()
