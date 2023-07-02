@@ -4451,8 +4451,8 @@ def experiment103test():  # with rate
 
 #experiment101rate1() #
 #experiment3rate1() #
-experiment86rate1()
-#experiment82rate1()
+#experiment86rate1() #running
+experiment82rate1()
 #experiment90rate1()
 #experiment100rate1()
 #experiment5rate1()
