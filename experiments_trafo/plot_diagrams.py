@@ -318,6 +318,29 @@ class Plot:
         figg2 = fig2.figure
         figg2.savefig("./../experiment_results/rate101/f1_rate_scatter.png")
         figg2.savefig("./../experiment_results/rate101/f1_rate_scatter.pdf")
+    @staticmethod
+    def plot_train_as_test():
+        sns.set_theme()
+        str = "101"
+        path = f"./../experiment_results/rate101/test_all_means.json"
+        path2 = f"./../experiment_results/rate90/test_all_means.json"
+        path3 = f"./../experiment_results/rate3/test_all_means.json"
+
+        df = pd.read_json(path_or_buf=path)
+        df2 = pd.read_json(path_or_buf=path2)
+        df3 = pd.read_json(path_or_buf=path3)
+        rate = [0.0, 1.0, 2.0, 3.0, 4.0]
+        df4 = pd.DataFrame({"Trafo 101": df["F1 CRF"], "Trafo 90": df2["F1 CRF"], "Trafo 3": df3["F1 CRF"]})
+        df4.index = rate
+
+        fig = sns.lineplot(data=df4)
+        fig.set(xlabel="Augmentierungsrate", ylabel="F1 Score")
+
+        fig.set_title("Augmented Test Data")
+        figg = fig.figure
+        figg.savefig("./../experiment_results/Plots/train_as_test.pdf")
+        figg.savefig("./../experiment_results/Plots/train_as_test.png")
+        plt.show()
 
 
 sns.set_theme()
@@ -330,7 +353,7 @@ prob_list = ["0.05", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45",
              "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
 rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 #df["Probability"] = prob_list
-df["Aug Rate"] = rate
+#df["Aug Rate"] = rate
 #print(df)
 #fig = sns.lmplot(x='Aug Rate', y='F1 CRF', data=df, fit_reg=True)
 #fii = fig.figure
@@ -340,5 +363,6 @@ df["Aug Rate"] = rate
 #Plot.plot_rate_f1()
 #Plot.all_means_prob_bleu()
 #Plot.all_entities_prob()
-Plot.calc_pearson()
+#Plot.calc_pearson()
 #Plot.f1_chi2()
+Plot.plot_train_as_test()
