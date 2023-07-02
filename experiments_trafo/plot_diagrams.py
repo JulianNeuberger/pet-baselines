@@ -345,21 +345,22 @@ class Plot:
     @staticmethod
     def plot_with_diff_rates():
         sns.set_theme()
-        str = "101"
+        str = "3"
         path05 = f"./../experiment_results/rate{str}/all_means.json"
         path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
         path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
-        #path10 = f"./../experiment_results/rate{str}/prob1/all_means.json"
+        path10 = f"./../experiment_results/rate{str}/prob1/all_means.json"
 
         df = pd.read_json(path_or_buf=path05)
         df2 = pd.read_json(path_or_buf=path025)
         df3 = pd.read_json(path_or_buf=path075)
-        #df4 = pd.read_json(path_or_buf=path10)
+        df5 = pd.read_json(path_or_buf=path10)
         rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
-        df4 = pd.DataFrame({"Prob = 0.5": df["F1 CRF"], "Prob = 0.25": df2["F1 CRF"], "Prob = 0.75": df3["F1 CRF"]})
+        df4 = pd.DataFrame({"Prob = 0.25": df2["F1 CRF"], "Prob = 0.5": df["F1 CRF"], "Prob = 0.75": df3["F1 CRF"],
+                            "Prob = 1" : df5["F1 CRF"]})
         df4.index = rate
 
-        min = np.min([np.min(df4["Prob = 0.5"]), np.min(df4["Prob = 0.25"]), np.min(df4["Prob = 0.75"])])
+        min = np.min([np.min(df4["Prob = 0.5"]), np.min(df4["Prob = 0.25"]), np.min(df4["Prob = 0.75"]),np.min(df4["Prob = 1"])])
         print(df4)
         for index, row in df4.iterrows():
 
@@ -371,13 +372,15 @@ class Plot:
         for index, row in df4.iterrows():
             x = df4["Prob = 0.75"][index]
             df4["Prob = 0.75"][index] = (x - min)*2
-
+        for index, row in df4.iterrows():
+            x = df4["Prob = 1"][index]
+            df4["Prob = 1"][index] = (x - min)*2
         #for i in range(len(df4["Prob = 1"])):
          #   df4["Prob = 1"][i] = df4["Prob = 1"][i] - min
         x = np.linspace(0, 10, 5000)
         fig = sns.lineplot(data=df4)
         fig.set(xlabel="Augmentierungsrate", ylabel="F1 Score")
-        fig.plot(x, chi2.pdf(x, 5), color="hotpink")
+        fig.plot(x, chi2.pdf(x, 5), color="black")
         fig.set_title(f"Transformation {str}")
         figg = fig.figure
         figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1.pdf")

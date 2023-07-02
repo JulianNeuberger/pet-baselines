@@ -3919,7 +3919,7 @@ def experiment101test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -3967,7 +3967,7 @@ def experiment82test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4016,7 +4016,7 @@ def experiment3test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4064,7 +4064,7 @@ def experiment90test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4112,7 +4112,7 @@ def experiment100test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4160,7 +4160,7 @@ def experiment5test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4208,7 +4208,7 @@ def experiment39test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4306,7 +4306,7 @@ def experiment86test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4355,7 +4355,7 @@ def experiment103test():  # with rate
         for j in range(5):
             augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=i)
             #augmented_train_set.extend(train_folds[j])
-            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set[0])
             train_fold = copy.deepcopy(train_folds[j])
             train_fold.extend(train_folds[j])
             doubled_train_folds.append(train_fold)
@@ -4447,11 +4447,11 @@ def experiment103test():  # with rate
 #experiment5rate075() #
 #experiment39rate075() #
 #experiment40rate075() #running
-#experiment103rate075() #running
+#experiment103rate075() #---
 
-#experiment101rate1() # running
-#experiment3rate1() #running
-#experiment86rate1()
+#experiment101rate1() #
+#experiment3rate1() #
+experiment86rate1()
 #experiment82rate1()
 #experiment90rate1()
 #experiment100rate1()
@@ -4463,7 +4463,7 @@ def experiment103test():  # with rate
 #experiment101test()
 #experiment82test()
 #experiment3test()
-experiment40test() ### running
+#experiment40test() ### running
 #experiment103test() ###
 #experiment100test()
 #experiment90test()
