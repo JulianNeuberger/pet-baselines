@@ -3805,6 +3805,7 @@ def experiment103rate075():  # with rate
     # augment the dataset - for i in range of the parameter
     # rate = np.linspace(0,4,9)
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+    #rate = [0.7]
     for i in rate:
         augmented_train_folds = copy.deepcopy(train_folds)
         unaugmented_train_folds = copy.deepcopy(train_folds)
@@ -4447,7 +4448,7 @@ def experiment103test():  # with rate
 #experiment5rate075() #
 #experiment39rate075() #
 #experiment40rate075() #running
-#experiment103rate075() #---
+experiment103rate075() #---
 
 #experiment101rate1() #
 #experiment3rate1() #
@@ -4457,7 +4458,7 @@ def experiment103test():  # with rate
 #experiment100rate1() # running
 #experiment5rate1() # running
 #experiment39rate1() # running
-experiment40rate1()
+#experiment40rate1() # running
 #experiment103rate1()
 
 #experiment101test()
