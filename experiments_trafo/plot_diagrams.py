@@ -352,7 +352,7 @@ class Plot:
     @staticmethod
     def plot_with_diff_rates():
         sns.set_theme()
-        str = "82"
+        str = "86"
         path05 = f"./../experiment_results/rate{str}/all_means.json"
         path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
         path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
@@ -417,5 +417,5 @@ rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 #Plot.all_entities_prob()
 #Plot.calc_pearson()
 #Plot.f1_chi2()
-Plot.plot_train_as_test()
-#Plot.plot_with_diff_rates()
+#Plot.plot_train_as_test()
+Plot.plot_with_diff_rates()
