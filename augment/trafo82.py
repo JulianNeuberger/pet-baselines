@@ -17,8 +17,6 @@ class Trafo82Step(base.AugmentationStep):
     def do_augment(self, doc2: model.Document):
         #  when Bank is 0, take the Bank from Trafo 82, the Bank is always split in contracted and expanded list
         doc = copy.deepcopy(doc2)
-        if doc.name == "doc-10.10":
-            print(doc)
         if self.bank == 0:
             abb_list = Trafo82Step.load(self, "abb.txt")
             contracted_list = Trafo82Step.separate_into_contracted_and_expanded_form(self, abb_list, True)[0]

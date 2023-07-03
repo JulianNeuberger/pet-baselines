@@ -6,7 +6,8 @@ import numpy as np
 import data
 import pandas as pd
 from experiments_trafo.experiments import run_experiment, evaluate_experiment_bleu, evaluate_unaugmented_data, \
-    evaluate_experiment_bert, evaluate_experiment_with_rate, evaluate_experiment_with_rate_bleu
+    evaluate_experiment_bert, evaluate_experiment_with_rate, evaluate_experiment_with_rate_bleu, \
+    evaluate_experiment_test
 import augment
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -3929,7 +3930,7 @@ def experiment101test():  # with rate
         f_1_scores = run_experiment("Experiment 101.1", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -3977,7 +3978,7 @@ def experiment82test():  # with rate
         f_1_scores = run_experiment("Experiment 82", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4026,7 +4027,7 @@ def experiment3test():  # with rate
         f_1_scores = run_experiment("Experiment 3", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4074,7 +4075,7 @@ def experiment90test():  # with rate
         f_1_scores = run_experiment("Experiment 90", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4122,7 +4123,7 @@ def experiment100test():  # with rate
         f_1_scores = run_experiment("Experiment 100", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4170,7 +4171,7 @@ def experiment5test():  # with rate
         f_1_scores = run_experiment("Experiment 5", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4218,7 +4219,7 @@ def experiment39test():  # with rate
         f_1_scores = run_experiment("Experiment 39", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4267,7 +4268,7 @@ def experiment40test():  # with rate
         f_1_scores = run_experiment("Experiment 40", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4316,7 +4317,7 @@ def experiment86test():  # with rate
         f_1_scores = run_experiment("Experiment 86", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4365,7 +4366,7 @@ def experiment103test():  # with rate
         f_1_scores = run_experiment("Experiment 103", augmented_train_folds, augmented_train_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_with_rate(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_test(unaug_train_folds=doubled_train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -4447,27 +4448,27 @@ def experiment103test():  # with rate
 #experiment100rate075() #
 #experiment5rate075() #
 #experiment39rate075() #
-#experiment40rate075() #running
-#experiment103rate075() #running---
+#experiment40rate075() #
+#experiment103rate075() #---
 
 #experiment101rate1() #
 #experiment3rate1() #
-experiment86rate1() #running
+#experiment86rate1() #
 #experiment82rate1() #
 #experiment90rate1()#
 #experiment100rate1() #
-#experiment5rate1() # running
+#experiment5rate1() #
 #experiment39rate1() #
-#experiment40rate1() # running---
+#experiment40rate1() # ---
 #experiment103rate1()
 
-#experiment101test() # running test101
-#experiment82test()
-#experiment3test()
-#experiment40test() ### running
-#experiment103test() ###
-#experiment100test()
-#experiment90test()
-#experiment86test()
-#experiment39test()
-#experiment5test()
+#experiment101test() #
+#experiment82test() #
+#experiment3test() #
+#experiment40test() #
+#experiment103test() #
+#experiment100test() #
+#experiment90test() #
+experiment86test()
+#experiment39test() #
+#experiment5test() #

@@ -322,15 +322,22 @@ class Plot:
     def plot_train_as_test():
         sns.set_theme()
         str = "101"
-        path = f"./../experiment_results/rate101/test_all_means.json"
-        path2 = f"./../experiment_results/rate90/test_all_means.json"
-        path3 = f"./../experiment_results/rate3/test_all_means.json"
+        path = f"./../experiment_results/rate3/test_all_means.json"
+        path2 = f"./../experiment_results/rate39/test_all_means.json"
+        path3 = f"./../experiment_results/rate40/test_all_means.json"
+        path4 = f"./../experiment_results/rate86/test_all_means.json"
+        path5 = f"./../experiment_results/rate90/test_all_means.json"
+        path6 = f"./../experiment_results/rate103/test_all_means.json"
 
         df = pd.read_json(path_or_buf=path)
         df2 = pd.read_json(path_or_buf=path2)
         df3 = pd.read_json(path_or_buf=path3)
+        df5 = pd.read_json(path_or_buf=path4)
+        df6 = pd.read_json(path_or_buf=path5)
+        df7 = pd.read_json(path_or_buf=path6)
         rate = [0.0, 1.0, 2.0, 3.0, 4.0]
-        df4 = pd.DataFrame({"Trafo 101": df["F1 CRF"], "Trafo 90": df2["F1 CRF"], "Trafo 3": df3["F1 CRF"]})
+        df4 = pd.DataFrame({"Trafo 3": df["F1 CRF"], "Trafo 39": df2["F1 CRF"], "Trafo 40": df3["F1 CRF"],
+                            "Trafo 86": df5["F1 CRF"],"Trafo 90": df6["F1 CRF"],"Trafo 103": df7["F1 CRF"]})
         df4.index = rate
 
         fig = sns.lineplot(data=df4)
@@ -338,8 +345,8 @@ class Plot:
 
         fig.set_title("Augmented Test Data")
         figg = fig.figure
-        figg.savefig("./../experiment_results/Plots/train_as_test.pdf")
-        figg.savefig("./../experiment_results/Plots/train_as_test.png")
+        figg.savefig("./../experiment_results/Plots/train_as_testLeonie.pdf")
+        figg.savefig("./../experiment_results/Plots/train_as_testLeonie.png")
         plt.show()
 
     @staticmethod
@@ -410,5 +417,5 @@ rate = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
 #Plot.all_entities_prob()
 #Plot.calc_pearson()
 #Plot.f1_chi2()
-#Plot.plot_train_as_test()
-Plot.plot_with_diff_rates()
+Plot.plot_train_as_test()
+#Plot.plot_with_diff_rates()
