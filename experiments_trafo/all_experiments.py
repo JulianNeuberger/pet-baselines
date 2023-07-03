@@ -4456,12 +4456,12 @@ def experiment103test():  # with rate
 #experiment82rate1() # running
 #experiment90rate1()# running
 #experiment100rate1() # running
-#experiment5rate1() # running
+experiment5rate1() # running
 #experiment39rate1() # running
 #experiment40rate1() # running
 #experiment103rate1()
 
-experiment101test() # running
+#experiment101test() # running test101
 #experiment82test()
 #experiment3test()
 #experiment40test() ### running
