@@ -345,7 +345,7 @@ class Plot:
     @staticmethod
     def plot_with_diff_rates():
         sns.set_theme()
-        str = "3"
+        str = "82"
         path05 = f"./../experiment_results/rate{str}/all_means.json"
         path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
         path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
