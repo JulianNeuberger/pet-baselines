@@ -1,0 +1,37 @@
+{
+    "F1 CRF":{
+        "hyponym":0.5720466054,
+        "hypernym":0.5908514917,
+        "random":0.5548245804
+    },
+    "F1 Neural":{
+        "hyponym":0.3295205494,
+        "hypernym":0.3280193054,
+        "random":0.3450843941
+    },
+    "F1 Relation":{
+        "hyponym":0.3008634063,
+        "hypernym":0.3230155238,
+        "random":0.3124691077
+    },
+    "TTR":{
+        "hyponym":0.0718253004,
+        "hypernym":0.0706653378,
+        "random":0.0831615151
+    },
+    "UCER":{
+        "hyponym":0.3902535666,
+        "hypernym":0.3664264083,
+        "random":0.4855230247
+    },
+    "BertScore":{
+        "hyponym":null,
+        "hypernym":null,
+        "random":null
+    },
+    "BleuScore":{
+        "hyponym":0.000960155,
+        "hypernym":0.0000117565,
+        "random":0.0000845654
+    }
+}
