@@ -20,24 +20,24 @@ def run_experiment(name: str, aug_train_folds, test_folds):
                                                      cluster_overlap=.5,
                                                      mention_overlap=.8,
                                                      ner_strategy='frequency')
-    rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
-    #rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
-                                                    #num_trees=100, negative_sampling_rate=40.0)
+    #rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                    num_trees=100, negative_sampling_rate=40.0)
     res = cross_validate_pipeline_macro(
-        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext_rule]),
+        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext]),
         train_folds=aug_train_folds,
         test_folds=test_folds
     )
     scores_crf = res[crf_ext]
     scores_neural = res[neural_ext]
-    scores_rel_rule = res[rel_ext_rule]
-    #scores_rel = res[rel_ext]
+    #scores_rel_rule = res[rel_ext_rule]
+    scores_rel = res[rel_ext]
 
     #scores = list(res.values())[0]
     f_score_crf = scores_crf.overall_scores.f1
     f_score_neural = scores_neural.overall_scores.f1
-    f_score_rel_rule = scores_rel_rule.overall_scores.f1
-    #f_score_rel = scores_rel.overall_scores.f1
+    #f_score_rel_rule = scores_rel_rule.overall_scores.f1
+    f_score_rel = scores_rel.overall_scores.f1
 
     new_list = {}
     new_list["Actor"] = scores_crf.scores_by_tag["actor"].f1
@@ -49,8 +49,8 @@ def run_experiment(name: str, aug_train_folds, test_folds):
     new_list["AND Gateway"] = scores_crf.scores_by_tag["and gateway"].f1
 
     new_series = pd.Series(data=new_list)
-    return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
-    #return [f_score_crf, f_score_neural, f_score_rel, new_series]
+    #return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
+    return [f_score_crf, f_score_neural, f_score_rel, new_series]
 
 
 def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
