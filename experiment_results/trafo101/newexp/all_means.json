@@ -1,0 +1,26 @@
+{
+    "F1 CRF":{
+        "Adjektive":0.5936576654,
+        "Nomen":0.583284479
+    },
+    "F1 Neural":{
+        "Adjektive":0.325663777,
+        "Nomen":0.3285613715
+    },
+    "F1 Relation":{
+        "Adjektive":0.3143519133,
+        "Nomen":0.2910229092
+    },
+    "TTR":{
+        "Adjektive":0.0622394758,
+        "Nomen":0.0727101637
+    },
+    "UCER":{
+        "Adjektive":0.2145067627,
+        "Nomen":0.3008342596
+    },
+    "BertScore":{
+        "Adjektive":0.9956002951,
+        "Nomen":0.9741006136
+    }
+}

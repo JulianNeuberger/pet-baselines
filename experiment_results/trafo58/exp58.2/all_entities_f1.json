@@ -1,0 +1,51 @@
+{
+    "Actor":{
+        "Deutsch":0.7214818568,
+        "Spanisch":0.7374034795,
+        "Chinesisch":0.7161027192,
+        "Franz\u00f6sisch":0.7114020617,
+        "Russisch":0.7382959954
+    },
+    "Activity":{
+        "Deutsch":0.759012949,
+        "Spanisch":0.7747295798,
+        "Chinesisch":0.7607027757,
+        "Franz\u00f6sisch":0.7623034081,
+        "Russisch":0.7773987846
+    },
+    "Activity Data":{
+        "Deutsch":0.5896293481,
+        "Spanisch":0.5980231936,
+        "Chinesisch":0.6205316397,
+        "Franz\u00f6sisch":0.6006726415,
+        "Russisch":0.6091999748
+    },
+    "Further Specification":{
+        "Deutsch":0.2113165266,
+        "Spanisch":0.2651211362,
+        "Chinesisch":0.1827731092,
+        "Franz\u00f6sisch":0.1786713287,
+        "Russisch":0.1959580649
+    },
+    "XOR Gateway":{
+        "Deutsch":0.7161962878,
+        "Spanisch":0.680976841,
+        "Chinesisch":0.722119023,
+        "Franz\u00f6sisch":0.6982005458,
+        "Russisch":0.7329433962
+    },
+    "Condition Specification":{
+        "Deutsch":0.5331202131,
+        "Spanisch":0.6056576618,
+        "Chinesisch":0.6045074142,
+        "Franz\u00f6sisch":0.6224118856,
+        "Russisch":0.6056908288
+    },
+    "AND Gateway":{
+        "Deutsch":0.0,
+        "Spanisch":0.0,
+        "Chinesisch":0.0,
+        "Franz\u00f6sisch":0.3333333333,
+        "Russisch":0.2
+    }
+}

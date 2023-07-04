@@ -1,0 +1,44 @@
+{
+    "F1 CRF":{
+        "Deutsch":0.5043938831,
+        "Spanisch":0.5231302703,
+        "Chinesisch":0.5152480973,
+        "Franz\u00f6sisch":0.5581421721,
+        "Russisch":0.5513552921
+    },
+    "F1 Neural":{
+        "Deutsch":0.306670575,
+        "Spanisch":0.3076651431,
+        "Chinesisch":0.3193087705,
+        "Franz\u00f6sisch":0.316467713,
+        "Russisch":0.3185528444
+    },
+    "F1 Relation":{
+        "Deutsch":0.277716254,
+        "Spanisch":0.2930363249,
+        "Chinesisch":0.2922981216,
+        "Franz\u00f6sisch":0.2818759156,
+        "Russisch":0.2891688913
+    },
+    "TTR":{
+        "Deutsch":0.1490731871,
+        "Spanisch":0.1425711622,
+        "Chinesisch":0.12949095,
+        "Franz\u00f6sisch":0.1523152178,
+        "Russisch":0.1595978138
+    },
+    "UCER":{
+        "Deutsch":0.6515805717,
+        "Spanisch":0.6564889583,
+        "Chinesisch":0.5255876731,
+        "Franz\u00f6sisch":0.6624477145,
+        "Russisch":0.6769995651
+    },
+    "BertScore":{
+        "Deutsch":0.9566695213,
+        "Spanisch":0.9590110064,
+        "Chinesisch":0.9185173273,
+        "Franz\u00f6sisch":0.9508358479,
+        "Russisch":0.9152073979
+    }
+}
