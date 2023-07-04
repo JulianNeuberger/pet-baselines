@@ -1,0 +1,72 @@
+{
+    "Actor":{
+        "Actor":0.7176979452,
+        "Activity":0.7176979452,
+        "Activity Data":0.7176979452,
+        "Further Specification":0.7176979452,
+        "XOR Gateway":0.7176979452,
+        "Condition Specification":0.7176979452,
+        "AND Gateway":0.7176979452,
+        "All":0.7176979452
+    },
+    "Activity":{
+        "Actor":0.7763219878,
+        "Activity":0.7763219878,
+        "Activity Data":0.7763219878,
+        "Further Specification":0.7763219878,
+        "XOR Gateway":0.7763219878,
+        "Condition Specification":0.7763219878,
+        "AND Gateway":0.7763219878,
+        "All":0.7763219878
+    },
+    "Activity Data":{
+        "Actor":0.6283722067,
+        "Activity":0.6283722067,
+        "Activity Data":0.6283722067,
+        "Further Specification":0.6283722067,
+        "XOR Gateway":0.6283722067,
+        "Condition Specification":0.6283722067,
+        "AND Gateway":0.6283722067,
+        "All":0.6283722067
+    },
+    "Further Specification":{
+        "Actor":0.2788245578,
+        "Activity":0.2788245578,
+        "Activity Data":0.2788245578,
+        "Further Specification":0.2788245578,
+        "XOR Gateway":0.2788245578,
+        "Condition Specification":0.2788245578,
+        "AND Gateway":0.2788245578,
+        "All":0.2788245578
+    },
+    "XOR Gateway":{
+        "Actor":0.7174327122,
+        "Activity":0.7174327122,
+        "Activity Data":0.7174327122,
+        "Further Specification":0.7174327122,
+        "XOR Gateway":0.7174327122,
+        "Condition Specification":0.7174327122,
+        "AND Gateway":0.7174327122,
+        "All":0.7174327122
+    },
+    "Condition Specification":{
+        "Actor":0.5898343685,
+        "Activity":0.5898343685,
+        "Activity Data":0.5898343685,
+        "Further Specification":0.5898343685,
+        "XOR Gateway":0.5898343685,
+        "Condition Specification":0.5898343685,
+        "AND Gateway":0.5898343685,
+        "All":0.5898343685
+    },
+    "AND Gateway":{
+        "Actor":0.3333333333,
+        "Activity":0.3333333333,
+        "Activity Data":0.3333333333,
+        "Further Specification":0.3333333333,
+        "XOR Gateway":0.3333333333,
+        "Condition Specification":0.3333333333,
+        "AND Gateway":0.3333333333,
+        "All":0.3333333333
+    }
+}
