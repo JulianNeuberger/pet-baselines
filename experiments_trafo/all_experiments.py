@@ -5351,16 +5351,16 @@ def exp103_3():
 #experiment5test() #
 
 # trafo3 0.75
-exp3_2()
-exp3_3()
-exp40_2()
-#exp40_3()
-#exp40_4()
+#exp3_2() # e340
+#exp3_3() # e340
+#exp40_2() # e340
+exp40_3()
+exp40_4()
 #exp86_2()
 #exp86_3()
 #exp86_4()
-#exp103_2()
-#exp103_3()
+exp103_2()
+exp103_3()
 
 #trafo39 0.5
 #trafo40: 0.5
