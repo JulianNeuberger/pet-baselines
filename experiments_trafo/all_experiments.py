@@ -4383,6 +4383,200 @@ def experiment103test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate103/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate103/test_{names[0]}.json", indent=4)
 
+#######################################################
+#######################################################
+#######################optimal ##########################
+#######################################################
+#######################################################
+
+
+
+def exp101():
+    str = "101"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+    names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert", "ttr_un", "ucer_un", "ttr_mean_un", "ucer_mean_un"]
+    doubled_train_folds = []
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'BertScore'])
+    df_entities = pd.DataFrame(
+        columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                 'Condition Specification', 'AND Gateway'])
+    # augment the dataset - for i in range of the parameter
+    #rate = np.linspace(0,4,9)
+
+    for i in [0, 1]:
+        augmented_train_folds = copy.deepcopy(train_folds)
+        unaugmented_train_folds = copy.deepcopy(train_folds)
+
+        if i == 0:
+            augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob=0.5, type=True)  # adapt Adjektive
+        else:
+            augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob=0.5, type=False)  # adapt Adjektive
+        # actual augmentation
+        for j in range(5):
+            augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+            augmented_train_set = augmented_train_sets[0]
+            unaugmented_train_set = augmented_train_sets[1]
+            #augmented_train_set.extend(train_folds[j])
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+            # train_fold = copy.deepcopy(train_folds[j])
+            # train_fold.extend(train_folds[j])
+            # doubled_train_folds.append(train_fold)
+
+        # actual training
+        f_1_scores = run_experiment("Experiment 101.1", augmented_train_folds, test_folds)
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
+        # evaluation
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
+
+        df_complete = df_complete.append(all_scores[0], ignore_index=True)
+        for k in range(1, len(all_scores) - 1):
+            df = all_scores[k]
+            df.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[k]}_{i}.json", indent=4)
+
+    #df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_complete.index = ["Adjektive", "Nomen"]
+    #df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    #df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_entities.index = ["Adjektive", "Nomen"]
+    #df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/all_entities_f1.json", indent=4)
+    df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[0]}.json", indent=4)
+
+
+
+def exp82():
+    str = "82"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+    names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert", "ttr_un", "ucer_un", "ttr_mean_un", "ucer_mean_un"]
+    doubled_train_folds = []
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'BertScore'])
+    df_entities = pd.DataFrame(
+        columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                 'Condition Specification', 'AND Gateway'])
+    # augment the dataset - for i in range of the parameter
+    #rate = np.linspace(0,4,9)
+
+    for i in [0, 1, 2]:
+        augmented_train_folds = copy.deepcopy(train_folds)
+        unaugmented_train_folds = copy.deepcopy(train_folds)
+
+        if i == 0:
+            augmentation_step: augment.AugmentationStep = augment.Trafo82Step(p=1, short_to_long=True, long_to_short=False)
+        elif i == 1:
+            augmentation_step: augment.AugmentationStep = augment.Trafo82Step(p=1, short_to_long=False, long_to_short=True)
+        else:
+            augmentation_step: augment.AugmentationStep = augment.Trafo82Step(p=1, short_to_long=True, long_to_short=True)
+        # actual augmentation
+        for j in range(5):
+            augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+            augmented_train_set = augmented_train_sets[0]
+            unaugmented_train_set = augmented_train_sets[1]
+            #augmented_train_set.extend(train_folds[j])
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+            # train_fold = copy.deepcopy(train_folds[j])
+            # train_fold.extend(train_folds[j])
+            # doubled_train_folds.append(train_fold)
+
+        # actual training
+        f_1_scores = run_experiment("Experiment 82", augmented_train_folds, test_folds)
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
+        # evaluation
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
+
+        df_complete = df_complete.append(all_scores[0], ignore_index=True)
+        for k in range(1, len(all_scores) - 1):
+            df = all_scores[k]
+            df.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[k]}_{i}.json", indent=4)
+
+    #df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_complete.index = ["Short to Long", "Long to Short", "Both"]
+    #df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    #df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_entities.index = ["Short to Long", "Long to Short", "Both"]
+    #df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/all_entities_f1.json", indent=4)
+    df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[0]}.json", indent=4)
+
+
+def exp100():
+    str = "100"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+    names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bert", "ttr_un", "ucer_un", "ttr_mean_un", "ucer_mean_un"]
+    doubled_train_folds = []
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=['F1 CRF', 'F1 Neural', 'F1 Relation', 'TTR', 'UCER', 'BertScore'])
+    df_entities = pd.DataFrame(
+        columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                 'Condition Specification', 'AND Gateway'])
+    # augment the dataset - for i in range of the parameter
+    #rate = np.linspace(0,4,9)
+
+    for i in [0, 1]:
+        augmented_train_folds = copy.deepcopy(train_folds)
+        unaugmented_train_folds = copy.deepcopy(train_folds)
+
+        if i == 0:
+            augmentation_step: augment.AugmentationStep = augment.Trafo100Step(prob=0.5, pos_type=True)
+        else:
+            augmentation_step: augment.AugmentationStep = augment.Trafo100Step(prob=0.5, pos_type=False)
+
+        # actual augmentation
+        for j in range(5):
+            augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+            augmented_train_set = augmented_train_sets[0]
+            unaugmented_train_set = augmented_train_sets[1]
+            #augmented_train_set.extend(train_folds[j])
+            augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+            unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+            # train_fold = copy.deepcopy(train_folds[j])
+            # train_fold.extend(train_folds[j])
+            # doubled_train_folds.append(train_fold)
+
+        # actual training
+        f_1_scores = run_experiment("Experiment 82", augmented_train_folds, test_folds)
+        df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
+        # evaluation
+        all_scores = evaluate_experiment_with_rate(unaug_train_folds=unaugmented_train_folds,
+                                              aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
+                                              f_score_neural=f_1_scores[1],
+                                              f_score_rel=f_1_scores[2])
+
+        df_complete = df_complete.append(all_scores[0], ignore_index=True)
+        for k in range(1, len(all_scores) - 1):
+            df = all_scores[k]
+            df.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[k]}_{i}.json", indent=4)
+
+    #df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_complete.index = ["Nomen", "Adjektive"]
+    #df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    #df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
+    df_entities.index = ["Nomen", "Adjektive"]
+    #df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
+    df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/all_entities_f1.json", indent=4)
+    df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[0]}.json", indent=4)
+
 #experiment3_1() #
 #experiment3_2() #
 #experiment3_3() #
@@ -4459,8 +4653,8 @@ def experiment103test():  # with rate
 #experiment100rate1() #
 #experiment5rate1() #
 #experiment39rate1() #
-#experiment40rate1() # ---
-experiment103rate1()
+#experiment40rate1() #
+#experiment103rate1() #
 
 #experiment101test() #
 #experiment82test() #
@@ -4469,6 +4663,16 @@ experiment103rate1()
 #experiment103test() #
 #experiment100test() #
 #experiment90test() #
-#experiment86test() # running 86test
+#experiment86test() #
 #experiment39test() #
 #experiment5test() #
+
+# trafo3 0.75
+# trafo86 1.0
+# trafo90 0.25
+# trafo82 1
+exp82()
+exp100()
+#
+#
+#
