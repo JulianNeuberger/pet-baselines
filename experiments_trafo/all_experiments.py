@@ -4719,27 +4719,27 @@ def exp40_2():
         augmented_train_folds = copy.deepcopy(train_folds)
         unaugmented_train_folds = copy.deepcopy(train_folds)
         if i == 0:
-            str = "speaker"
+            #str = "speaker"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True, filler_p=False,
                                                                               uncertain_p=False)
         elif i == 1:
-            str = "filler"
+            #str = "filler"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=True,
                                                                               uncertain_p=False)
         elif i == 2:
-            str = "uncertain"
+            #str = "uncertain"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=False,
                                                                               uncertain_p=True)
         elif i == 3:
-            str = "speaker.filler"
+            #str = "speaker.filler"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True, filler_p=True,
                                                                               uncertain_p=False)
         elif i == 4:
-            str = "speaker.uncertain"
+            #str = "speaker.uncertain"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True, filler_p=False,
                                                                               uncertain_p=True)
         else:
-            str = "filler.uncertain"
+            #str = "filler.uncertain"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=True,
                                                                               uncertain_p=True)
 
@@ -4801,11 +4801,11 @@ def exp40_3():
     ent_list = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                 'Condition Specification', 'AND Gateway', 'All']
     for i in range(8):
-        str = [ent_list[i]]
+        str4 = [ent_list[i]]
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
         unaugmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, tags=str)
+        augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, tags=str4)
 
         # actual augmentation
         for j in range(5):
@@ -4868,53 +4868,53 @@ def exp40_4():
         augmented_train_folds = copy.deepcopy(train_folds)
         unaugmented_train_folds = copy.deepcopy(train_folds)
         if i == 0:
-            str = "uncertain&Further"
+            #str = "uncertain&Further"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=False,
                                                                               uncertain_p=True,
                                                                               tags=['Further Specification'])
         elif i == 1:
-            str = "uncertain&XOR"
+            #str = "uncertain&XOR"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=False,
                                                                               uncertain_p=True, tags=["XOR Gateway"])
         elif i == 2:
-            str = "uncertain&AND"
+            #str = "uncertain&AND"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=False,
                                                                               uncertain_p=True, tags=['AND Gateway'])
         elif i == 3:
-            str = "uncertain&Condition"
+            #str = "uncertain&Condition"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=False,
                                                                               uncertain_p=True,
                                                                               tags=['Condition Specification'])
         elif i == 4:
-            str = "uncertain&Data"
+            #str = "uncertain&Data"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=False, filler_p=False,
                                                                               uncertain_p=True, tags=['Activity Data'])
         elif i == 5:
-            str = "speaker&Further"
+            #str = "speaker&Further"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True,
                                                                               filler_p=False,
                                                                               uncertain_p=False,
                                                                               tags=['Further Specification'])
         elif i == 6:
-            str = "speaker&XOR"
+            #str = "speaker&XOR"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True,
                                                                               filler_p=False,
                                                                               uncertain_p=False,
                                                                               tags=["XOR Gateway"])
         elif i == 7:
-            str = "speaker&AND"
+            #str = "speaker&AND"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True,
                                                                               filler_p=False,
                                                                               uncertain_p=False,
                                                                               tags=['AND Gateway'])
         elif i == 8:
-            str = "speaker&Condition"
+            #str = "speaker&Condition"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True,
                                                                               filler_p=False,
                                                                               uncertain_p=False,
                                                                               tags=['Condition Specification'])
         else:
-            str = "speaker&Data"
+            #str = "speaker&Data"
             augmentation_step: augment.AugmentationStep = augment.Trafo40Step(prob=0.5, speaker_p=True,
                                                                               filler_p=False,
                                                                               uncertain_p=False,
@@ -5218,11 +5218,11 @@ def exp103_3():
     ent_list = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS', 'RB', 'RBS', 'RBR', 'DT', 'IN', 'VBN', 'VBP', 'VBZ',
                 'PRP', 'WP']
     for i in range(17):
-        str = [ent_list[i]]
+        str4 = [ent_list[i]]
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
         unaugmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=2, kind_of_word=str)
+        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=2, kind_of_word=str4)
 
         # actual augmentation
         for j in range(5):
@@ -5351,14 +5351,14 @@ def exp103_3():
 #experiment5test() #
 
 # trafo3 0.75
-#exp3_2() # e340
-#exp3_3() # e340
-#exp40_2() # e340
+exp3_2() # e340
+exp3_3() # e340
+exp40_2() # e340
 #exp40_3() # e40103
 #exp40_4()# e40103
-exp86_2()
-exp86_3()
-exp86_4()
+#exp86_2()
+#exp86_3()
+#exp86_4()
 #exp103_2()# e40103
 #exp103_3()# e40103
 
