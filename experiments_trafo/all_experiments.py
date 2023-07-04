@@ -4671,8 +4671,9 @@ def exp100():
 # trafo86 1.0
 # trafo90 0.25
 # trafo82 1
-exp82()
-exp100()
+#exp82()
+#exp100()
+exp101()
 #
 #
 #
