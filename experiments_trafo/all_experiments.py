@@ -5237,12 +5237,12 @@ def exp103_3():
 #experiment40_4()#
 #experiment9_1() #running f9
 #experiment9_2() #running
-experiment10_1() #running f10
-experiment10_2() #running
-experiment10_3() #running
-#experiment19_1()
-#experiment19_2()
-#experiment19_3()
+#experiment10_1() #running f10
+#experiment10_2() #running
+#experiment10_3() #running
+experiment19_1()
+experiment19_2()
+experiment19_3()
 #get_unaug()
 
 #experiment101rate() #
