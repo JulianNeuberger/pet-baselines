@@ -7,7 +7,7 @@ from data import model
 
 
 class Filter9Step(base.AugmentationStep):
-    def __init__(self, length: int=7, op: str="<"):
+    def __init__(self, length: int=12, op: str="<"):
         self.length = length
         self.op = Filter9Step.parse_operator(op)
 

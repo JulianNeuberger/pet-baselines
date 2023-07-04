@@ -637,7 +637,7 @@ def experiment9_1():  # delete all sentences with length < i
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(3, 12):
+    for i in range(5, 20):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Filter9Step(length=i)  # adapt
 
@@ -662,9 +662,9 @@ def experiment9_1():  # delete all sentences with length < i
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/filter9/exp9.1/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
+    df_complete.index = ["5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.1/{names[0]}.json", indent=4)
-    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
+    df_entities.index = ["5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"]
     df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.1/all_entities_f1.json", indent=4)
 
 def experiment9_2():  # test different operators
@@ -683,36 +683,23 @@ def experiment9_2():  # test different operators
             op = ">"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
-        elif i == 1:
+        else:
             op = "<"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
-        elif i == 2:
-            op = ">="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
-        elif i == 3:
-            op = "<="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
-        else:
-            op = "=="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
+
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 9.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -745,18 +732,16 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 10.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -788,36 +773,23 @@ def experiment10_2():  # test different operators with activity and count 3
             op = ">"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
-        elif i == 1:
+        else:
             op = "<"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
-        elif i == 2:
-            op = ">="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
-        elif i == 3:
-            op = "<="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
-        else:
-            op = "=="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
+
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 10.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # eval uation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -875,18 +847,16 @@ def experiment10_3():  # test different entitity types with "<" and count 3
             augmentation_step: augment.AugmentationStep = augment.Filter10Step(bio=ent)  # adapt
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 10.3", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -915,24 +885,22 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(3, 12):
+    for i in range(1, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Filter19Step(length=i)  # adapt
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 19.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -943,9 +911,9 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/filter19/exp19.1/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
+    df_complete.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.1/{names[0]}.json", indent=4)
-    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
+    df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.1/all_entities_f1.json", indent=4)
 
 def experiment19_2():  # test different operators with Verb and count 3
@@ -964,36 +932,23 @@ def experiment19_2():  # test different operators with Verb and count 3
             op = ">"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
-        elif i == 1:
+        else:
             op = "<"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
-        elif i == 2:
-            op = ">="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
-        elif i == 3:
-            op = "<="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
-        else:
-            op = "=="
-            augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
+
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 19.2", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -1020,7 +975,7 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(7):
+    for i in range(3):
         if i == 0:
             pos = "N"
             augmented_train_folds = copy.deepcopy(train_folds)
@@ -1036,18 +991,16 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
+
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 19.3", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
