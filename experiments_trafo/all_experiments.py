@@ -885,7 +885,7 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(1, 5):
+    for i in range(2, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Filter19Step(length=i)  # adapt
 
