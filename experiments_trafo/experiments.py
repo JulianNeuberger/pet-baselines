@@ -20,24 +20,24 @@ def run_experiment(name: str, aug_train_folds, test_folds):
                                                      cluster_overlap=.5,
                                                      mention_overlap=.8,
                                                      ner_strategy='frequency')
-    #rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
-    rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
-                                                    num_trees=100, negative_sampling_rate=40.0)
+    rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    #rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                    #num_trees=100, negative_sampling_rate=40.0)
     res = cross_validate_pipeline_macro(
-        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext]),
+        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext_rule]),
         train_folds=aug_train_folds,
         test_folds=test_folds
     )
     scores_crf = res[crf_ext]
     scores_neural = res[neural_ext]
-    #scores_rel_rule = res[rel_ext_rule]
-    scores_rel = res[rel_ext]
+    scores_rel_rule = res[rel_ext_rule]
+    #scores_rel = res[rel_ext]
 
     #scores = list(res.values())[0]
     f_score_crf = scores_crf.overall_scores.f1
     f_score_neural = scores_neural.overall_scores.f1
-    #f_score_rel_rule = scores_rel_rule.overall_scores.f1
-    f_score_rel = scores_rel.overall_scores.f1
+    f_score_rel_rule = scores_rel_rule.overall_scores.f1
+    #f_score_rel = scores_rel.overall_scores.f1
 
     new_list = {}
     new_list["Actor"] = scores_crf.scores_by_tag["actor"].f1
@@ -49,8 +49,8 @@ def run_experiment(name: str, aug_train_folds, test_folds):
     new_list["AND Gateway"] = scores_crf.scores_by_tag["and gateway"].f1
 
     new_series = pd.Series(data=new_list)
-    #return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
-    return [f_score_crf, f_score_neural, f_score_rel, new_series]
+    return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
+    #return [f_score_crf, f_score_neural, f_score_rel, new_series]
 
 
 def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
@@ -589,3 +589,71 @@ def evaluate_experiment_test(unaug_train_folds, aug_train_folds, f_score_crf, f_
     new_df_complete_series = pd.Series(data=new_dict_series)
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean
+
+def evaluate_experiment_bert_filter(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
+    metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
+    df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                   'Condition Specification', 'AND Gateway', 'All'])
+    df_ttr_mean = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                        'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                    'Condition Specification', 'AND Gateway', 'All'])
+    df_ucer_mean = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
+                                         'Condition Specification', 'AND Gateway', 'All'])
+    df_bert = pd.DataFrame(columns=['Bert Score'])
+
+    for i in range(5):
+        # get TTR
+        new_df_ttr_series = metrics.calculate_ttr(i)
+        df_ttr = df_ttr.append(new_df_ttr_series, ignore_index=True)
+
+        # get UCER
+        new_df_ucer_series = metrics.calculate_ttr_trigram(i)
+        df_ucer = df_ucer.append(new_df_ucer_series, ignore_index=True)
+
+        # get Bert
+        new_df_bert_series = metrics.calculate_bert_filter(i)
+        df_bert = df_bert.append(new_df_bert_series, ignore_index=True)
+
+    # get mean ttr
+    new_df_ttr_mean_dict = {
+        'Actor': df_ttr["Actor"].mean(),
+        'Activity': df_ttr["Activity"].mean(),
+        'Activity Data': df_ttr["Activity Data"].mean(),
+        'Further Specification': df_ttr["Further Specification"].mean(),
+        'XOR Gateway': df_ttr["XOR Gateway"].mean(),
+        'Condition Specification': df_ttr["Condition Specification"].mean(),
+        'AND Gateway': df_ttr["AND Gateway"].mean(),
+        'All': df_ttr["All"].mean(),
+    }
+    new_df_ttr_mean_series = pd.Series(new_df_ttr_mean_dict)
+    df_ttr_mean = df_ttr_mean.append(new_df_ttr_mean_series, ignore_index=True)
+
+    # get mean ucer
+    new_df_ucer_mean_dict = {
+        'Actor': df_ucer["Actor"].mean(),
+        'Activity': df_ucer["Activity"].mean(),
+        'Activity Data': df_ucer["Activity Data"].mean(),
+        'Further Specification': df_ucer["Further Specification"].mean(),
+        'XOR Gateway': df_ucer["XOR Gateway"].mean(),
+        'Condition Specification': df_ucer["Condition Specification"].mean(),
+        'AND Gateway': df_ucer["AND Gateway"].mean(),
+        'All': df_ucer["All"].mean(),
+    }
+    new_df_ucer_mean_series = pd.Series(new_df_ucer_mean_dict)
+    df_ucer_mean = df_ucer_mean.append(new_df_ucer_mean_series, ignore_index=True)
+    print(df_bert)
+    # get mean bleu
+    bert_mean = df_bert['Bert Score'].mean()
+
+    # get df complete series
+    new_dict_series = {
+        'F1 CRF': f_score_crf,
+         'F1 Neural': f_score_neural,
+         'F1 Relation': f_score_rel,
+        'TTR': df_ttr_mean['All'][0],
+        'UCER': df_ucer_mean['All'][0],
+        'BertScore': bert_mean}
+    new_df_complete_series = pd.Series(data=new_dict_series)
+
+    return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bert, bert_mean

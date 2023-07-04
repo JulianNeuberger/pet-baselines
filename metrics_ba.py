@@ -130,6 +130,29 @@ class Metrics:
         new_series = pd.Series(data=bert_list)
         return new_series
 
+    def calculate_bert_filter(self, fold_number):
+        predictions = []
+        references = []
+        for doc in self.train_set[fold_number]:
+            curr_sentence = ""
+            for sentence in doc.sentences:
+                for token in sentence.tokens:
+                    curr_sentence += " "
+                    curr_sentence += token.text
+            predictions.append(curr_sentence)
+        for doc in self.unaug_train_set[fold_number]:
+            curr_sentence = ""
+            for sentence in doc.sentences:
+                for token in sentence.tokens:
+                    curr_sentence += " "
+                    curr_sentence += token.text
+            references.append(curr_sentence)
+        results = bert_score.score(predictions, references, lang="en", verbose=True, device="cuda:0")
+        mean = torch.mean(results[2])
+        mean_as_float = float(mean)
+        bert_list = {"Bert Score": mean_as_float}
+        new_series = pd.Series(data=bert_list)
+        return new_series
 
     def calculate_bleu(self, fold_number):
         tup = []

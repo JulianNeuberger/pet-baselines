@@ -7,7 +7,7 @@ import data
 import pandas as pd
 from experiments_trafo.experiments import run_experiment, evaluate_experiment_bleu, evaluate_unaugmented_data, \
     evaluate_experiment_bert, evaluate_experiment_with_rate, evaluate_experiment_with_rate_bleu, \
-    evaluate_experiment_test
+    evaluate_experiment_test, evaluate_experiment_bert_filter
 import augment
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -637,24 +637,21 @@ def experiment9_1():  # delete all sentences with length < i
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(3, 13):
+    for i in range(3, 12):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Filter9Step(length=i)  # adapt
 
         # actual augmentation
         for j in range(5):
-            augmented_train_set = augment.run_augmentation(augmented_train_folds[j], augmentation_step)
-            augmented_train_set.extend(train_folds[j])
+            augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
             augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
-            train_fold = copy.deepcopy(train_folds[j])
-            train_fold.extend(train_folds[j])
-            doubled_train_folds.append(train_fold)
+
 
         # actual training
         f_1_scores = run_experiment("Experiment 9.1", augmented_train_folds, test_folds)
         df_entities = df_entities.append(f_1_scores[3], ignore_index=True)
         # evaluation
-        all_scores = evaluate_experiment_bert(unaug_train_folds=doubled_train_folds,
+        all_scores = evaluate_experiment_bert_filter(unaug_train_folds=train_folds,
                                               aug_train_folds=augmented_train_folds, f_score_crf=f_1_scores[0],
                                               f_score_neural=f_1_scores[1],
                                               f_score_rel=f_1_scores[2])
@@ -665,9 +662,9 @@ def experiment9_1():  # delete all sentences with length < i
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/filter9/exp9.1/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+    df_complete.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.1/{names[0]}.json", indent=4)
-    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+    df_entities.index = ["3", "4", "5", "6", "7", "8", "9", "10", "11"]
     df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.1/all_entities_f1.json", indent=4)
 
 def experiment9_2():  # test different operators
@@ -5285,8 +5282,8 @@ def exp103_3():
 #experiment40_2()#
 #experiment40_3()#
 #experiment40_4()#
-#experiment9_1()
-#experiment9_2()
+experiment9_1()
+experiment9_2()
 #experiment10_1()
 #experiment10_2()
 #experiment10_3()
@@ -5356,9 +5353,9 @@ def exp103_3():
 #exp40_2() # e340
 #exp40_3() # e40103
 #exp40_4()# e40103
-exp86_2()
-exp86_3()
-exp86_4()
+#exp86_2()
+#exp86_3()
+#exp86_4()
 #exp103_2()# e40103
 #exp103_3()# e40103
 

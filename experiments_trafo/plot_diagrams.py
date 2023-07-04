@@ -355,7 +355,7 @@ def fn(x, c, s, df):
 
 def plot_with_diff_rates():
     sns.set_theme()
-    str = "101"
+    str = "86"
     path05 = f"./../experiment_results/rate{str}/all_means.json"
     path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
     path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
@@ -733,12 +733,6 @@ def plot_ucer_means_per_prob_and_rate_ratetottr(trafo_nr):
     plt.show()
 
 
-def plot_ttr_means_per_prob_and_rate_ttrtof1():
-    trafo_nr = "3"
-
-    path = f"./../experiment_results/rate{trafo_nr}/aaa_ttr_means_un_per_prob_and_rate.json"
-    df = pd.read_json(path_or_buf=path)
-
 
 def plot_ttr_mean_prob_to_ttr():
     sns.set_theme()
@@ -832,7 +826,143 @@ def plot_bert_means_per_prob_and_rate_ratetottr():
     figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.svg")
     plt.show()
 
+def scatter():
+    sns.set_theme()
+    trafo_nr = "101"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
 
+
+
+    fig = plt.scatter(x=df1["BertScore"], y=df1['F1 Relation'], )
+    fig = plt.scatter(x=df2["BertScore"], y=df2['F1 Relation'])
+    fig = plt.scatter(x=df3["BertScore"], y=df3['F1 Relation'])
+    fig = plt.scatter(x=df4["BertScore"], y=df4['F1 Relation'])
+    plt.legend(("p = 0.25", "p = 0.5", "p = 0.75", "p = 1"))
+    plt.xlabel("Bert Score")
+    plt.ylabel("F1 Score")
+    plt.show()
+    figg = fig.figure
+    figg.tight_layout()
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_bert_f1_rel.pdf")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_bert_f1_rel.png")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_bert_f1_rel.svg")
+
+def plot_with_diff_rates_rel():
+    sns.set_theme()
+    str = "86"
+    path05 = f"./../experiment_results/rate{str}/all_means.json"
+    path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
+    path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
+    path10 = f"./../experiment_results/rate{str}/prob1/all_means.json"
+
+    df = pd.read_json(path_or_buf=path05)
+    df2 = pd.read_json(path_or_buf=path025)
+    df3 = pd.read_json(path_or_buf=path075)
+    df5 = pd.read_json(path_or_buf=path10)
+    rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+    rate2 = [0.0, 0.3, 0.6, 0.9, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+    #rate2 = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+    df4 = pd.DataFrame({"p = 0.25": df2["F1 Relation"], "p = 0.5": df["F1 Relation"], "p = 0.75": df3["F1 Relation"],
+                        "p = 1" : df5["F1 Relation"]})
+    df4.index = rate
+
+    min = np.min([np.min(df4["p = 0.5"]), np.min(df4["p = 0.25"]), np.min(df4["p = 0.75"]), np.min(df4["p = 1"])])
+    #print(df4)
+    # for index, row in df4.iterrows():
+    #
+    #     x = df4["Prob = 0.5"][index]
+    #     df4["Prob = 0.5"][index] = x -min
+    # for index, row in df4.iterrows():
+    #     x = df4["Prob = 0.25"][index]
+    #     df4["Prob = 0.25"][index] = x - min
+    # for index, row in df4.iterrows():
+    #     x = df4["Prob = 0.75"][index]
+    #     df4["Prob = 0.75"][index] = x - min
+    # for index, row in df4.iterrows():
+    #     x = df4["Prob = 1"][index]
+    #     df4["Prob = 1"][index] = x - min
+
+    x = np.linspace(0, 10, 5000)
+    not_rate = [0.10, 0.20, 0.40, 0.50,  0.70, 0.80, 1.00]
+    #not_rate = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.25, 1.50, 1.75]
+    df4 = df4.drop(index=not_rate)
+
+    palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
+    fig = sns.lineplot(data=df4, palette=palette)
+    fig.set(xlabel="Augmentierungsrate", ylabel="F1 Score")
+
+
+    popt, pcov = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.25"])
+    popt2, pcov2 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.5"])
+    popt3, pcov3 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.75"])
+    popt4, pcov4 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 1"])
+
+
+
+    # print(np.linalg.cond(pcov))
+    # print(np.linalg.cond(pcov2))
+    # print(np.linalg.cond(pcov3))
+    # print(np.linalg.cond(pcov4))
+
+
+    fit = fn(rate2, *popt)
+    fit2 = fn(rate2, *popt2)
+    fit3 = fn(rate2, *popt3)
+    fit4 = fn(rate2, *popt4)
+
+    #goodness1 = scipy.stats.goodness_of_fit(fit, df4["p = 0.25"])
+    #print(goodness1)
+    max_x = fit.argmax(axis=0)
+    max_x2 = fit2.argmax(axis=0)
+    max_x3 = fit3.argmax(axis=0)
+    max_x4 = fit4.argmax(axis=0)
+
+    best_aug = rate2[max_x]
+    best_aug2 = rate2[max_x2]
+    best_aug3 = rate2[max_x3]
+    best_aug4 = rate2[max_x4]
+
+    df_best_rate = pd.DataFrame()
+    series_rate = pd.Series([best_aug, df4["p = 0.25"][best_aug]])
+    df_best_rate = df_best_rate.append(series_rate,ignore_index=True)
+    series_rate2 = pd.Series([best_aug, df4["p = 0.5"][best_aug2]])
+    df_best_rate = df_best_rate.append(series_rate2,ignore_index=True)
+    series_rate3 = pd.Series([best_aug, df4["p = 0.75"][best_aug3]])
+    df_best_rate = df_best_rate.append(series_rate3,ignore_index=True)
+    series_rate4 = pd.Series([best_aug, df4["p = 1"][best_aug4]])
+    df_best_rate = df_best_rate.append(series_rate4, ignore_index=True)
+
+    df_best_rate = df_best_rate.set_axis(["Best Aug Rate", "F1 Score"], axis=1)
+    df_best_rate.index = ["p = 0.25", "p = 0.5", "p = 0.75", "p = 1"]
+    print(df_best_rate)
+    df_best_rate.to_json(path_or_buf=f"./../experiment_results/trafo{str}/best_aug_rate_rel.json", indent=4)
+
+
+
+    fig.plot(rate2, fit, color="#FF1B1B", label="Chi2 p = 0.25")
+    fig.plot(rate2, fit2, color="#1846FD", label="Chi2 p = 0.5")
+    fig.plot(rate2, fit3, color="#0EBC30", label="Chi2 p = 0.75")
+    fig.plot(rate2, fit4, color="#DFB81A", label="Chi2 p = 1")
+
+    fig.legend()
+    #fig.plot(rate, fit, color="black")
+
+    fig.set_title(f"Transformation {str}")
+
+    #fig.plot(x, chi2.pdf(x, 5), color="black")
+
+    figg = fig.figure
+    figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1_relation.pdf")
+    figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1_relation.png")
+    figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1_relation.svg")
+    plt.show()
 
 # for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
 #     get_df_with_all_ttr_means_per_prob_rate(i)
@@ -857,4 +987,6 @@ def plot_bert_means_per_prob_and_rate_ratetottr():
 #plot_with_diff_rates()
 #plot_ttr_mean_prob_to_ttr()
 #plot_train_as_test()
-plot_bert_means_per_prob_and_rate_ratetottr()
+#plot_bert_means_per_prob_and_rate_ratetottr()
+scatter()
+#plot_with_diff_rates_rel()
