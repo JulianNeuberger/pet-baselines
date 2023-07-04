@@ -737,8 +737,8 @@ def plot_ucer_means_per_prob_and_rate_ratetottr(trafo_nr):
 def plot_ttr_mean_prob_to_ttr():
     sns.set_theme()
     trafo_nr = "3"
-    name = "ucer"
-    name2 = "ucer"
+    name = "bert"
+    name2 = "bleu"
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
 
     path = f"./../experiment_results/rate3/aaa_{name2}_means_per_prob_and_rate.json"
@@ -791,16 +791,16 @@ def plot_ttr_mean_prob_to_ttr():
     df10 = df10.set_axis(rate, axis=1)
     df10.index = [0.25, 0.5, 0.75, 1.0]
 
-    #full_df = pd.DataFrame({"Trafo 3": df[3.0], "Trafo 39": df2[3.0],"Trafo 40": df3[3.0],"Trafo 86": df4[3.0],
-    #                        "Trafo 90": df5[3.0],"Trafo 103": df6[3.0]})
-    full_df = pd.DataFrame({"Trafo 5": df7[3.0], "Trafo 82": df8[3.0], "Trafo 100": df9[3.0], "Trafo 101": df10[3.0]})
+    full_df = pd.DataFrame({"Trafo 3": df[3.0], "Trafo 39": df2[3.0],"Trafo 40": df3[3.0],"Trafo 86": df4[3.0],
+                            "Trafo 90": df5[3.0],"Trafo 103": df6[3.0]})
+    #full_df = pd.DataFrame({"Trafo 5": df7[3.0], "Trafo 82": df8[3.0], "Trafo 100": df9[3.0], "Trafo 101": df10[3.0]})
     fig = sns.lineplot(data=full_df)
-    fig.set(xlabel="Ersetzungswahrscheinlichkeit", ylabel=f"{name}")
+    fig.set(xlabel="Ersetzungswahrscheinlichkeit", ylabel=f"Bleu Score")
     figg = fig.figure
     figg.tight_layout()
-    figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob.pdf")
-    figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob.png")
-    figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob.svg")
+    figg.savefig(f"./../experiment_results/Plots/Leonie/{name2}_per_prob.pdf")
+    figg.savefig(f"./../experiment_results/Plots/Leonie/{name2}_per_prob.png")
+    figg.savefig(f"./../experiment_results/Plots/Leonie/{name2}_per_prob.svg")
     plt.show()
 
 
@@ -988,5 +988,6 @@ def plot_with_diff_rates_rel():
 #plot_ttr_mean_prob_to_ttr()
 #plot_train_as_test()
 #plot_bert_means_per_prob_and_rate_ratetottr()
-scatter()
+#scatter()
 #plot_with_diff_rates_rel()
+plot_ttr_mean_prob_to_ttr()
