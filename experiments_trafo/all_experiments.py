@@ -5238,11 +5238,11 @@ def exp103_3():
 #experiment40_2()#
 #experiment40_3()#
 #experiment40_4()#
-experiment9_1() #running f9
-experiment9_2() #running
-#experiment10_1() #running f10
-#experiment10_2() #running
-#experiment10_3() #running
+#experiment9_1() #running f9
+#experiment9_2() #running
+experiment10_1() #running f10
+experiment10_2() #running
+experiment10_3() #running
 #experiment19_1() #running f19
 #experiment19_2() #running
 #experiment19_3() #running
