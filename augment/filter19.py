@@ -37,7 +37,7 @@ class Filter19Step(base.AugmentationStep):
             sentence = doc.sentences[i]
             pos_in_sent = 0
             for token in sentence.tokens:
-                if token.pos_tag == self.pos:
+                if token.pos_tag in self.pos:
                     pos_in_sent += 1
 
             condition = self.op(pos_in_sent, self.length)
