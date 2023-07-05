@@ -5547,7 +5547,7 @@ def exp103_rel():
 
     augmented_train_folds = copy.deepcopy(train_folds)
     unaugmented_train_folds = copy.deepcopy(train_folds)
-    augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob= 0.5, num_of_words=1, kind_of_word="NNP")  # adapt Adjektive
+    augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob= 0.5, num_of_words=1, kind_of_word=["NNP"])  # adapt Adjektive
 
     # actual augmentation
     for j in range(5):
@@ -5566,6 +5566,40 @@ def exp103_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
+
+def expun_rel():
+    str = "unaug"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=["F1 CRF", "F1 Relation"])
+
+    # augment the dataset - for i in range of the parameter
+
+    augmented_train_folds = copy.deepcopy(train_folds)
+    unaugmented_train_folds = copy.deepcopy(train_folds)
+    augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob= 0)  # adapt Adjektive
+
+    # actual augmentation
+    for j in range(5):
+        augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+        augmented_train_set = augmented_train_sets[0]
+        unaugmented_train_set = augmented_train_sets[1]
+        augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+        unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+
+    # actual training
+    f_1_scores_crf = run_experiment_crf("Experiment 103.1", augmented_train_folds, test_folds)
+    f_1_scores_re = run_experiment_re("Experiment 103.1", augmented_train_folds, test_folds)
+
+    # evaluation
+    df_complete["F1 CRF"] = [f_1_scores_crf]
+    df_complete["F1 Relation"] = [f_1_scores_re]
+    df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 #experiment3_1() #
 #experiment3_2() #
 #experiment3_3() #
@@ -5689,6 +5723,7 @@ def exp103_rel():
 #exp3_rel()
 #exp39_rel()
 #exp40_rel()
-exp86_rel()
-exp90_rel()
+#exp86_rel()
+#exp90_rel()
 exp103_rel()
+#expun_rel()
