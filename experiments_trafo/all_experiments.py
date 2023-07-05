@@ -682,12 +682,13 @@ def experiment9_2():  # test different operators
         if i == 0:
             op = ">"
             augmented_train_folds = copy.deepcopy(train_folds)
-            augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
+            augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)
+            op2 = "gt"# adapt
         else:
             op = "<"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter9Step(op=op)  # adapt
-
+            op2 = "lt"
         # actual augmentation
         for j in range(5):
             augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
@@ -708,7 +709,7 @@ def experiment9_2():  # test different operators
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/filter9/exp9.2/{names[k]}_{op}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/filter9/exp9.2/{names[k]}_{op2}.json", indent=4)
 
     df_complete.index = [">", "<"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter9/exp9.2/{names[0]}.json", indent=4)
@@ -773,11 +774,12 @@ def experiment10_2():  # test different operators with activity and count 3
             op = ">"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
+            op2 = "gt"
         else:
             op = "<"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter10Step(op=op)  # adapt
-
+            op2 = "lt"
         # actual augmentation
         for j in range(5):
             augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
@@ -798,7 +800,7 @@ def experiment10_2():  # test different operators with activity and count 3
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/filter10/exp10.2/{names[k]}_{op}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/filter10/exp10.2/{names[k]}_{op2}.json", indent=4)
 
     df_complete.index = [">", "<"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.2/{names[0]}.json", indent=4)
@@ -932,11 +934,12 @@ def experiment19_2():  # test different operators with Verb and count 3
             op = ">"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
+            op2 = "gt"
         else:
             op = "<"
             augmented_train_folds = copy.deepcopy(train_folds)
             augmentation_step: augment.AugmentationStep = augment.Filter19Step(op=op)  # adapt
-
+            op2 = "lt"
         # actual augmentation
         for j in range(5):
             augmented_train_set = augment.run_augmentation_old(augmented_train_folds[j], augmentation_step)
@@ -957,7 +960,7 @@ def experiment19_2():  # test different operators with Verb and count 3
 
         for k in range(1, len(all_scores) - 1):
             df = all_scores[k]
-            df.to_json(path_or_buf=f"./experiment_results/filter19/exp19.2/{names[k]}_{op}.json", indent=4)
+            df.to_json(path_or_buf=f"./experiment_results/filter19/exp19.2/{names[k]}_{op2}.json", indent=4)
 
     df_complete.index = [">", "<"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.2/{names[0]}.json", indent=4)
@@ -5235,11 +5238,11 @@ def exp103_3():
 #experiment40_2()#
 #experiment40_3()#
 #experiment40_4()#
-#experiment9_1() #running f9
-#experiment9_2() #running
-experiment10_1() #running f10
-experiment10_2() #running
-experiment10_3() #running
+experiment9_1() #running f9
+experiment9_2() #running
+#experiment10_1() #running f10
+#experiment10_2() #running
+#experiment10_3() #running
 #experiment19_1() #running f19
 #experiment19_2() #running
 #experiment19_3() #running
