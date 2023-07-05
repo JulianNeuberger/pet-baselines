@@ -1,0 +1,56 @@
+{
+    "F1 CRF":{
+        "Actor":0.5265955879,
+        "Activity":0.5243910099,
+        "Activity Data":0.470967836,
+        "Further Specification":0.5010387739,
+        "XOR Gateway":0.5241898726,
+        "Condition Specification":0.4753645746,
+        "AND Gateway":0.5222186034
+    },
+    "F1 Neural":{
+        "Actor":0.3152407956,
+        "Activity":0.3339130167,
+        "Activity Data":0.276120893,
+        "Further Specification":0.316352288,
+        "XOR Gateway":0.3227915466,
+        "Condition Specification":0.3244672441,
+        "AND Gateway":0.3309081493
+    },
+    "F1 Relation":{
+        "Actor":0.3156532706,
+        "Activity":0.3129651823,
+        "Activity Data":0.2817747316,
+        "Further Specification":0.2918011865,
+        "XOR Gateway":0.3210889958,
+        "Condition Specification":0.2980612064,
+        "AND Gateway":0.3141377441
+    },
+    "TTR":{
+        "Actor":0.2672053019,
+        "Activity":0.2385439293,
+        "Activity Data":0.3316813643,
+        "Further Specification":0.2423160037,
+        "XOR Gateway":0.2391621691,
+        "Condition Specification":0.2568506265,
+        "AND Gateway":0.2369204928
+    },
+    "UCER":{
+        "Actor":0.8348121326,
+        "Activity":0.7932946303,
+        "Activity Data":0.8969712512,
+        "Further Specification":0.7873431256,
+        "XOR Gateway":0.794517798,
+        "Condition Specification":0.8012617177,
+        "AND Gateway":0.7938361364
+    },
+    "BertScore":{
+        "Actor":0.9572890162,
+        "Activity":0.9986512661,
+        "Activity Data":0.9324888706,
+        "Further Specification":0.988501215,
+        "XOR Gateway":0.9992815018,
+        "Condition Specification":0.982291007,
+        "AND Gateway":1.0
+    }
+}

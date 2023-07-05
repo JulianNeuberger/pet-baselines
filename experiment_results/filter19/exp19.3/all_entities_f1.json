@@ -1,0 +1,37 @@
+{
+    "Actor":{
+        "Nomen":0.6444316795,
+        "Adjektive":0.715285335,
+        "Verben":0.6794463096
+    },
+    "Activity":{
+        "Nomen":0.7295401297,
+        "Adjektive":0.7794342483,
+        "Verben":0.7570423209
+    },
+    "Activity Data":{
+        "Nomen":0.5332269626,
+        "Adjektive":0.6212444212,
+        "Verben":0.6146100947
+    },
+    "Further Specification":{
+        "Nomen":0.1886507937,
+        "Adjektive":0.2504385965,
+        "Verben":0.1911528822
+    },
+    "XOR Gateway":{
+        "Nomen":0.6518657657,
+        "Adjektive":0.7084552681,
+        "Verben":0.6709200603
+    },
+    "Condition Specification":{
+        "Nomen":0.4632873637,
+        "Adjektive":0.5966663462,
+        "Verben":0.4965379665
+    },
+    "AND Gateway":{
+        "Nomen":0.0,
+        "Adjektive":0.0,
+        "Verben":0.0
+    }
+}

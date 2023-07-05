@@ -1,0 +1,65 @@
+{
+    "Actor":{
+        "Actor":0.6993766164,
+        "Activity":0.7218555168,
+        "Activity Data":0.6278064383,
+        "Further Specification":0.7276803773,
+        "XOR Gateway":0.7059233736,
+        "Condition Specification":0.7030825748,
+        "AND Gateway":0.7206798662
+    },
+    "Activity":{
+        "Actor":0.7634644431,
+        "Activity":0.7642084398,
+        "Activity Data":0.7282946693,
+        "Further Specification":0.7675561776,
+        "XOR Gateway":0.7698793979,
+        "Condition Specification":0.7624072764,
+        "AND Gateway":0.7685831367
+    },
+    "Activity Data":{
+        "Actor":0.6164349412,
+        "Activity":0.6218037392,
+        "Activity Data":0.523879415,
+        "Further Specification":0.611066767,
+        "XOR Gateway":0.6130724257,
+        "Condition Specification":0.6230808839,
+        "AND Gateway":0.6083609125
+    },
+    "Further Specification":{
+        "Actor":0.2355948695,
+        "Activity":0.2326495726,
+        "Activity Data":0.2129015506,
+        "Further Specification":0.0893333333,
+        "XOR Gateway":0.2543214341,
+        "Condition Specification":0.1932060097,
+        "AND Gateway":0.2419474854
+    },
+    "XOR Gateway":{
+        "Actor":0.7438598661,
+        "Activity":0.7049396335,
+        "Activity Data":0.644325293,
+        "Further Specification":0.7200483092,
+        "XOR Gateway":0.7334080272,
+        "Condition Specification":0.6969030969,
+        "AND Gateway":0.7190939002
+    },
+    "Condition Specification":{
+        "Actor":0.6274383786,
+        "Activity":0.6252801674,
+        "Activity Data":0.559567486,
+        "Further Specification":0.5915864528,
+        "XOR Gateway":0.5927244495,
+        "Condition Specification":0.3488721805,
+        "AND Gateway":0.5968649225
+    },
+    "AND Gateway":{
+        "Actor":0.0,
+        "Activity":0.0,
+        "Activity Data":0.0,
+        "Further Specification":0.0,
+        "XOR Gateway":0.0,
+        "Condition Specification":0.0,
+        "AND Gateway":0.0
+    }
+}
