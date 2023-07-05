@@ -612,8 +612,8 @@ def evaluate_experiment_bert_filter(unaug_train_folds, aug_train_folds, f_score_
         df_ucer = df_ucer.append(new_df_ucer_series, ignore_index=True)
 
         # get Bert
-        new_df_bert_series = metrics.calculate_bert_filter(i)
-        df_bert = df_bert.append(new_df_bert_series, ignore_index=True)
+        # new_df_bert_series = metrics.calculate_bert_filter(i)
+        # df_bert = df_bert.append(new_df_bert_series, ignore_index=True)
 
     # get mean ttr
     new_df_ttr_mean_dict = {
