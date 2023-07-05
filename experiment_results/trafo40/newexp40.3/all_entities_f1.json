@@ -1,72 +1,65 @@
 {
     "Actor":{
-        "Actor":0.7176979452,
-        "Activity":0.7176979452,
-        "Activity Data":0.7176979452,
-        "Further Specification":0.7176979452,
-        "XOR Gateway":0.7176979452,
-        "Condition Specification":0.7176979452,
-        "AND Gateway":0.7176979452,
-        "All":0.7176979452
+        "Actor":0.6986259664,
+        "Activity":0.7089308109,
+        "Activity Data":0.7097314363,
+        "Further Specification":0.724694065,
+        "XOR Gateway":0.7094188371,
+        "Condition Specification":0.7049144319,
+        "AND Gateway":0.7120029351
     },
     "Activity":{
-        "Actor":0.7763219878,
-        "Activity":0.7763219878,
-        "Activity Data":0.7763219878,
-        "Further Specification":0.7763219878,
-        "XOR Gateway":0.7763219878,
-        "Condition Specification":0.7763219878,
-        "AND Gateway":0.7763219878,
-        "All":0.7763219878
+        "Actor":0.7797518351,
+        "Activity":0.7671700003,
+        "Activity Data":0.7566157945,
+        "Further Specification":0.7850108121,
+        "XOR Gateway":0.7757584687,
+        "Condition Specification":0.7743065357,
+        "AND Gateway":0.7832303308
     },
     "Activity Data":{
-        "Actor":0.6283722067,
-        "Activity":0.6283722067,
-        "Activity Data":0.6283722067,
-        "Further Specification":0.6283722067,
-        "XOR Gateway":0.6283722067,
-        "Condition Specification":0.6283722067,
-        "AND Gateway":0.6283722067,
-        "All":0.6283722067
+        "Actor":0.6247788449,
+        "Activity":0.6444575882,
+        "Activity Data":0.61078403,
+        "Further Specification":0.6370879684,
+        "XOR Gateway":0.6260188879,
+        "Condition Specification":0.6331031211,
+        "AND Gateway":0.6360143848
     },
     "Further Specification":{
-        "Actor":0.2788245578,
-        "Activity":0.2788245578,
-        "Activity Data":0.2788245578,
-        "Further Specification":0.2788245578,
-        "XOR Gateway":0.2788245578,
-        "Condition Specification":0.2788245578,
-        "AND Gateway":0.2788245578,
-        "All":0.2788245578
+        "Actor":0.2488337153,
+        "Activity":0.2442481203,
+        "Activity Data":0.2465930335,
+        "Further Specification":0.1741414141,
+        "XOR Gateway":0.2480050505,
+        "Condition Specification":0.2596995162,
+        "AND Gateway":0.2549868432
     },
     "XOR Gateway":{
-        "Actor":0.7174327122,
-        "Activity":0.7174327122,
-        "Activity Data":0.7174327122,
-        "Further Specification":0.7174327122,
-        "XOR Gateway":0.7174327122,
-        "Condition Specification":0.7174327122,
-        "AND Gateway":0.7174327122,
-        "All":0.7174327122
+        "Actor":0.7343249428,
+        "Activity":0.7150730561,
+        "Activity Data":0.7338112858,
+        "Further Specification":0.7193668414,
+        "XOR Gateway":0.6973115072,
+        "Condition Specification":0.7104013242,
+        "AND Gateway":0.7029880611
     },
     "Condition Specification":{
-        "Actor":0.5898343685,
-        "Activity":0.5898343685,
-        "Activity Data":0.5898343685,
-        "Further Specification":0.5898343685,
-        "XOR Gateway":0.5898343685,
-        "Condition Specification":0.5898343685,
-        "AND Gateway":0.5898343685,
-        "All":0.5898343685
+        "Actor":0.6110633328,
+        "Activity":0.5901692902,
+        "Activity Data":0.6327948718,
+        "Further Specification":0.5977948718,
+        "XOR Gateway":0.5419027043,
+        "Condition Specification":0.5563150183,
+        "AND Gateway":0.6466666667
     },
     "AND Gateway":{
-        "Actor":0.3333333333,
-        "Activity":0.3333333333,
+        "Actor":0.36,
+        "Activity":0.16,
         "Activity Data":0.3333333333,
-        "Further Specification":0.3333333333,
-        "XOR Gateway":0.3333333333,
+        "Further Specification":0.36,
+        "XOR Gateway":0.36,
         "Condition Specification":0.3333333333,
-        "AND Gateway":0.3333333333,
-        "All":0.3333333333
+        "AND Gateway":0.1333333333
     }
 }
