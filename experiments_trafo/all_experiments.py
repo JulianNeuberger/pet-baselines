@@ -1667,7 +1667,7 @@ def experiment40_3():
     # augment the dataset - for i in range of the parameter
     ent_list = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                    'Condition Specification', 'AND Gateway', 'All']
-    for i in range(8):
+    for i in range(7):
         str = [ent_list[i]]
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -1695,10 +1695,10 @@ def experiment40_3():
             df.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.3/{names[k]}_{str_name}.json", indent=4)
 
     df_complete.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
-                                   'Condition Specification', 'AND Gateway', 'All']
+                                   'Condition Specification', 'AND Gateway']
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo40/exp40.3/{names[0]}.json", indent=4)
     df_entities.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
-                                   'Condition Specification', 'AND Gateway', 'All']
+                                   'Condition Specification', 'AND Gateway']
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.3/all_entities_f1.json", indent=4)
 
 def experiment40_4():
@@ -4752,8 +4752,8 @@ def exp40_3():
     #rate = np.linspace(0,4,9)
 
     ent_list = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
-                'Condition Specification', 'AND Gateway', 'All']
-    for i in range(8):
+                'Condition Specification', 'AND Gateway']
+    for i in range(7):
         str4 = [ent_list[i]]
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
@@ -4788,11 +4788,11 @@ def exp40_3():
 
     #df_complete.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
     df_complete.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
-                                   'Condition Specification', 'AND Gateway', 'All']
+                                   'Condition Specification', 'AND Gateway']
     #df_complete.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
     #df_entities.index = ["0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0"]
     df_entities.index = ['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
-                                   'Condition Specification', 'AND Gateway', 'All']
+                                   'Condition Specification', 'AND Gateway']
     #df_entities.index = ["0.0", "1.0", "2.0", "3.0",  "4.0"]
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
@@ -5240,10 +5240,10 @@ def exp103_3():
 #experiment40_4()#
 #experiment9_1() #running f9
 #experiment9_2() #running
-experiment10_1() #running f10
+#experiment10_1() #running f10
 #experiment10_2() #running
 #experiment10_3() #running
-experiment19_1() #running f19
+#experiment19_1() #running f19
 #experiment19_2() #running
 #experiment19_3() #running
 #get_unaug()
@@ -5307,7 +5307,7 @@ experiment19_1() #running f19
 #exp3_2() # e340
 #exp3_3() # e340
 #exp40_2() # e340
-#exp40_3() # e40103
+exp40_3() # e40103
 #exp40_4()# e40103
 #exp86_2()
 #exp86_3()

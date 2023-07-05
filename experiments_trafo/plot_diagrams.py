@@ -972,12 +972,18 @@ def fn2(x, a, b, c):
         x2.append(a*x[i]**2 + b*x[i] + c)
     return x2
 
+def fn3(x, a, c):
+    x2 = []
+    for i in range(len(x)):
+        x2.append(- a*np.exp(-x[i]) + c)
+    return x2
+
 def plot_filter():
     sns.set_theme()
     str = "9"
     str2 = "1"
     path = f"./../experiment_results/filter{str}/exp{9}.{1}/all_means.json"
-
+    name = "UCER"
 
     df = pd.read_json(path_or_buf=path)
 
@@ -986,12 +992,12 @@ def plot_filter():
     rate = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
 
 
-    df4 = pd.DataFrame({"Filter 9": df["F1 CRF"]})
+    df4 = pd.DataFrame({"Filter 9": df[name]})
 
     df4.index = rate
     palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
     fig = sns.lineplot(data=df4, palette=palette)
-    fig.set(xlabel="#length", ylabel="F1 Score")
+    fig.set(xlabel="t", ylabel="CETTR")
 
 
 
@@ -1007,48 +1013,119 @@ def plot_filter():
     plt.show()
     print(df4)
     figg = fig.figure
-    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.pdf")
-    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.png")
-    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.svg")
+    figg.tight_layout()
+    figg.savefig(f"./../experiment_results/filter{str}/plots/{name}_length.pdf")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/{name}_length.png")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/{name}_length.svg")
 
-def plot_filter10():
+def plot_filter10_1():
     sns.set_theme()
-    str = "10"
+    str = "19"
     str2 = "1"
-    path = f"./../experiment_results/filter{str}/exp{str}.{str2}/all_means.json"
-
+    path = f"./../experiment_results/filter10/exp10.1/all_means.json"
+    path2 = f"./../experiment_results/filter19/exp19.1/all_means.json"
+    name = "F1 CRF"
 
     df = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
 
 
+    rate = [2,3,4,5,6,7,8,9,10]
 
-    rate = [2,3,4,5,6]
 
-
-    df4 = pd.DataFrame({"Filter 10": df["F1 CRF"]})
+    df4 = pd.DataFrame({"Filter 10": df[name], "Filter 19": df2[name]})
 
     df4.index = rate
     palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
     fig = sns.lineplot(data=df4, palette=palette)
-    fig.set(xlabel="#length", ylabel="F1 Score")
+    fig.set(xlabel="t", ylabel="F1 CRF")
 
 
 
 
-    a,b,c = np.polyfit(rate, df4["Filter 10"], deg=2)
-    fit2 = fn2(rate, a, b, c)
-    fit = np.asarray(fit2)
-    max_x = fit.argmax(axis=0)
-    best_length = rate[max_x]
-    print(best_length)
+   # a,b,c = np.polyfit(rate, df4["Filter 19"], deg=2)
+    c, cov = curve_fit(fn2, xdata=rate, ydata=df4["Filter 10"])
+    c2, cov2 = curve_fit(fn2, xdata=rate, ydata=df4["Filter 19"])
+    print(c)
+    fit2 = fn2(rate,*c)
+    fit3 = fn2(rate, *c2)
+    print(fit2)
+    # fit = np.asarray(fit2)
+    # max_x = fit.argmax(axis=0)
+    # best_length = rate[max_x]
+    # print(best_length)
     fig.plot(rate, fit2, color="#FF1B1B", label="x² Fit für Filter 10")
+    fig.plot(rate, fit3, color="#1846FD", label="x² Fit für Filter 19")
     fig.legend()
     plt.show()
     print(df4)
     figg = fig.figure
-    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.pdf")
-    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.png")
-    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.svg")
+    figg.tight_layout()
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_countAll.pdf")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_countAll.png")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_countAll.svg")
+
+
+def plot_filter10_3():
+    sns.set_theme()
+    str = "10"
+    str2 = "3"
+    path = f"./../experiment_results/filter10/exp10.1/all_means.json"
+    path2 = f"./../experiment_results/filter10/exp10.1/all_means.json"
+    name = "BertScore"
+
+    df = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+
+
+    rate = ["Actor", "Activity", "Act. Data", "Fur. Spec.", "XOR", "Cond. Spec.", "AND"]
+    #rate = ["Nomen", "Adjektive", "Verben"]
+
+    #df4 = pd.DataFrame({"Filter 10": df["F1 CRF"]})
+    df4 = pd.DataFrame(data=df[name])
+    df4.index = rate
+    palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
+    fig = sns.barplot(x=rate, y=df4[name])
+
+    #fig.set(xlabel="Entity", ylabel="F1 Score")
+
+
+
+
+    # a,b,c = np.polyfit(rate, df4["Filter 10"], deg=2)
+    # fit2 = fn2(rate, a, b, c)
+    # fit = np.asarray(fit2)
+    # max_x = fit.argmax(axis=0)
+    # best_length = rate[max_x]
+    # print(best_length)
+    # fig.plot(rate, fit2, color="#FF1B1B", label="x² Fit für Filter 10")
+    #fig.legend()
+    plt.show()
+    print(df4)
+    figg = fig.figure
+    figg.tight_layout()
+    figg.savefig(f"./../experiment_results/filter{str}/plots/bert_pos.pdf")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/bert_pos.png")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/bert_pos.svg")
+
+def scatter_filter():
+    sns.set_theme()
+    str = "19"
+    str2 = "1"
+    path = f"./../experiment_results/filter10/exp10.1/all_means.json"
+    path2 = f"./../experiment_results/filter19/exp19.1/all_means.json"
+
+    df =  pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    #df4 = pd.DataFrame({"Filter 10": })
+    fig = sns.lmplot(x='BertScore', y='F1 CRF', data=df, fit_reg=True )
+    sns.lmplot(x='BertScore', y='F1 CRF', data=df2, fit_reg=True)
+    plt.show()
+    # figg = fig.figure
+    # figg.tight_layout()
+    # figg.savefig(f"./../experiment_results/filter{str}/plots/scatter_fbert.pdf")
+    # figg.savefig(f"./../experiment_results/filter{str}/plots/scatter_fbert.png")
+    # figg.savefig(f"./../experiment_results/filter{str}/plots/scatter_fbert.svg")
 
 # for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
 #     get_df_with_all_ttr_means_per_prob_rate(i)
@@ -1076,4 +1153,5 @@ def plot_filter10():
 #plot_bert_means_per_prob_and_rate_ratetottr()
 #scatter()
 #plot_with_diff_rates_rel()
-plot_filter10()
+#plot_filter10_1()
+scatter_filter()

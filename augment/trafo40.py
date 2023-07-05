@@ -80,7 +80,7 @@ class Trafo40Step(base.AugmentationStep):
                 token = sentence.tokens[token_counter]
                 # only if tags are given the tokens should be checked for tags
                 if self.tags is not None:
-                    if token.bio_tag not in self.tags:
+                    if tokenmanager.get_bio_tag_short(token.bio_tag) not in self.tags:
                         token_counter += 1
                         continue
 
