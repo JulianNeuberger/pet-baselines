@@ -12,47 +12,71 @@ import tqdm
 from metrics_ba import Metrics
 
 
-def run_experiment(name: str, aug_train_folds, test_folds):
+def run_experiment_crf(name: str, aug_train_folds, test_folds):
     print(f'building scores for {name}')
     crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
-    neural_ext = pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
-                                                     resolved_tags=['Actor', 'Activity Data'],
-                                                     cluster_overlap=.5,
-                                                     mention_overlap=.8,
-                                                     ner_strategy='frequency')
-    rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
-    #rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
-                                                    #num_trees=100, negative_sampling_rate=40.0)
+    # neural_ext = pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+    #                                                  resolved_tags=['Actor', 'Activity Data'],
+    #                                                  cluster_overlap=.5,
+    #                                                  mention_overlap=.8,
+    #                                                  ner_strategy='frequency')
+    # rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    # #rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+    #                                                 #num_trees=100, negative_sampling_rate=40.0)
     res = cross_validate_pipeline_macro(
-        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext_rule]),
+        p=pipeline.Pipeline(name=name, steps=[crf_ext]),
         train_folds=aug_train_folds,
         test_folds=test_folds
     )
     scores_crf = res[crf_ext]
-    scores_neural = res[neural_ext]
-    scores_rel_rule = res[rel_ext_rule]
+    # scores_neural = res[neural_ext]
+    # scores_rel_rule = res[rel_ext_rule]
     #scores_rel = res[rel_ext]
 
     #scores = list(res.values())[0]
     f_score_crf = scores_crf.overall_scores.f1
-    f_score_neural = scores_neural.overall_scores.f1
-    f_score_rel_rule = scores_rel_rule.overall_scores.f1
+    # f_score_neural = scores_neural.overall_scores.f1
+    # f_score_rel_rule = scores_rel_rule.overall_scores.f1
     #f_score_rel = scores_rel.overall_scores.f1
 
-    new_list = {}
-    new_list["Actor"] = scores_crf.scores_by_tag["actor"].f1
-    new_list["Activity"] = scores_crf.scores_by_tag["activity"].f1
-    new_list["Activity Data"] = scores_crf.scores_by_tag["activity data"].f1
-    new_list["Further Specification"] = scores_crf.scores_by_tag["further specification"].f1
-    new_list["XOR Gateway"] = scores_crf.scores_by_tag["xor gateway"].f1
-    new_list["Condition Specification"] = scores_crf.scores_by_tag["condition specification"].f1
-    new_list["AND Gateway"] = scores_crf.scores_by_tag["and gateway"].f1
 
-    new_series = pd.Series(data=new_list)
-    return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
+
+
+    return f_score_crf
     #return [f_score_crf, f_score_neural, f_score_rel, new_series]
 
+def run_experiment_re(name: str, aug_train_folds, test_folds):
+    print(f'building scores for {name}')
+    #crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
+    # neural_ext = pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+    #                                                  resolved_tags=['Actor', 'Activity Data'],
+    #                                                  cluster_overlap=.5,
+    #                                                  mention_overlap=.8,
+    #                                                  ner_strategy='frequency')
+    #rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                      num_trees=100, negative_sampling_rate=40.0)
+    res = cross_validate_pipeline_macro(
+        p=pipeline.Pipeline(name=name, steps=[rel_ext]),
+        train_folds=aug_train_folds,
+        test_folds=test_folds
+    )
+    #scores_crf = res[crf_ext]
+    # scores_neural = res[neural_ext]
+    #scores_rel_rule = res[rel_ext_rule]
+    scores_rel = res[rel_ext]
 
+    #scores = list(res.values())[0]
+    #f_score_crf = scores_crf.overall_scores.f1
+    # f_score_neural = scores_neural.overall_scores.f1
+    #f_score_rel_rule = scores_rel_rule.overall_scores.f1
+    f_score_rel = scores_rel.overall_scores.f1
+
+
+
+
+    return f_score_rel
+    #return f_score_rel_rule
 def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -590,6 +614,46 @@ def evaluate_experiment_test(unaug_train_folds, aug_train_folds, f_score_crf, f_
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean
 
+
+def run_experiment(name: str, aug_train_folds, test_folds):
+    print(f'building scores for {name}')
+    crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
+    neural_ext = pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+                                                     resolved_tags=['Actor', 'Activity Data'],
+                                                     cluster_overlap=.5,
+                                                     mention_overlap=.8,
+                                                     ner_strategy='frequency')
+    rel_ext_rule = pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
+    #rel_ext = pipeline.CatBoostRelationExtractionStep(name='perfect entities', context_size=2,
+                                                    #num_trees=100, negative_sampling_rate=40.0)
+    res = cross_validate_pipeline_macro(
+        p=pipeline.Pipeline(name=name, steps=[crf_ext, neural_ext, rel_ext_rule]),
+        train_folds=aug_train_folds,
+        test_folds=test_folds
+    )
+    scores_crf = res[crf_ext]
+    scores_neural = res[neural_ext]
+    scores_rel_rule = res[rel_ext_rule]
+    #scores_rel = res[rel_ext]
+
+    #scores = list(res.values())[0]
+    f_score_crf = scores_crf.overall_scores.f1
+    f_score_neural = scores_neural.overall_scores.f1
+    f_score_rel_rule = scores_rel_rule.overall_scores.f1
+    #f_score_rel = scores_rel.overall_scores.f1
+
+    new_list = {}
+    new_list["Actor"] = scores_crf.scores_by_tag["actor"].f1
+    new_list["Activity"] = scores_crf.scores_by_tag["activity"].f1
+    new_list["Activity Data"] = scores_crf.scores_by_tag["activity data"].f1
+    new_list["Further Specification"] = scores_crf.scores_by_tag["further specification"].f1
+    new_list["XOR Gateway"] = scores_crf.scores_by_tag["xor gateway"].f1
+    new_list["Condition Specification"] = scores_crf.scores_by_tag["condition specification"].f1
+    new_list["AND Gateway"] = scores_crf.scores_by_tag["and gateway"].f1
+
+    new_series = pd.Series(data=new_list)
+    return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
+    #return [f_score_crf, f_score_neural, f_score_rel, new_series]
 def evaluate_experiment_bert_filter(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',

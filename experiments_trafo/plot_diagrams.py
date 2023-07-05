@@ -349,7 +349,7 @@ def plot_train_as_test():
     plt.show()
 
 
-def fn(x, c, s, df):
+def fn(x, c, s):
   return s * chi2.pdf(x, 4.5) + c
 
 
@@ -828,6 +828,11 @@ def plot_bert_means_per_prob_and_rate_ratetottr():
 
 def scatter():
     sns.set_theme()
+    bert_list = []
+    f1_list = []
+    ucer_list = []
+    ttr_list = []
+
     trafo_nr = "101"
     path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
     path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
@@ -837,22 +842,138 @@ def scatter():
     df2 = pd.read_json(path_or_buf=path2)
     df3 = pd.read_json(path_or_buf=path3)
     df4 = pd.read_json(path_or_buf=path4)
+    bert_list.extend(df1["BertScore"].tolist())
+    f1_list.extend(df1["F1 CRF"].tolist())
+    ttr_list.extend(df1["TTR"].tolist())
+    ucer_list.extend(df1["UCER"].tolist())
+
+    bert_list.extend(df2["BertScore"].tolist())
+    f1_list.extend(df2["F1 CRF"].tolist())
+    ttr_list.extend(df2["TTR"].tolist())
+    ucer_list.extend(df2["UCER"].tolist())
+
+    bert_list.extend(df3["BertScore"].tolist())
+    f1_list.extend(df3["F1 CRF"].tolist())
+    ttr_list.extend(df3["TTR"].tolist())
+    ucer_list.extend(df3["UCER"].tolist())
+
+    bert_list.extend(df4["BertScore"].tolist())
+    f1_list.extend(df4["F1 CRF"].tolist())
+    ttr_list.extend(df4["TTR"].tolist())
+    ucer_list.extend(df4["UCER"].tolist())
+
+    trafo_nr = "82"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bert_list.extend(df1["BertScore"].tolist())
+    f1_list.extend(df1["F1 CRF"].tolist())
+    ttr_list.extend(df1["TTR"].tolist())
+    ucer_list.extend(df1["UCER"].tolist())
+
+    bert_list.extend(df2["BertScore"].tolist())
+    f1_list.extend(df2["F1 CRF"].tolist())
+    ttr_list.extend(df2["TTR"].tolist())
+    ucer_list.extend(df2["UCER"].tolist())
+
+    bert_list.extend(df3["BertScore"].tolist())
+    f1_list.extend(df3["F1 CRF"].tolist())
+    ttr_list.extend(df3["TTR"].tolist())
+    ucer_list.extend(df3["UCER"].tolist())
+
+    bert_list.extend(df4["BertScore"].tolist())
+    f1_list.extend(df4["F1 CRF"].tolist())
+    ttr_list.extend(df4["TTR"].tolist())
+    ucer_list.extend(df4["UCER"].tolist())
+
+    trafo_nr = "100"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bert_list.extend(df1["BertScore"].tolist())
+    f1_list.extend(df1["F1 CRF"].tolist())
+    ttr_list.extend(df1["TTR"].tolist())
+    ucer_list.extend(df1["UCER"].tolist())
+
+    bert_list.extend(df2["BertScore"].tolist())
+    f1_list.extend(df2["F1 CRF"].tolist())
+    ttr_list.extend(df2["TTR"].tolist())
+    ucer_list.extend(df2["UCER"].tolist())
+
+    bert_list.extend(df3["BertScore"].tolist())
+    f1_list.extend(df3["F1 CRF"].tolist())
+    ttr_list.extend(df3["TTR"].tolist())
+    ucer_list.extend(df3["UCER"].tolist())
+
+    bert_list.extend(df4["BertScore"].tolist())
+    f1_list.extend(df4["F1 CRF"].tolist())
+    ttr_list.extend(df4["TTR"].tolist())
+    ucer_list.extend(df4["UCER"].tolist())
+
+    trafo_nr = "5"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bert_list.extend(df1["BertScore"].tolist())
+    f1_list.extend(df1["F1 CRF"].tolist())
+    ttr_list.extend(df1["TTR"].tolist())
+    ucer_list.extend(df1["UCER"].tolist())
+
+    bert_list.extend(df2["BertScore"].tolist())
+    f1_list.extend(df2["F1 CRF"].tolist())
+    ttr_list.extend(df2["TTR"].tolist())
+    ucer_list.extend(df2["UCER"].tolist())
+
+    bert_list.extend(df3["BertScore"].tolist())
+    f1_list.extend(df3["F1 CRF"].tolist())
+    ttr_list.extend(df3["TTR"].tolist())
+    ucer_list.extend(df3["UCER"].tolist())
+
+    bert_list.extend(df4["BertScore"].tolist())
+    f1_list.extend(df4["F1 CRF"].tolist())
+    ttr_list.extend(df4["TTR"].tolist())
+    ucer_list.extend(df4["UCER"].tolist())
 
 
 
-    fig = plt.scatter(x=df1["BertScore"], y=df1['F1 Relation'], )
-    fig = plt.scatter(x=df2["BertScore"], y=df2['F1 Relation'])
-    fig = plt.scatter(x=df3["BertScore"], y=df3['F1 Relation'])
-    fig = plt.scatter(x=df4["BertScore"], y=df4['F1 Relation'])
-    plt.legend(("p = 0.25", "p = 0.5", "p = 0.75", "p = 1"))
-    plt.xlabel("Bert Score")
+
+
+    popt, pcov = curve_fit(f=fn, xdata=ttr_list, ydata=f1_list)
+    print(popt)
+    fit = fn(ttr_list, *popt)
+
+    df_all = pd.DataFrame({"TTR": ttr_list, "F1 CRF": f1_list})
+
+
+
+
+    fig = plt.scatter(x=ttr_list, y=f1_list )
+    plt.plot(ttr_list, fit, color="#FF1B1B", label="Chi2")
+    #plt.legend(("p = 0.25", "p = 0.5", "p = 0.75", "p = 1"))
+    plt.xlabel("ETTR")
     plt.ylabel("F1 Score")
+    plt.legend()
     plt.show()
     figg = fig.figure
     figg.tight_layout()
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_bert_f1_rel.pdf")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_bert_f1_rel.png")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_bert_f1_rel.svg")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL.pdf")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL.png")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL.svg")
 
 def plot_with_diff_rates_rel():
     sns.set_theme()
@@ -1154,4 +1275,4 @@ def scatter_filter():
 #scatter()
 #plot_with_diff_rates_rel()
 #plot_filter10_1()
-scatter_filter()
+scatter()

@@ -7,7 +7,7 @@ import data
 import pandas as pd
 from experiments_trafo.experiments import run_experiment, evaluate_experiment_bleu, evaluate_unaugmented_data, \
     evaluate_experiment_bert, evaluate_experiment_with_rate, evaluate_experiment_with_rate_bleu, \
-    evaluate_experiment_test, evaluate_experiment_bert_filter
+    evaluate_experiment_test, evaluate_experiment_bert_filter, run_experiment_re, run_experiment_crf
 import augment
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -5213,6 +5213,146 @@ def exp103_3():
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
 
+
+def exp101_rel():
+    str = "101"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=["F1 CRF", "F1 Relation"])
+
+    # augment the dataset - for i in range of the parameter
+
+    augmented_train_folds = copy.deepcopy(train_folds)
+    unaugmented_train_folds = copy.deepcopy(train_folds)
+    augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob=0.5, type=True)  # adapt Adjektive
+
+    # actual augmentation
+    for j in range(5):
+        augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+        augmented_train_set = augmented_train_sets[0]
+        unaugmented_train_set = augmented_train_sets[1]
+        augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+        unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+
+    # actual training
+    f_1_scores_crf = run_experiment_crf("Experiment 101.1", augmented_train_folds, test_folds)
+    f_1_scores_re = run_experiment_re("Experiment 101.1", augmented_train_folds, test_folds)
+
+    # evaluation
+    df_complete["F1 CRF"] = [f_1_scores_crf]
+    df_complete["F1 Relation"] = [f_1_scores_re]
+    df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
+
+
+def exp100_rel():
+    str = "100"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=["F1 CRF", "F1 Relation"])
+
+    # augment the dataset - for i in range of the parameter
+
+    augmented_train_folds = copy.deepcopy(train_folds)
+    unaugmented_train_folds = copy.deepcopy(train_folds)
+    augmentation_step: augment.AugmentationStep = augment.Trafo100Step(prob=0.5, pos_type=True)  # adapt Adjektive
+
+    # actual augmentation
+    for j in range(5):
+        augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+        augmented_train_set = augmented_train_sets[0]
+        unaugmented_train_set = augmented_train_sets[1]
+        augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+        unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+
+    # actual training
+    f_1_scores_crf = run_experiment_crf("Experiment 100.1", augmented_train_folds, test_folds)
+    f_1_scores_re = run_experiment_re("Experiment 100.1", augmented_train_folds, test_folds)
+
+    # evaluation
+    df_complete["F1 CRF"] = [f_1_scores_crf]
+    df_complete["F1 Relation"] = [f_1_scores_re]
+    df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
+
+def exp82_rel():
+    str = "82"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=["F1 CRF", "F1 Relation"])
+
+    # augment the dataset - for i in range of the parameter
+
+    augmented_train_folds = copy.deepcopy(train_folds)
+    unaugmented_train_folds = copy.deepcopy(train_folds)
+    augmentation_step: augment.AugmentationStep = augment.Trafo82Step(p= 1)  # adapt Adjektive
+
+    # actual augmentation
+    for j in range(5):
+        augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+        augmented_train_set = augmented_train_sets[0]
+        unaugmented_train_set = augmented_train_sets[1]
+        augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+        unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+
+    # actual training
+    f_1_scores_crf = run_experiment_crf("Experiment 82.1", augmented_train_folds, test_folds)
+    f_1_scores_re = run_experiment_re("Experiment 82.1", augmented_train_folds, test_folds)
+
+    # evaluation
+    df_complete["F1 CRF"] = [f_1_scores_crf]
+    df_complete["F1 Relation"] = [f_1_scores_re]
+    df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
+
+
+def exp5_rel():
+    str = "5"
+    str2 = ""
+    # Get the data for augmenting and training
+    train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+
+    # specific for this experiment
+    df_complete: pd.DataFrame = pd.DataFrame(
+        columns=["F1 CRF", "F1 Relation"])
+
+    # augment the dataset - for i in range of the parameter
+
+    augmented_train_folds = copy.deepcopy(train_folds)
+    unaugmented_train_folds = copy.deepcopy(train_folds)
+    augmentation_step: augment.AugmentationStep = augment.Trafo5Step(p= 0.5)  # adapt Adjektive
+
+    # actual augmentation
+    for j in range(5):
+        augmented_train_sets = augment.run_augmentation(augmented_train_folds[j], augmentation_step, aug_rate=3)
+        augmented_train_set = augmented_train_sets[0]
+        unaugmented_train_set = augmented_train_sets[1]
+        augmented_train_folds[j] = copy.deepcopy(augmented_train_set)
+        unaugmented_train_folds[j] = copy.deepcopy(unaugmented_train_set)
+
+    # actual training
+    f_1_scores_crf = run_experiment_crf("Experiment 5.1", augmented_train_folds, test_folds)
+    f_1_scores_re = run_experiment_re("Experiment 5.1", augmented_train_folds, test_folds)
+
+    # evaluation
+    df_complete["F1 CRF"] = [f_1_scores_crf]
+    df_complete["F1 Relation"] = [f_1_scores_re]
+    df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
+
+
 #experiment3_1() #
 #experiment3_2() #
 #experiment3_3() #
@@ -5308,7 +5448,7 @@ def exp103_3():
 #exp3_3() # e340
 #exp40_2() # e340
 #exp40_3() # e40103
-exp40_4()# e40103
+#exp40_4()# e40103
 #exp86_2()
 #exp86_3()
 #exp86_4()
@@ -5329,3 +5469,7 @@ exp40_4()# e40103
 #
 #
 #
+exp101_rel()
+exp100_rel()
+exp82_rel()
+exp5_rel()
