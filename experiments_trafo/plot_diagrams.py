@@ -964,6 +964,92 @@ def plot_with_diff_rates_rel():
     figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1_relation.svg")
     plt.show()
 
+def fn5(x, c, s, df):
+  return s * chi2.pdf(x, 4.5) + c
+def fn2(x, a, b, c):
+    x2 = []
+    for i in range(len(x)):
+        x2.append(a*x[i]**2 + b*x[i] + c)
+    return x2
+
+def plot_filter():
+    sns.set_theme()
+    str = "9"
+    str2 = "1"
+    path = f"./../experiment_results/filter{str}/exp{9}.{1}/all_means.json"
+
+
+    df = pd.read_json(path_or_buf=path)
+
+
+
+    rate = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+
+
+    df4 = pd.DataFrame({"Filter 9": df["F1 CRF"]})
+
+    df4.index = rate
+    palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
+    fig = sns.lineplot(data=df4, palette=palette)
+    fig.set(xlabel="#length", ylabel="F1 Score")
+
+
+
+
+    a,b,c = np.polyfit(rate, df4["Filter 9"], deg=2)
+    fit2 = fn2(rate, a, b, c)
+    fit = np.asarray(fit2)
+    max_x = fit.argmax(axis=0)
+    best_length = rate[max_x]
+    print(best_length)
+    fig.plot(rate, fit2, color="#FF1B1B", label="x² Fit für Filter 9")
+    fig.legend()
+    plt.show()
+    print(df4)
+    figg = fig.figure
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.pdf")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.png")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.svg")
+
+def plot_filter10():
+    sns.set_theme()
+    str = "10"
+    str2 = "1"
+    path = f"./../experiment_results/filter{str}/exp{str}.{str2}/all_means.json"
+
+
+    df = pd.read_json(path_or_buf=path)
+
+
+
+    rate = [2,3,4,5,6]
+
+
+    df4 = pd.DataFrame({"Filter 10": df["F1 CRF"]})
+
+    df4.index = rate
+    palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
+    fig = sns.lineplot(data=df4, palette=palette)
+    fig.set(xlabel="#length", ylabel="F1 Score")
+
+
+
+
+    a,b,c = np.polyfit(rate, df4["Filter 10"], deg=2)
+    fit2 = fn2(rate, a, b, c)
+    fit = np.asarray(fit2)
+    max_x = fit.argmax(axis=0)
+    best_length = rate[max_x]
+    print(best_length)
+    fig.plot(rate, fit2, color="#FF1B1B", label="x² Fit für Filter 10")
+    fig.legend()
+    plt.show()
+    print(df4)
+    figg = fig.figure
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.pdf")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.png")
+    figg.savefig(f"./../experiment_results/filter{str}/plots/f1_length.svg")
+
 # for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
 #     get_df_with_all_ttr_means_per_prob_rate(i)
 #     plot_ttr_means_per_prob_and_rate_ratetottr(i)
@@ -990,4 +1076,4 @@ def plot_with_diff_rates_rel():
 #plot_bert_means_per_prob_and_rate_ratetottr()
 #scatter()
 #plot_with_diff_rates_rel()
-plot_ttr_mean_prob_to_ttr()
+plot_filter10()

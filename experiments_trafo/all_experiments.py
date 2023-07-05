@@ -727,7 +727,7 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(2, 7):
+    for i in range(2, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Filter10Step(length=i)  # adapt
 
@@ -753,9 +753,9 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/filter10/exp10.1/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["2", "3", "4", "5", "6"]
+    df_complete.index = ["2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter10/exp10.1/{names[0]}.json", indent=4)
-    df_entities.index = ["2", "3", "4", "5", "6"]
+    df_entities.index = ["2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.1/all_entities_f1.json", indent=4)
 
 def experiment10_2():  # test different operators with activity and count 3
@@ -887,7 +887,7 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     df_entities = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
                                         'Condition Specification', 'AND Gateway'])
     # augment the dataset - for i in range of the parameter
-    for i in range(2, 7):
+    for i in range(2, 11):
         augmented_train_folds = copy.deepcopy(train_folds)
         augmentation_step: augment.AugmentationStep = augment.Filter19Step(length=i)  # adapt
 
@@ -913,9 +913,9 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
             df = all_scores[k]
             df.to_json(path_or_buf=f"./experiment_results/filter19/exp19.1/{names[k]}_{i}.json", indent=4)
 
-    df_complete.index = ["2", "3", "4", "5", "6"]
+    df_complete.index = ["2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_complete.to_json(path_or_buf=f"./experiment_results/filter19/exp19.1/{names[0]}.json", indent=4)
-    df_entities.index = ["2", "3", "4", "5", "6"]
+    df_entities.index = ["2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.1/all_entities_f1.json", indent=4)
 
 def experiment19_2():  # test different operators with Verb and count 3
@@ -5240,12 +5240,12 @@ def exp103_3():
 #experiment40_4()#
 #experiment9_1() #running f9
 #experiment9_2() #running
-#experiment10_1() #running f10
+experiment10_1() #running f10
 #experiment10_2() #running
 #experiment10_3() #running
 experiment19_1() #running f19
-experiment19_2() #running
-experiment19_3() #running
+#experiment19_2() #running
+#experiment19_3() #running
 #get_unaug()
 
 #experiment101rate() #
