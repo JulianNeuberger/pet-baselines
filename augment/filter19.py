@@ -6,7 +6,7 @@ from transformations import tokenmanager
 import copy
 
 class Filter19Step(base.AugmentationStep):
-    def __init__(self, length: int=3, op: str="<", pos: str="V"):
+    def __init__(self, length: int=4, op: str=">", pos: str="V"):
         self.length = length
         self.op = Filter19Step.parse_operator(op)
         self.pos = Filter19Step.parse_pos_tags(pos)

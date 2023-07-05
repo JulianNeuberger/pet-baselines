@@ -6,7 +6,7 @@ from transformations import tokenmanager
 import copy
 
 class Filter10Step(base.AugmentationStep):
-    def __init__(self, length: int=3, op: str="<", bio: str="Activity"):
+    def __init__(self, length: int=4, op: str=">", bio: str="Activity"):
         self.length = length
         self.op = Filter10Step.parse_operator(op)
         self.bio = bio
