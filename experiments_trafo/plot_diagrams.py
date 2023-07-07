@@ -349,8 +349,8 @@ def plot_train_as_test():
     plt.show()
 
 
-def fn(x, c, s):
-  return s * chi2.pdf(x, 4.5) + c
+def fn(x, c, s, df):
+  return s * chi2.pdf(x, df) + c
 
 
 def plot_with_diff_rates():
@@ -465,7 +465,7 @@ def plot_with_diff_rates():
 
 
 
-def get_df_with_all_ttr_means_per_prob_rate(trafo_nr):
+def get_df_with_all_ttr_means_per_prob_rate(trafo_nr=101):
     #trafo_nr = "5"
     df_all_ttr_means = pd.DataFrame()
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
@@ -483,7 +483,7 @@ def get_df_with_all_ttr_means_per_prob_rate(trafo_nr):
         path = f"./../experiment_results/rate{trafo_nr}/ttr_mean_un_{i}.json"
         df = pd.read_json(path_or_buf=path)
         list4.append(df["All"][0])
-    new_series4 = pd.Series(list1)
+    new_series4 = pd.Series(list4)
     df_all_ttr_means = df_all_ttr_means.append(new_series4, ignore_index=True)
 
     list2 = []
@@ -491,7 +491,7 @@ def get_df_with_all_ttr_means_per_prob_rate(trafo_nr):
         path = f"./../experiment_results/rate{trafo_nr}/prob075/ttr_mean_un_{i}.json"
         df = pd.read_json(path_or_buf=path)
         list2.append(df["All"][0])
-    new_series2 = pd.Series(list1)
+    new_series2 = pd.Series(list2)
     df_all_ttr_means = df_all_ttr_means.append(new_series2, ignore_index=True)
 
     list3 = []
@@ -504,7 +504,7 @@ def get_df_with_all_ttr_means_per_prob_rate(trafo_nr):
 
     df_all_ttr_means = df_all_ttr_means.set_axis(rate, axis=1)
     df_all_ttr_means.index = [0.25, 0.5, 0.75, 1.0]
-
+    print(df_all_ttr_means)
     df_all_ttr_means.to_json(path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_ttr_means_un_per_prob_and_rate.json", indent=4)
 
 
@@ -554,7 +554,7 @@ def get_df_with_all_ucer_means_per_prob_rate(trafo_nr):
         path = f"./../experiment_results/rate{trafo_nr}/ucer_mean_un_{i}.json"
         df = pd.read_json(path_or_buf=path)
         list4.append(df["All"][0])
-    new_series4 = pd.Series(list1)
+    new_series4 = pd.Series(list4)
     df_all_ttr_means = df_all_ttr_means.append(new_series4, ignore_index=True)
 
     list2 = []
@@ -562,7 +562,7 @@ def get_df_with_all_ucer_means_per_prob_rate(trafo_nr):
         path = f"./../experiment_results/rate{trafo_nr}/prob075/ucer_mean_un_{i}.json"
         df = pd.read_json(path_or_buf=path)
         list2.append(df["All"][0])
-    new_series2 = pd.Series(list1)
+    new_series2 = pd.Series(list2)
     df_all_ttr_means = df_all_ttr_means.append(new_series2, ignore_index=True)
 
     list3 = []
@@ -673,7 +673,7 @@ def get_df_with_all_bert_means_per_prob_rate(trafo_nr):
         path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_bert_means_per_prob_and_rate.json", indent=4)
 
 
-def plot_ttr_means_per_prob_and_rate_ratetottr(trafo_nr):
+def plot_ttr_means_per_prob_and_rate_ratetottr(trafo_nr=101):
     sns.set_theme()
     #trafo_nr = "39"
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
@@ -685,6 +685,7 @@ def plot_ttr_means_per_prob_and_rate_ratetottr(trafo_nr):
 
     df2 = df2.subtract(df1)
     df2 = df2.set_axis(rate, axis=1)
+    print(df2)
     df2.index = [0.25, 0.5, 0.75, 1.0]
     df2.to_json(path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_ttr_means_subt_per_prob_and_rate.json", indent=4)
 
@@ -744,63 +745,94 @@ def plot_ttr_mean_prob_to_ttr():
     path = f"./../experiment_results/rate3/aaa_{name2}_means_per_prob_and_rate.json"
     df = pd.read_json(path_or_buf=path)
     df = df.set_axis(rate, axis=1)
-    df.index = [0.25, 0.5, 0.75, 1.0]
+    df.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df.index = [ 0.25, 0.5, 0.75, 1.0, 0.00]
+    df = df.sort_index().reset_index(drop=True)
+    df.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path2 = f"./../experiment_results/rate39/aaa_{name2}_means_per_prob_and_rate.json"
     df2 = pd.read_json(path_or_buf=path2)
     df2 = df2.set_axis(rate, axis=1)
-    df2.index = [0.25, 0.5, 0.75, 1.0]
+    df2.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df2.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df2 = df2.sort_index().reset_index(drop=True)
+    df2.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path3 = f"./../experiment_results/rate40/aaa_{name2}_means_per_prob_and_rate.json"
     df3 = pd.read_json(path_or_buf=path3)
     df3 = df3.set_axis(rate, axis=1)
-    df3.index = [0.25, 0.5, 0.75, 1.0]
+    df3.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df3.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df3 = df3.sort_index().reset_index(drop=True)
+    df3.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path4 = f"./../experiment_results/rate86/aaa_{name2}_means_per_prob_and_rate.json"
     df4 = pd.read_json(path_or_buf=path4)
     df4 = df4.set_axis(rate, axis=1)
-    df4.index = [0.25, 0.5, 0.75, 1.0]
+    df4.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df4.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df4 = df4.sort_index().reset_index(drop=True)
+    df4.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path5 = f"./../experiment_results/rate90/aaa_{name2}_means_per_prob_and_rate.json"
     df5 = pd.read_json(path_or_buf=path5)
     df5 = df5.set_axis(rate, axis=1)
-    df5.index = [0.25, 0.5, 0.75, 1.0]
+    df5.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df5.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df5 = df5.sort_index().reset_index(drop=True)
+    df5.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path6 = f"./../experiment_results/rate103/aaa_{name2}_means_per_prob_and_rate.json"
     df6 = pd.read_json(path_or_buf=path6)
     df6 = df6.set_axis(rate, axis=1)
-    df6.index = [0.25, 0.5, 0.75, 1.0]
+    df6.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df6.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df6 = df6.sort_index().reset_index(drop=True)
+    df6.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path7 = f"./../experiment_results/rate5/aaa_{name}_means_per_prob_and_rate.json"
     df7 = pd.read_json(path_or_buf=path7)
     df7 = df7.set_axis(rate, axis=1)
-    df7.index = [0.25, 0.5, 0.75, 1.0]
+    df7.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df7.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df7 = df7.sort_index().reset_index(drop=True)
+    df7.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path8 = f"./../experiment_results/rate82/aaa_{name}_means_per_prob_and_rate.json"
     df8 = pd.read_json(path_or_buf=path8)
     df8 = df8.set_axis(rate, axis=1)
-    df8.index = [0.25, 0.5, 0.75, 1.0]
+    df8.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df8.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df8 = df8.sort_index().reset_index(drop=True)
+    df8.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path9 = f"./../experiment_results/rate100/aaa_{name}_means_per_prob_and_rate.json"
     df9 = pd.read_json(path_or_buf=path9)
     df9 = df9.set_axis(rate, axis=1)
-    df9.index = [0.25, 0.5, 0.75, 1.0]
+    df9.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df9.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df9 = df9.sort_index().reset_index(drop=True)
+    df9.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path10 = f"./../experiment_results/rate101/aaa_{name}_means_per_prob_and_rate.json"
     df10 = pd.read_json(path_or_buf=path10)
     df10 = df10.set_axis(rate, axis=1)
-    df10.index = [0.25, 0.5, 0.75, 1.0]
+    df10.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df10.index = [0.25, 0.5, 0.75, 1.0, 0.00]
+    df10 = df10.sort_index().reset_index(drop=True)
+    df10.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
-    full_df = pd.DataFrame({"Trafo 3": df[3.0], "Trafo 39": df2[3.0],"Trafo 40": df3[3.0],"Trafo 86": df4[3.0],
-                            "Trafo 90": df5[3.0],"Trafo 103": df6[3.0]})
-    #full_df = pd.DataFrame({"Trafo 5": df7[3.0], "Trafo 82": df8[3.0], "Trafo 100": df9[3.0], "Trafo 101": df10[3.0]})
+    print(df)
+    #full_df = pd.DataFrame({"Trafo 3": df[3.0], "Trafo 39": df2[3.0],"Trafo 40": df3[3.0],"Trafo 86": df4[3.0],
+    #                       "Trafo 90": df5[3.0],"Trafo 103": df6[3.0]})
+    full_df = pd.DataFrame({"Trafo 5": df7[3.0], "Trafo 82": df8[3.0], "Trafo 100": df9[3.0], "Trafo 101": df10[3.0]})
     fig = sns.lineplot(data=full_df)
-    fig.set(xlabel="Ersetzungswahrscheinlichkeit", ylabel=f"Bleu Score")
+    fig.set(xlabel="Ersetzungswahrscheinlichkeit", ylabel=f"CETTR")
     figg = fig.figure
     figg.tight_layout()
-    figg.savefig(f"./../experiment_results/Plots/Leonie/{name2}_per_prob.pdf")
-    figg.savefig(f"./../experiment_results/Plots/Leonie/{name2}_per_prob.png")
-    figg.savefig(f"./../experiment_results/Plots/Leonie/{name2}_per_prob.svg")
+    figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob_new.pdf")
+    figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob_new.png")
+    figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob_new.svg")
     plt.show()
 
 
@@ -819,19 +851,23 @@ def plot_bert_means_per_prob_and_rate_ratetottr():
     fig = sns.lineplot(data=df4)
     fig.set(xlabel="Augmentierungsrate", ylabel="Bleu Score")
 
-    figg = fig.figure
-    figg.tight_layout()
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.pdf")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.png")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.svg")
+    # figg = fig.figure
+    # figg.tight_layout()
+    # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.pdf")
+    # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.png")
+    # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.svg")
     plt.show()
 
 def scatter():
     sns.set_theme()
     bert_list = []
+    bleu_list = []
     f1_list = []
+    f12_list = []
     ucer_list = []
     ttr_list = []
+    ttr_list2 = []
+    ucer_list2 = []
 
     trafo_nr = "101"
     path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
@@ -952,28 +988,237 @@ def scatter():
 
 
 
+    trafo_nr = "3"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bleu_list.extend(df1["BleuScore"].tolist())
+    f12_list.extend(df1["F1 CRF"].tolist())
+    ttr_list2.extend(df1["TTR"].tolist())
+    ucer_list2.extend(df1["UCER"].tolist())
 
-    popt, pcov = curve_fit(f=fn, xdata=ttr_list, ydata=f1_list)
-    print(popt)
-    fit = fn(ttr_list, *popt)
+    bleu_list.extend(df2["BleuScore"].tolist())
+    f12_list.extend(df2["F1 CRF"].tolist())
+    ttr_list2.extend(df2["TTR"].tolist())
+    ucer_list2.extend(df2["UCER"].tolist())
 
-    df_all = pd.DataFrame({"TTR": ttr_list, "F1 CRF": f1_list})
+    bleu_list.extend(df3["BleuScore"].tolist())
+    f12_list.extend(df3["F1 CRF"].tolist())
+    ttr_list2.extend(df3["TTR"].tolist())
+    ucer_list2.extend(df3["UCER"].tolist())
+
+    bleu_list.extend(df4["BleuScore"].tolist())
+    f12_list.extend(df4["F1 CRF"].tolist())
+    ttr_list2.extend(df4["TTR"].tolist())
+    ucer_list2.extend(df4["UCER"].tolist())
 
 
 
 
-    fig = plt.scatter(x=ttr_list, y=f1_list )
-    plt.plot(ttr_list, fit, color="#FF1B1B", label="Chi2")
+    trafo_nr = "39"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bleu_list.extend(df1["BleuScore"].tolist())
+    f12_list.extend(df1["F1 CRF"].tolist())
+    ttr_list2.extend(df1["TTR"].tolist())
+    ucer_list2.extend(df1["UCER"].tolist())
+
+    bleu_list.extend(df2["BleuScore"].tolist())
+    f12_list.extend(df2["F1 CRF"].tolist())
+    ttr_list2.extend(df2["TTR"].tolist())
+    ucer_list2.extend(df2["UCER"].tolist())
+
+    bleu_list.extend(df3["BleuScore"].tolist())
+    f12_list.extend(df3["F1 CRF"].tolist())
+    ttr_list2.extend(df3["TTR"].tolist())
+    ucer_list2.extend(df3["UCER"].tolist())
+
+    bleu_list.extend(df4["BleuScore"].tolist())
+    f12_list.extend(df4["F1 CRF"].tolist())
+    ttr_list2.extend(df4["TTR"].tolist())
+    ucer_list2.extend(df4["UCER"].tolist())
+
+
+
+
+    trafo_nr = "40"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bleu_list.extend(df1["BleuScore"].tolist())
+    f12_list.extend(df1["F1 CRF"].tolist())
+    ttr_list2.extend(df1["TTR"].tolist())
+    ucer_list2.extend(df1["UCER"].tolist())
+
+    bleu_list.extend(df2["BleuScore"].tolist())
+    f12_list.extend(df2["F1 CRF"].tolist())
+    ttr_list2.extend(df2["TTR"].tolist())
+    ucer_list2.extend(df2["UCER"].tolist())
+
+    bleu_list.extend(df3["BleuScore"].tolist())
+    f12_list.extend(df3["F1 CRF"].tolist())
+    ttr_list2.extend(df3["TTR"].tolist())
+    ucer_list2.extend(df3["UCER"].tolist())
+
+    bleu_list.extend(df4["BleuScore"].tolist())
+    f12_list.extend(df4["F1 CRF"].tolist())
+    ttr_list2.extend(df4["TTR"].tolist())
+    ucer_list2.extend(df4["UCER"].tolist())
+
+
+
+
+    trafo_nr = "86"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bleu_list.extend(df1["BleuScore"].tolist())
+    f12_list.extend(df1["F1 CRF"].tolist())
+    ttr_list2.extend(df1["TTR"].tolist())
+    ucer_list2.extend(df1["UCER"].tolist())
+
+    bleu_list.extend(df2["BleuScore"].tolist())
+    f12_list.extend(df2["F1 CRF"].tolist())
+    ttr_list2.extend(df2["TTR"].tolist())
+    ucer_list2.extend(df2["UCER"].tolist())
+
+    bleu_list.extend(df3["BleuScore"].tolist())
+    f12_list.extend(df3["F1 CRF"].tolist())
+    ttr_list2.extend(df3["TTR"].tolist())
+    ucer_list2.extend(df3["UCER"].tolist())
+
+    bleu_list.extend(df4["BleuScore"].tolist())
+    f12_list.extend(df4["F1 CRF"].tolist())
+    ttr_list2.extend(df4["TTR"].tolist())
+    ucer_list2.extend(df4["UCER"].tolist())
+
+
+
+
+    trafo_nr = "90"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bleu_list.extend(df1["BleuScore"].tolist())
+    f12_list.extend(df1["F1 CRF"].tolist())
+    ttr_list2.extend(df1["TTR"].tolist())
+    ucer_list2.extend(df1["UCER"].tolist())
+
+    bleu_list.extend(df2["BleuScore"].tolist())
+    f12_list.extend(df2["F1 CRF"].tolist())
+    ttr_list2.extend(df2["TTR"].tolist())
+    ucer_list2.extend(df2["UCER"].tolist())
+
+    bleu_list.extend(df3["BleuScore"].tolist())
+    f12_list.extend(df3["F1 CRF"].tolist())
+    ttr_list2.extend(df3["TTR"].tolist())
+    ucer_list2.extend(df3["UCER"].tolist())
+
+    bleu_list.extend(df4["BleuScore"].tolist())
+    f12_list.extend(df4["F1 CRF"].tolist())
+    ttr_list2.extend(df4["TTR"].tolist())
+    ucer_list2.extend(df4["UCER"].tolist())
+
+
+
+
+
+    trafo_nr = "103"
+    path = f"./../experiment_results/rate{trafo_nr}/prob025/all_means.json"
+    path2 = f"./../experiment_results/rate{trafo_nr}/all_means.json"
+    path3 = f"./../experiment_results/rate{trafo_nr}/prob075/all_means.json"
+    path4 = f"./../experiment_results/rate{trafo_nr}/prob1/all_means.json"
+    df1 = pd.read_json(path_or_buf=path)
+    df2 = pd.read_json(path_or_buf=path2)
+    df3 = pd.read_json(path_or_buf=path3)
+    df4 = pd.read_json(path_or_buf=path4)
+    bleu_list.extend(df1["BleuScore"].tolist())
+    f12_list.extend(df1["F1 CRF"].tolist())
+    ttr_list2.extend(df1["TTR"].tolist())
+    ucer_list2.extend(df1["UCER"].tolist())
+
+    bleu_list.extend(df2["BleuScore"].tolist())
+    f12_list.extend(df2["F1 CRF"].tolist())
+    ttr_list2.extend(df2["TTR"].tolist())
+    ucer_list2.extend(df2["UCER"].tolist())
+
+    bleu_list.extend(df3["BleuScore"].tolist())
+    f12_list.extend(df3["F1 CRF"].tolist())
+    ttr_list2.extend(df3["TTR"].tolist())
+    ucer_list2.extend(df3["UCER"].tolist())
+
+    bleu_list.extend(df4["BleuScore"].tolist())
+    f12_list.extend(df4["F1 CRF"].tolist())
+    ttr_list2.extend(df4["TTR"].tolist())
+    ucer_list2.extend(df4["UCER"].tolist())
+
+    x = np.array(bert_list)
+    y = np.array(f1_list)
+
+    # sortiere Indices so, dass x[sorted_indices]
+    # das sortierte Array zurückgibt
+    sorted_indices = np.argsort(x)
+
+    x = x[sorted_indices]
+    y = y[sorted_indices]
+
+    #popt, pcov = curve_fit(f=fn, xdata=x, ydata=y)
+
+    #fit = fn(x, *popt)
+
+    # residual sum of squares
+    #ss_res = np.sum((y - fit) ** 2)
+
+    # total sum of squares
+    #ss_tot = np.sum((y - np.mean(y)) ** 2)
+
+    # r-squared
+    #r2 = 1 - (ss_res / ss_tot)
+
+    #print(r2)
+
+
+    #cond = np.linalg.cond(pcov)
+
+
+    fig = plt.scatter(x=bert_list, y=f1_list )
+    #plt.plot(x, fit, color="#FF1B1B", label="chi²")
     #plt.legend(("p = 0.25", "p = 0.5", "p = 0.75", "p = 1"))
-    plt.xlabel("ETTR")
+    plt.xlabel("Bert Score")
     plt.ylabel("F1 Score")
     plt.legend()
     plt.show()
     figg = fig.figure
     figg.tight_layout()
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL.pdf")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL.png")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL.svg")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.pdf")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.png")
+    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.svg")
 
 def plot_with_diff_rates_rel():
     sns.set_theme()
@@ -1258,7 +1503,7 @@ def scatter_filter():
 # for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
 #     get_df_with_all_ucer_means_per_prob_rate(i)
 #     plot_ucer_means_per_prob_and_rate_ratetottr(i)
-#     #pass
+    #pass
 # #
 # #
 # for i in [3, 39, 40, 86, 90, 103]:
@@ -1275,4 +1520,9 @@ def scatter_filter():
 #scatter()
 #plot_with_diff_rates_rel()
 #plot_filter10_1()
-scatter()
+#scatter()
+#plot_ttr_mean_prob_to_ttr()
+#plot_bert_means_per_prob_and_rate_ratetottr()
+
+#plot_ttr_means_per_prob_and_rate_ratetottr()
+#get_df_with_all_ttr_means_per_prob_rate()
