@@ -1399,7 +1399,7 @@ def plot_filter10_1():
     df2 = pd.read_json(path_or_buf=path2)
 
 
-    rate = [2,3,4,5,6,7,8,9,10]
+    rate = [2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
 
     df4 = pd.DataFrame({"Filter 10": df[name], "Filter 19": df2[name]})
