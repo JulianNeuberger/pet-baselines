@@ -7,7 +7,7 @@ import operator
 from data import model
 from transformations import tokenmanager
 import copy
-docs: typing.List[model.Document] = data.loader.read_documents_from_json('./../complete.json')
+
 class Filter19Step(base.AugmentationStep):
     def __init__(self, length: int=9, op: str=">", pos: str="V"):
         self.length = length
@@ -54,6 +54,3 @@ class Filter19Step(base.AugmentationStep):
             i += 1
         return doc
 
-fil = Filter19Step()
-for doc in docs:
-    fil.do_augment(doc)
