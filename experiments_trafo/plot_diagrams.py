@@ -360,19 +360,22 @@ def plot_with_diff_rates():
     path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
     path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
     path10 = f"./../experiment_results/rate{str}/prob1/all_means.json"
-
+    path58 = f"./../experiment_results/trafo58/exp58.1/all_means.json"
     df = pd.read_json(path_or_buf=path05)
     df2 = pd.read_json(path_or_buf=path025)
     df3 = pd.read_json(path_or_buf=path075)
     df5 = pd.read_json(path_or_buf=path10)
+    df58 = pd.read_json(path_or_buf=path58)
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
     rate2 = [0.0, 0.3, 0.6, 0.9, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
+    rate3 = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
+                         0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
     #rate2 = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
-    df4 = pd.DataFrame({"p = 0.25": df2["F1 CRF"], "p = 0.5": df["F1 CRF"], "p = 0.75": df3["F1 CRF"],
-                        "p = 1" : df5["F1 CRF"]})
-    df4.index = rate
+    df4 = pd.DataFrame({"F1 Score": df58["F1 CRF"], "ETTR": df58["TTR"], "CETTR": df58["UCER"],
+                        "Bert Score" : df58["BertScore"]})
+    df4.index = rate3
 
-    min = np.min([np.min(df4["p = 0.5"]), np.min(df4["p = 0.25"]), np.min(df4["p = 0.75"]), np.min(df4["p = 1"])])
+    #min = np.min([np.min(df4["p = 0.5"]), np.min(df4["p = 0.25"]), np.min(df4["p = 0.75"]), np.min(df4["p = 1"])])
     #print(df4)
     # for index, row in df4.iterrows():
     #
@@ -389,19 +392,19 @@ def plot_with_diff_rates():
     #     df4["Prob = 1"][index] = x - min
 
     x = np.linspace(0, 10, 5000)
-    not_rate = [0.10, 0.20, 0.40, 0.50,  0.70, 0.80, 1.00]
+    #not_rate = [0.10, 0.20, 0.40, 0.50,  0.70, 0.80, 1.00]
     #not_rate = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1.25, 1.50, 1.75]
-    df4 = df4.drop(index=not_rate)
+    #df4 = df4.drop(index=not_rate)
 
     palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
     fig = sns.lineplot(data=df4, palette=palette)
-    fig.set(xlabel="Augmentierungsrate", ylabel="F1 Score")
+    fig.set(xlabel="Ersetzungswahrscheinlichkeit")
 
 
-    popt, pcov = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.25"])
-    popt2, pcov2 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.5"])
-    popt3, pcov3 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.75"])
-    popt4, pcov4 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 1"])
+    # popt, pcov = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.25"])
+    # popt2, pcov2 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.5"])
+    # popt3, pcov3 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.75"])
+    # popt4, pcov4 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 1"])
 
 
 
@@ -411,56 +414,56 @@ def plot_with_diff_rates():
     # print(np.linalg.cond(pcov4))
 
 
-    fit = fn(rate2, *popt)
-    fit2 = fn(rate2, *popt2)
-    fit3 = fn(rate2, *popt3)
-    fit4 = fn(rate2, *popt4)
+    # fit = fn(rate2, *popt)
+    # fit2 = fn(rate2, *popt2)
+    # fit3 = fn(rate2, *popt3)
+    # fit4 = fn(rate2, *popt4)
 
-    #goodness1 = scipy.stats.goodness_of_fit(fit, df4["p = 0.25"])
-    #print(goodness1)
-    max_x = fit.argmax(axis=0)
-    max_x2 = fit2.argmax(axis=0)
-    max_x3 = fit3.argmax(axis=0)
-    max_x4 = fit4.argmax(axis=0)
+    # #goodness1 = scipy.stats.goodness_of_fit(fit, df4["p = 0.25"])
+    # #print(goodness1)
+    # max_x = fit.argmax(axis=0)
+    # max_x2 = fit2.argmax(axis=0)
+    # max_x3 = fit3.argmax(axis=0)
+    # max_x4 = fit4.argmax(axis=0)
+    #
+    # best_aug = rate2[max_x]
+    # best_aug2 = rate2[max_x2]
+    # best_aug3 = rate2[max_x3]
+    # best_aug4 = rate2[max_x4]
 
-    best_aug = rate2[max_x]
-    best_aug2 = rate2[max_x2]
-    best_aug3 = rate2[max_x3]
-    best_aug4 = rate2[max_x4]
+    # df_best_rate = pd.DataFrame()
+    # series_rate = pd.Series([best_aug, df4["p = 0.25"][best_aug]])
+    # df_best_rate = df_best_rate.append(series_rate,ignore_index=True)
+    # series_rate2 = pd.Series([best_aug, df4["p = 0.5"][best_aug2]])
+    # df_best_rate = df_best_rate.append(series_rate2,ignore_index=True)
+    # series_rate3 = pd.Series([best_aug, df4["p = 0.75"][best_aug3]])
+    # df_best_rate = df_best_rate.append(series_rate3,ignore_index=True)
+    # series_rate4 = pd.Series([best_aug, df4["p = 1"][best_aug4]])
+    # df_best_rate = df_best_rate.append(series_rate4, ignore_index=True)
 
-    df_best_rate = pd.DataFrame()
-    series_rate = pd.Series([best_aug, df4["p = 0.25"][best_aug]])
-    df_best_rate = df_best_rate.append(series_rate,ignore_index=True)
-    series_rate2 = pd.Series([best_aug, df4["p = 0.5"][best_aug2]])
-    df_best_rate = df_best_rate.append(series_rate2,ignore_index=True)
-    series_rate3 = pd.Series([best_aug, df4["p = 0.75"][best_aug3]])
-    df_best_rate = df_best_rate.append(series_rate3,ignore_index=True)
-    series_rate4 = pd.Series([best_aug, df4["p = 1"][best_aug4]])
-    df_best_rate = df_best_rate.append(series_rate4, ignore_index=True)
-
-    df_best_rate = df_best_rate.set_axis(["Best Aug Rate", "F1 Score"], axis=1)
-    df_best_rate.index = ["p = 0.25", "p = 0.5", "p = 0.75", "p = 1"]
-    print(df_best_rate)
-    df_best_rate.to_json(path_or_buf=f"./../experiment_results/trafo{str}/best_aug_rate.json", indent=4)
-
-
-
-    fig.plot(rate2, fit, color="#FF1B1B", label="Chi2 p = 0.25")
-    fig.plot(rate2, fit2, color="#1846FD", label="Chi2 p = 0.5")
-    fig.plot(rate2, fit3, color="#0EBC30", label="Chi2 p = 0.75")
-    fig.plot(rate2, fit4, color="#DFB81A", label="Chi2 p = 1")
+    # df_best_rate = df_best_rate.set_axis(["Best Aug Rate", "F1 Score"], axis=1)
+    # df_best_rate.index = ["p = 0.25", "p = 0.5", "p = 0.75", "p = 1"]
+    # print(df_best_rate)
+    # df_best_rate.to_json(path_or_buf=f"./../experiment_results/trafo{str}/best_aug_rate.json", indent=4)
+    #
+    #
+    #
+    # fig.plot(rate2, fit, color="#FF1B1B", label="Chi2 p = 0.25")
+    # fig.plot(rate2, fit2, color="#1846FD", label="Chi2 p = 0.5")
+    # fig.plot(rate2, fit3, color="#0EBC30", label="Chi2 p = 0.75")
+    # fig.plot(rate2, fit4, color="#DFB81A", label="Chi2 p = 1")
 
     fig.legend()
     #fig.plot(rate, fit, color="black")
 
-    fig.set_title(f"Transformation {str}")
+    fig.set_title(f"Transformation 58")
 
     #fig.plot(x, chi2.pdf(x, 5), color="black")
 
     figg = fig.figure
-    figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1.pdf")
-    figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1.png")
-    figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1.svg")
+    figg.savefig(f"./../experiment_results/trafo58/plots/58.pdf")
+    figg.savefig(f"./../experiment_results/trafo58/plots/58.png")
+    figg.savefig(f"./../experiment_results/trafo58/plots/58.svg")
     plt.show()
 
 
@@ -1478,20 +1481,20 @@ def scatter_filter():
     sns.set_theme()
     str = "19"
     str2 = "1"
-    path = f"./../experiment_results/filter10/exp10.1/all_means.json"
-    path2 = f"./../experiment_results/filter19/exp19.1/all_means.json"
+    path = f"./../experiment_results/trafo58/exp58.1/all_means.json"
+    #path2 = f"./../experiment_results/filter58/58.1/all_means.json"
 
     df =  pd.read_json(path_or_buf=path)
-    df2 = pd.read_json(path_or_buf=path2)
+    #df2 = pd.read_json(path_or_buf=path2)
     #df4 = pd.DataFrame({"Filter 10": })
-    fig = sns.lmplot(x='BertScore', y='F1 CRF', data=df, fit_reg=True )
-    sns.lmplot(x='BertScore', y='F1 CRF', data=df2, fit_reg=True)
+    #fig = sns.lmplot(x='BertScore', y='F1 CRF', data=df, fit_reg=True )
+    fig = sns.lmplot(x='Bert Score', y='F1 Score', data=df, fit_reg=True)
     plt.show()
-    # figg = fig.figure
-    # figg.tight_layout()
-    # figg.savefig(f"./../experiment_results/filter{str}/plots/scatter_fbert.pdf")
-    # figg.savefig(f"./../experiment_results/filter{str}/plots/scatter_fbert.png")
-    # figg.savefig(f"./../experiment_results/filter{str}/plots/scatter_fbert.svg")
+    figg = fig.figure
+    figg.tight_layout()
+    figg.savefig(f"./../experiment_results/trafo58/plots/scatter_fbert.pdf")
+    figg.savefig(f"./../experiment_results/trafo58/plots/scatter_fbert.png")
+    figg.savefig(f"./../experiment_results/trafo58/plots/scatter_fbert.svg")
 
 # for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
 #     get_df_with_all_ttr_means_per_prob_rate(i)
@@ -1526,3 +1529,6 @@ def scatter_filter():
 
 #plot_ttr_means_per_prob_and_rate_ratetottr()
 #get_df_with_all_ttr_means_per_prob_rate()
+#get_df_with_all_ttr_means_per_prob_rate(100)
+#plot_ttr_means_per_prob_and_rate_ratetottr(100)
+scatter_filter()

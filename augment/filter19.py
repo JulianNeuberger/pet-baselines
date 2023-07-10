@@ -1,12 +1,15 @@
+import typing
+
+import data
 from augment import base
 import operator
 
 from data import model
 from transformations import tokenmanager
 import copy
-
+docs: typing.List[model.Document] = data.loader.read_documents_from_json('./../complete.json')
 class Filter19Step(base.AugmentationStep):
-    def __init__(self, length: int=4, op: str=">", pos: str="V"):
+    def __init__(self, length: int=9, op: str=">", pos: str="V"):
         self.length = length
         self.op = Filter19Step.parse_operator(op)
         self.pos = Filter19Step.parse_pos_tags(pos)
@@ -33,6 +36,7 @@ class Filter19Step(base.AugmentationStep):
     def do_augment(self, doc2: model.Document) -> model.Document:
         doc = copy.deepcopy(doc2)
         i = 0
+        counter = 0
         while i < len(doc.sentences):
             sentence = doc.sentences[i]
             pos_in_sent = 0
@@ -42,7 +46,14 @@ class Filter19Step(base.AugmentationStep):
 
             condition = self.op(pos_in_sent, self.length)
             if condition:
+                counter += 1
+
+                print(sentence)
                 tokenmanager.delete_sentence(doc, i)
                 i -= 1
             i += 1
         return doc
+
+fil = Filter19Step()
+for doc in docs:
+    fil.do_augment(doc)
