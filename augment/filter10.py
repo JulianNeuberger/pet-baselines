@@ -5,6 +5,8 @@ from data import model
 from transformations import tokenmanager
 import copy
 
+
+# Author: Benedikt
 class Filter10Step(base.AugmentationStep):
     def __init__(self, length: int=4, op: str=">", bio: str="Activity"):
         self.length = length

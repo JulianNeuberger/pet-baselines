@@ -6,6 +6,7 @@ from data import model
 import numpy as np
 
 
+# Author: Benedikt
 class Trafo101Step(base.AugmentationStep):
 
     def __init__(self, prob: float = 1, type=True, no_dupl=False):

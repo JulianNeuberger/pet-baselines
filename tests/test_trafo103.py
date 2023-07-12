@@ -5,7 +5,7 @@ from data import model
 from data.model import Token, Sentence, Document
 import mockito
 
-
+# Author for entire script: Leonie
 def test_do_augment():
     # ARRANGE
     trafo1 = Trafo103Step(num_of_words=2, prob=1, kind_of_word=None)

@@ -3,7 +3,7 @@ import copy
 from augment import Filter19Step
 from data import model
 
-
+# Author for entire script: Benedikt
 def test_do_augment():
     filter1 = Filter19Step(length=4)
     filter2 = Filter19Step(length=5)

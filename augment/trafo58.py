@@ -7,7 +7,7 @@ from data import model
 from augment import base
 from transformations import tokenmanager
 
-
+# Author: Benedikt
 class Trafo58Step(base.AugmentationStep):
 
     def __init__(self, p: float = 1, lang: str = "de"):

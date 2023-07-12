@@ -4,7 +4,7 @@ from data import model
 from augment import trafo3
 import mockito
 
-# TODO: mocken der Rückgabe von wordnet
+# Author for entire script: Leonie
 
 
 def test_do_augment():  # passed

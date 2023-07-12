@@ -6,7 +6,7 @@ from random import random as rand
 from random import choice
 # Filler Word Augmentation - Rauschen
 
-
+# Author: Leonie
 class Trafo40Step(base.AugmentationStep):
 
     def __init__(self, prob=0.166, speaker_p:bool=True, uncertain_p:bool =True, filler_p:bool =True, tags: typing.List = None):

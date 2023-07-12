@@ -6,7 +6,7 @@ import mockito
 
 #  Shuffle within Segments
 
-
+# Author for entire script: Leonie
 def test_do_augment():
     # ARRANGE
     # Trafo Object for testing do_augment()

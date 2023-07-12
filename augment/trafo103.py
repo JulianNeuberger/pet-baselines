@@ -8,7 +8,7 @@ from random import random as rand
 
 # Subsequence Substitution for Sequence Tagging
 
-
+# Author: Leonie
 class Trafo103Step(base.AugmentationStep):
 
     def __init__(self, num_of_words = 2, prob: float = 0.5, kind_of_word = None):

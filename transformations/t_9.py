@@ -8,7 +8,8 @@ from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
 docs: typing.List[model.Document] = data.loader.read_documents_from_json('../../one_doc.json')
 
-
+# Author: Benedikt
+# implementation Failed, due to the Generation Model, same error as the one for Transformation 8
 def generate(doc,p=0.5, segment_length=5):
 
     augmentations = []

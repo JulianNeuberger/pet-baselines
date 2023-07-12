@@ -8,7 +8,7 @@ from random import shuffle
 
 # Replace nouns with hyponyms or hypernyms - Wortebene
 
-
+# Author: Leonie
 class Trafo86Step(base.AugmentationStep):
     def __init__(self, max_noun: int = 1, kind_of_replace: int = 2, no_dupl: bool = False, prob:float = 0.5):
         self.max_noun = max_noun

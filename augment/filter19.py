@@ -8,6 +8,8 @@ from data import model
 from transformations import tokenmanager
 import copy
 
+
+# Author: Benedikt
 class Filter19Step(base.AugmentationStep):
     def __init__(self, length: int=9, op: str=">", pos: str="V"):
         self.length = length

@@ -12,6 +12,7 @@ import augment
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Author: Benedikt
 def get_unaug():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -47,6 +48,7 @@ def get_unaug():  # Probability of replacement
     df_entities.to_json(path_or_buf="./experiment_results/all_entities_f1_unaug.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/all_means_unaug.json", indent=4)
 
+# Author: Benedikt
 def get_scores_unaugmented():
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
@@ -74,7 +76,7 @@ def get_scores_unaugmented():
         df = all_scores[k]
         df.to_json(path_or_buf=f"./experiment_results/unaugmented/{names[k]}.json", indent=4)
 
-
+# Author: Benedikt
 def experiment101_1():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -120,7 +122,7 @@ def experiment101_1():  # Probability of replacement
     df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo101/exp101.1/{names[0]}.json", indent=4)
 
-
+# Author: Benedikt
 def experiment101_2():  # Type of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -172,6 +174,7 @@ def experiment101_2():  # Type of replacement
     df_entities.index = ["Adjektive", "Nomen"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment101_3():  # if duplicates are allowed
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -223,6 +226,7 @@ def experiment101_3():  # if duplicates are allowed
     df_entities.index = ["True", "False"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo101/exp101.3/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment33_1():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -269,6 +273,7 @@ def experiment33_1():  # Probability of replacement
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo33/exp33.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment58_1():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -315,6 +320,7 @@ def experiment58_1():  # Probability of replacement
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo58/exp58.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment58_2():  # Language
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -379,6 +385,7 @@ def experiment58_2():  # Language
     df_entities.index = ["Deutsch", "Spanisch", "Chinesisch", "Französisch", "Russisch"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo58/exp58.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment5_1():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -425,6 +432,7 @@ def experiment5_1():  # Probability of replacement
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo5/exp5.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment82_1():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -471,6 +479,7 @@ def experiment82_1():  # Probability of replacement
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo82/exp82.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment82_2():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -530,6 +539,7 @@ def experiment82_2():  # Probability of replacement
     df_entities.index = ["Both", "Short to Long", "Long to Short"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo82/exp82.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment100_1():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -576,6 +586,7 @@ def experiment100_1():  # Probability of replacement
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo100/exp100.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment100_2():  # Probability of replacement
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -626,6 +637,7 @@ def experiment100_2():  # Probability of replacement
     df_entities.index = ["Nomen", "Adjektive"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo100/exp100.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment9_1():  # delete all sentences with length < i
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -667,6 +679,7 @@ def experiment9_1():  # delete all sentences with length < i
     df_entities.index = ["5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"]
     df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment9_2():  # test different operators
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -716,6 +729,7 @@ def experiment9_2():  # test different operators
     df_entities.index = [">", "<"]
     df_entities.to_json(path_or_buf="./experiment_results/filter9/exp9.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -758,6 +772,7 @@ def experiment10_1():  # delete all sentences with Activity Bio Tag Count < i
     df_entities.index = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment10_2():  # test different operators with activity and count 3
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -807,6 +822,7 @@ def experiment10_2():  # test different operators with activity and count 3
     df_entities.index = [">", "<"]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment10_3():  # test different entitity types with "<" and count 3
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -876,6 +892,7 @@ def experiment10_3():  # test different entitity types with "<" and count 3
                          "Condition Specification", "AND Gateway"]
     df_entities.to_json(path_or_buf="./experiment_results/filter10/exp10.3/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -918,6 +935,7 @@ def experiment19_1():  # delete all sentences with Activity Bio Tag Count < i
     df_entities.index = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.1/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment19_2():  # test different operators with Verb and count 3
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -967,6 +985,7 @@ def experiment19_2():  # test different operators with Verb and count 3
     df_entities.index = [">", "<"]
     df_entities.to_json(path_or_buf="./experiment_results/filter19/exp19.2/all_entities_f1.json", indent=4)
 
+# Author: Benedikt
 def experiment19_3():  # test different Pos Types with "<" and count 3
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1025,7 +1044,7 @@ def experiment19_3():  # test different Pos Types with "<" and count 3
 #######################################################
 #######################################################
 
-
+# Author: Leonie
 def experiment3_1():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1068,6 +1087,7 @@ def experiment3_1():
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.1/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment3_2():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1109,6 +1129,7 @@ def experiment3_2():
     df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.2/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment3_3():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1155,6 +1176,7 @@ def experiment3_3():
     df_entities.index = ["True", "False"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo3/exp3.3/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment39_1():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1198,6 +1220,7 @@ def experiment39_1():
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo39/exp39.1/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment86_1():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1241,6 +1264,7 @@ def experiment86_1():
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.1/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment86_2():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1282,6 +1306,7 @@ def experiment86_2():
     df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.2/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment86_3():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1330,6 +1355,7 @@ def experiment86_3():
     df_entities.index = ["hyponym", "hypernym", "random"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.3/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment86_4():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1376,6 +1402,7 @@ def experiment86_4():
     df_entities.index = ["True", "False"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo86/exp86.4/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment90_1():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1419,6 +1446,7 @@ def experiment90_1():
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo90/exp90.1/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment103_1():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1462,6 +1490,7 @@ def experiment103_1():
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.1/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment103_2():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1503,6 +1532,7 @@ def experiment103_2():
     df_entities.index = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.2/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment103_3():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1547,6 +1577,7 @@ def experiment103_3():
     df_entities.index = ['JJ', 'JJS', 'JJR', 'NN', 'NNS', 'NNP', 'NNPS', 'RB', 'RBS', 'RBR', 'DT', 'IN', 'VBN', 'VBP', 'VBZ', 'PRP', 'WP']
     df_entities.to_json(path_or_buf="./experiment_results/trafo103/exp103.3/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment40_1():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1590,6 +1621,7 @@ def experiment40_1():
                          "0.65", "0.7", "0.75", "0.8", "0.85", "0.9", "0.95", "1.0"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.1/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment40_2():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1654,6 +1686,7 @@ def experiment40_2():
     df_entities.index = ["speaker", "filler", "uncertain", "speaker&filler", "speaker&uncertain", "filler&uncertain"]
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.2/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment40_3():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1701,6 +1734,7 @@ def experiment40_3():
                                    'Condition Specification', 'AND Gateway']
     df_entities.to_json(path_or_buf="./experiment_results/trafo40/exp40.3/all_entities_f1.json", indent=4)
 
+# Author: Leonie
 def experiment40_4():
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1800,7 +1834,7 @@ def experiment40_4():
 #######################################################
 #######################################################
 
-
+# Author: Benedikt
 def experiment101rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1856,6 +1890,7 @@ def experiment101rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate101/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate101/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment101rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1911,6 +1946,7 @@ def experiment101rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate101/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate101/prob025/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment101rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -1966,6 +2002,7 @@ def experiment101rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate101/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate101/prob075/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment101rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2021,6 +2058,7 @@ def experiment101rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate101/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate101/prob1/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment5rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2068,6 +2106,7 @@ def experiment5rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate5/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate5/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment5rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2115,6 +2154,7 @@ def experiment5rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate5/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate5/prob025/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment5rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2162,6 +2202,7 @@ def experiment5rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate5/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate5/prob075/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment5rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2209,6 +2250,7 @@ def experiment5rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate5/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate5/prob1/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment58rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2256,6 +2298,7 @@ def experiment58rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate58/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate58/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment82rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2304,6 +2347,7 @@ def experiment82rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate82/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate82/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment82rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2351,6 +2395,7 @@ def experiment82rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate82/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate82/prob025/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment82rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2398,6 +2443,7 @@ def experiment82rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate82/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate82/prob075/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment82rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2445,6 +2491,7 @@ def experiment82rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate82/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate82/prob1/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment100rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2492,6 +2539,7 @@ def experiment100rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate100/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment100rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2539,6 +2587,7 @@ def experiment100rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate100/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/prob025/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment100rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2586,6 +2635,7 @@ def experiment100rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate100/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/prob075/{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment100rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2633,7 +2683,7 @@ def experiment100rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate100/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/prob1/{names[0]}.json", indent=4)
 
-
+# Author: Benedikt
 def experiment100rate1OLD():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2681,6 +2731,7 @@ def experiment100rate1OLD():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate100/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/prob1/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment3rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2728,6 +2779,7 @@ def experiment3rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate3/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate3/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment3rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2775,6 +2827,7 @@ def experiment3rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate3/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate3/prob025/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment3rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2822,6 +2875,7 @@ def experiment3rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate3/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate3/prob075/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment3rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2869,6 +2923,7 @@ def experiment3rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate3/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate3/prob1/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment39rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2920,6 +2975,7 @@ def experiment39rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate39/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate39/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment39rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -2971,6 +3027,7 @@ def experiment39rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate39/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate39/prob025/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment39rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3022,6 +3079,7 @@ def experiment39rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate39/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate39/prob075/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment39rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3073,6 +3131,7 @@ def experiment39rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate39/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate39/prob1/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment86rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3125,6 +3184,7 @@ def experiment86rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate86/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate86/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment86rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3177,6 +3237,7 @@ def experiment86rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate86/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate86/prob025/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment86rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3229,6 +3290,7 @@ def experiment86rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate86/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate86/prob075/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment86rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3281,6 +3343,7 @@ def experiment86rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate86/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate86/prob1/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment40rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3332,6 +3395,7 @@ def experiment40rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate40/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate40/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment40rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3383,6 +3447,7 @@ def experiment40rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate40/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate40/prob025/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment40rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3434,6 +3499,7 @@ def experiment40rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate40/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate40/prob075/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment40rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3485,6 +3551,7 @@ def experiment40rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate40/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate40/prob1/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment90rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3536,6 +3603,7 @@ def experiment90rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate90/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate90/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment90rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3587,6 +3655,7 @@ def experiment90rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate90/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate90/prob025/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment90rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3638,6 +3707,7 @@ def experiment90rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate90/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate90/prob075/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment90rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3689,6 +3759,7 @@ def experiment90rate1():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate90/prob1/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate90/prob1/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment103rate():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3740,6 +3811,7 @@ def experiment103rate():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate103/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate103/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment103rate025():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3791,6 +3863,7 @@ def experiment103rate025():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate103/prob025/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate103/prob025/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment103rate075():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3843,6 +3916,7 @@ def experiment103rate075():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate103/prob075/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate103/prob075/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment103rate1():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3900,6 +3974,7 @@ def experiment103rate1():  # with rate
 #######################################################
 #######################################################
 
+# Author: Benedikt
 def experiment101test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3948,6 +4023,7 @@ def experiment101test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate101/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate101/test_{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment82test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -3997,6 +4073,7 @@ def experiment82test():  # with rate
     df_complete.to_json(path_or_buf=f"./experiment_results/rate82/test_{names[0]}.json", indent=4)
 
 
+# Author:
 def experiment3test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4045,6 +4122,7 @@ def experiment3test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate3/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate3/test_{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment90test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4093,6 +4171,7 @@ def experiment90test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate90/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate90/test_{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment100test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4141,6 +4220,7 @@ def experiment100test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate100/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate100/test_{names[0]}.json", indent=4)
 
+# Author: Benedikt
 def experiment5test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4189,6 +4269,7 @@ def experiment5test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate5/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate5/test_{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment39test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4237,6 +4318,7 @@ def experiment39test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate39/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate39/test_{names[0]}.json", indent=4)
 
+# Author: Leonie
 def experiment40test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4286,7 +4368,7 @@ def experiment40test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate40/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate40/test_{names[0]}.json", indent=4)
 
-
+# Author: Leonie
 def experiment86test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4335,7 +4417,7 @@ def experiment86test():  # with rate
     df_entities.to_json(path_or_buf="./experiment_results/rate86/test_all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/rate86/test_{names[0]}.json", indent=4)
 
-
+# Author: Leonie
 def experiment103test():  # with rate
     # Get the data for augmenting and training
     train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
@@ -4391,7 +4473,7 @@ def experiment103test():  # with rate
 #######################################################
 
 
-
+# Author: Benedikt
 def exp101():
     str = "101"
     str2 = ""
@@ -4453,7 +4535,7 @@ def exp101():
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[0]}.json", indent=4)
 
 
-
+# Author: Benedikt
 def exp82():
     str = "82"
     str2 = ""
@@ -4516,7 +4598,7 @@ def exp82():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[0]}.json", indent=4)
 
-
+# Author: Benedikt
 def exp100():
     str = "100"
     str2 = ""
@@ -4579,7 +4661,7 @@ def exp100():
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp/{names[0]}.json", indent=4)
 
 
-
+# Author: Leonie
 def exp3_2():
     str = "3"
     str2 = ".2"
@@ -4637,6 +4719,7 @@ def exp3_2():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def exp3_3():
     str = "3"
     str2 = ".3"
@@ -4699,6 +4782,7 @@ def exp3_3():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
+# Author: Leonie
 def exp40_2():
     str = "40"
     str2 = ".2"
@@ -4781,7 +4865,7 @@ def exp40_2():
 
 
 
-
+# Author: Leonie
 def exp40_3():
     str = "40"
     str2 = ".3"
@@ -4845,7 +4929,7 @@ def exp40_3():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
-
+# Author: Leonie
 def exp40_4():
     str = "40"
     str2 = ".4"
@@ -4959,7 +5043,7 @@ def exp40_4():
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
 
-
+# Author: Leonie
 def exp86_2():
     str = "86"
     str2 = ".2"
@@ -5018,7 +5102,7 @@ def exp86_2():
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
 
-
+# Author: Leonie
 def exp86_3():
     str = "86"
     str2 = ".3"
@@ -5076,7 +5160,7 @@ def exp86_3():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
-
+# Author: Leonie
 def exp86_4():
     str = "86"
     str2 = ".4"
@@ -5141,7 +5225,7 @@ def exp86_4():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
-
+# Author: Leonie
 def exp103_2():
     str = "103"
     str2 = ".2"
@@ -5199,7 +5283,7 @@ def exp103_2():
     df_entities.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/all_entities_f1.json", indent=4)
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
-
+# Author: Leonie
 def exp103_3():
     str = "103"
     str2 = ".3"
@@ -5261,7 +5345,7 @@ def exp103_3():
     df_complete.to_json(path_or_buf=f"./experiment_results/trafo{str}/newexp{str}{str2}/{names[0]}.json", indent=4)
 
 
-
+# Author: Benedikt
 def exp101_rel():
     str = "101"
     str2 = ""
@@ -5296,7 +5380,7 @@ def exp101_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
-
+# Author: Benedikt
 def exp100_rel():
     str = "100"
     str2 = ""
@@ -5331,6 +5415,7 @@ def exp100_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
+# Author: Benedikt
 def exp82_rel():
     str = "82"
     str2 = ""
@@ -5365,7 +5450,7 @@ def exp82_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
-
+# Author: Benedikt
 def exp5_rel():
     str = "5"
     str2 = ""
@@ -5400,7 +5485,7 @@ def exp5_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
-
+# Author: Leonie
 def exp3_rel():
     str = "3"
     str2 = ""
@@ -5436,7 +5521,7 @@ def exp3_rel():
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
 
-
+# Author: Leonie
 def exp39_rel():
     str = "39"
     str2 = ""
@@ -5471,7 +5556,7 @@ def exp39_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
-
+# Author: Leonie
 def exp40_rel():
     str = "40"
     str2 = ""
@@ -5508,7 +5593,7 @@ def exp40_rel():
 
 
 
-
+# Author: Leonie
 def exp86_rel():
     str = "86"
     str2 = ""
@@ -5543,7 +5628,7 @@ def exp86_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
-
+# Author: Leonie
 def exp90_rel():
     str = "90"
     str2 = ""
@@ -5579,7 +5664,7 @@ def exp90_rel():
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
 
-
+# Author: Leonie
 def exp103_rel():
     str = "103"
     str2 = ""
@@ -5614,7 +5699,7 @@ def exp103_rel():
     df_complete["F1 Relation"] = [f_1_scores_re]
     df_complete.to_json(path_or_buf=f"./experiment_results/relation/trafo{str}.json", indent=4)
 
-
+# Author: Benedikt
 def expun_rel():
     str = "unaug"
     str2 = ""
@@ -5675,7 +5760,7 @@ def expun_rel():
 #experiment40_4()#
 #experiment9_1() #running f9
 #experiment9_2() #running
-experiment10_1() #running f10
+#experiment10_1() #running f10
 #experiment10_2() #running
 #experiment10_3() #running
 #experiment19_1() #running f19

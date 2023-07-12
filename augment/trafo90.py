@@ -5,7 +5,7 @@ from numpy.random import binomial, shuffle
 
 # Shuffle within Segments - Satzebene
 
-
+# Author: Leonie
 class Trafo90Step(base.AugmentationStep):
 
     def __init__(self, prob: float = 0.5):

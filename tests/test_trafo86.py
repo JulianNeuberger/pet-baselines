@@ -4,7 +4,7 @@ from augment.trafo86 import Trafo86Step
 from data import model
 import mockito
 
-
+# Author for entire script: Leonie
 def test_do_augment():
     # ARRANGE
     # Trafo Objects for testing do_augment()

@@ -16,7 +16,8 @@ class Metrics:
         self.entity_list = ["Actor", "Activity", "Activity Data", "Further Specification", "XOR Gateway",
                             "Condition Specification", "AND Gateway"]
 
-    def calculate_ttr(self, fold_number):
+    # Author: Benedikt
+    def calculate_ttr(self, fold_number):  # calculates the Type Token Ratio
         ttr_list = {}
         for ner in self.entity_list:
             entity_counter = 0
@@ -46,11 +47,11 @@ class Metrics:
             else:
                 ttr_list[ner] = 0
             ttr_list["All"] = len(unique_token_all) / all_counter
-        # print(ttr_list)
         new_series = pd.Series(data=ttr_list)
         return new_series
 
-    def calculate_ttr_trigram(self, fold_number):
+    # Author: Leonie
+    def calculate_ttr_trigram(self, fold_number): # calculates the UCER Score
         ttr_list = {}
         for ner in self.entity_list:
             unique_trigrams_list = []
@@ -83,7 +84,8 @@ class Metrics:
         new_series = pd.Series(data=ttr_list)
         return new_series
 
-    def calculate_bert_old(self, fold_number):
+    # Author: Benedikt
+    def calculate_bert_old(self, fold_number): # Calculates the Bert Score, Old for the old experiments
         predictions = []
         references = []
         for doc in self.train_set[fold_number]:
@@ -105,8 +107,8 @@ class Metrics:
         new_series = pd.Series(data=bert_list)
         return new_series
 
-
-    def calculate_bert(self, fold_number):
+    # Author: Benedikt
+    def calculate_bert(self, fold_number): # calculates the Bert Score for new Experiment setup
         predictions = []
         references = []
         for doc in self.train_set[fold_number]:
@@ -130,7 +132,8 @@ class Metrics:
         new_series = pd.Series(data=bert_list)
         return new_series
 
-    def calculate_bert_filter(self, fold_number):
+    # Author: Benedikt
+    def calculate_bert_filter(self, fold_number): # calculates bert Score for Filters, difference is the input
         predictions = []
         references = []
         for doc in self.train_set[fold_number]:
@@ -154,7 +157,8 @@ class Metrics:
         new_series = pd.Series(data=bert_list)
         return new_series
 
-    def calculate_bleu(self, fold_number):
+    # Author: Leonie
+    def calculate_bleu(self, fold_number): # calculate Bleu Score for old experiment setup
         tup = []
         # per document
         for j in range(len(self.train_set[fold_number])):
@@ -178,10 +182,10 @@ class Metrics:
             trigram.append(sentence_bleu([tu[0]], tu[1], weights=(1, 0, 1, 0)))
         bleu_list = {"Bleu Score": gmean(trigram)}
         new_series = pd.Series(data=bleu_list)
-        #return gmean(trigram)
         return new_series
 
-    def calculate_ttr_un(self, fold_number):
+    # Author: Benedikt
+    def calculate_ttr_un(self, fold_number): # Calculate ttr for unaugmented Dataset
         ttr_list = {}
         for ner in self.entity_list:
             entity_counter = 0
@@ -215,7 +219,8 @@ class Metrics:
         new_series = pd.Series(data=ttr_list)
         return new_series
 
-    def calculate_ttr_trigram_un(self, fold_number):
+    # Author: Leonie
+    def calculate_ttr_trigram_un(self, fold_number): # Calculate ucer for unaugmented Dataset
         ttr_list = {}
         for ner in self.entity_list:
             unique_trigrams_list = []
@@ -248,8 +253,8 @@ class Metrics:
         new_series = pd.Series(data=ttr_list)
         return new_series
 
-
-    def calculate_bleu_rate(self, fold_number):
+    # Author: Leonie
+    def calculate_bleu_rate(self, fold_number): # calculate Bleu for new Experiment setup
         tup = []
         # per document
         for j in range(len(self.train_set[fold_number])):
@@ -267,7 +272,6 @@ class Metrics:
             trigram.append(sentence_bleu([tu[0]], tu[1], weights=(1, 0, 1, 0)))
         bleu_list = {"Bleu Score": gmean(trigram)}
         new_series = pd.Series(data=bleu_list)
-        #return gmean(trigram)
         return new_series
 
 tokens = [model.Token(text="I", index_in_document=0,
@@ -373,4 +377,3 @@ met = Metrics(train_set=train_set3, unaug_train_set=train_set2)
 
 
 
-#print(ergebnis)

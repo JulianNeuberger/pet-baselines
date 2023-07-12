@@ -2,6 +2,7 @@ import copy
 from data import model
 from augment.trafo5 import Trafo5Step
 
+# Author for entire script: Benedikt
 def test_is_ant():
     # Arrange
     trafo = Trafo5Step()

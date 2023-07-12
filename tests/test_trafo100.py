@@ -4,7 +4,7 @@ from data import model
 import mockito
 from augment import trafo100
 
-
+# Author for entire script: Benedikt
 def test_do_augment():
     # Arrange
     trafo = Trafo100Step()

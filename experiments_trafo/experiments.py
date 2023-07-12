@@ -11,7 +11,7 @@ import main
 import tqdm
 from metrics_ba import Metrics
 
-
+# Author: Benedikt
 def run_experiment_crf(name: str, aug_train_folds, test_folds):
     print(f'building scores for {name}')
     crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
@@ -45,6 +45,8 @@ def run_experiment_crf(name: str, aug_train_folds, test_folds):
     return f_score_crf
     #return [f_score_crf, f_score_neural, f_score_rel, new_series]
 
+
+# Author: Leonie
 def run_experiment_re(name: str, aug_train_folds, test_folds):
     print(f'building scores for {name}')
     #crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
@@ -77,6 +79,9 @@ def run_experiment_re(name: str, aug_train_folds, test_folds):
 
     return f_score_rel
     #return f_score_rel_rule
+
+
+# Author: Benedikt
 def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -135,7 +140,7 @@ def evaluate_unaugmented_data(unaug_train_folds, aug_train_folds, f_score):
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean
 
-
+# Author: Leonie
 def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -205,6 +210,7 @@ def evaluate_experiment_bleu(unaug_train_folds, aug_train_folds, f_score_crf, f_
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bleu, bleu_mean
 
 
+# Author: Benedikt
 def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -273,7 +279,7 @@ def evaluate_experiment_bert(unaug_train_folds, aug_train_folds, f_score_crf, f_
 
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bert, bert_mean
 
-
+# Author: Leonie
 def cross_validate_pipeline_macro(p: pipeline.Pipeline, *,
                             train_folds: typing.List[typing.List[data.Document]],
                             test_folds: typing.List[typing.List[data.Document]],
@@ -324,6 +330,7 @@ def cross_validate_pipeline_macro(p: pipeline.Pipeline, *,
     return res
 
 
+# Author: Benedikt
 def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -437,6 +444,7 @@ def evaluate_experiment_with_rate(unaug_train_folds, aug_train_folds, f_score_cr
         df_ttr_mean_un, df_ucer_mean_un, bert_mean
 
 
+# Author: Leonie
 def evaluate_experiment_with_rate_bleu(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -549,6 +557,8 @@ def evaluate_experiment_with_rate_bleu(unaug_train_folds, aug_train_folds, f_sco
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean, df_bleu, df_ttr_un, df_ucer_un, \
         df_ttr_mean_un, df_ucer_mean_un, bleu_mean
 
+
+# Author: Benedikt
 def evaluate_experiment_test(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',
@@ -615,6 +625,7 @@ def evaluate_experiment_test(unaug_train_folds, aug_train_folds, f_score_crf, f_
     return new_df_complete_series, df_ttr, df_ucer, df_ttr_mean, df_ucer_mean
 
 
+# Author: Benedikt
 def run_experiment(name: str, aug_train_folds, test_folds):
     print(f'building scores for {name}')
     crf_ext = pipeline.CrfMentionEstimatorStep(name='crf mention extraction')
@@ -654,6 +665,9 @@ def run_experiment(name: str, aug_train_folds, test_folds):
     new_series = pd.Series(data=new_list)
     return [f_score_crf, f_score_neural, f_score_rel_rule, new_series]
     #return [f_score_crf, f_score_neural, f_score_rel, new_series]
+
+
+# Author: Benedikt
 def evaluate_experiment_bert_filter(unaug_train_folds, aug_train_folds, f_score_crf, f_score_neural, f_score_rel):
     metrics: Metrics = Metrics(unaug_train_set=unaug_train_folds, train_set=aug_train_folds)
     df_ttr = pd.DataFrame(columns=['Actor', 'Activity', 'Activity Data', 'Further Specification', 'XOR Gateway',

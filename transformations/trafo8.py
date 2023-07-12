@@ -4,7 +4,8 @@ from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
 from data import model
 
-
+# Author: Benedikt
+# implementation Failed, due to the Generation Model
 class BackTranslation():
     def __init__(self, max_outputs=1, num_beams=2):
         self.max_outputs = max_outputs

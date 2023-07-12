@@ -5,7 +5,7 @@ from transformations.tokenmanager import get_pos_tag, get_bio_tag_based_on_left_
 from data import model
 import copy
 
-
+# Author for entire script: Benedikt
 def test_get_pos_tag():
     # ARRANGE
     p1 = []

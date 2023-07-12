@@ -6,7 +6,11 @@ from collections import Counter
 
 docs: typing.List[model.Document] = data.loader.read_documents_from_json('../complete.json')
 
+# Methods for Analysing the PET Dataset
 
+
+# Author: Benedikt
+# for plotting
 def create_graph(actor_count, activity_count, activity_data_count, further_count, xor_count, cond_count, and_count,
                  name):
     count_array = []
@@ -30,6 +34,8 @@ def create_graph(actor_count, activity_count, activity_data_count, further_count
     pp.show()
 
 
+# Author: Leonie
+# for plotting
 def create_graph_relation(dict, name):
     figure, axes = pp.subplots(figsize=(10, 5))
     figure.suptitle(name)
@@ -38,9 +44,12 @@ def create_graph_relation(dict, name):
     names = list(dict.keys())
     values = list(dict.values())
     axes.bar(range((len(dict))), values, tick_label=names, color="darkgrey", edgecolor="black", width=0.5)
-    pp.savefig(f"AnalysisRelation/{name}.png")
+    #pp.savefig(f"AnalysisRelation/{name}.png")
+    pp.show()
 
 
+# every Method counts the entity that stands behind count_...
+# Author: Leonie
 def count_nomen_furtherspec():
     counter = 0
     for doc in docs:
@@ -59,6 +68,7 @@ def count_nomen_furtherspec():
     print(f'Counter: {counter}')
 
 
+# Author: Leonie
 def count_adverbs():
     count = 0
     for doc in docs:
@@ -70,6 +80,7 @@ def count_adverbs():
     return count
 
 
+# Author: Benedikt
 def count_all():
     actor_count = 0
     activity_count = 0
@@ -118,6 +129,7 @@ def count_all():
                  name)
 
 
+# Author: Benedikt
 def count_nomen():
     actor_count = 0
     activity_count = 0
@@ -165,6 +177,7 @@ def count_nomen():
                  name)
 
 
+# Author: Leonie
 def count_nomen_p():
     actor_count = 0
     activity_count = 0
@@ -212,6 +225,7 @@ def count_nomen_p():
                  name)
 
 
+# Author: Leonie
 def count_adj():
     actor_count = 0
     activity_count = 0
@@ -259,6 +273,7 @@ def count_adj():
                  name)
 
 
+# Author: Benedikt
 def count_adv():
     actor_count = 0
     activity_count = 0
@@ -306,6 +321,7 @@ def count_adv():
                  name)
 
 
+# Author: Leonie
 def count_verb():
     actor_count = 0
     activity_count = 0
@@ -352,6 +368,8 @@ def count_verb():
     create_graph(actor_count, activity_count, activity_data_count, further_count, xor_count, cond_count, and_count,
                  name)
 
+
+# Author: Benedikt
 def count_entities():
     pos_tag_list_actor = []
     pos_tag_list_activity = []
@@ -389,8 +407,13 @@ def count_entities():
     #create_graph_relation(Counter(pos_tag_list_xor), "XOR Gateway")
     #create_graph_relation(Counter(pos_tag_list_cond), "Condition Specification")
     #create_graph_relation(Counter(pos_tag_list_and), "AND Gateway")
+    print(Counter(pos_tag_list_xor))
+    print(len(pos_tag_list_xor))
     #create_graph_relation(Counter(pos_tag_list_further), "Further Specification")
-    create_graph_relation(Counter(pos_tag_list_all), "All Entities")
+    #create_graph_relation(Counter(pos_tag_list_all), "All Entities")+
+
+
+# Author: Leonie
 def count_relations():
     pos_tag_list_same = []
     pos_tag_list_further = []
@@ -478,11 +501,3 @@ def count_relations():
     create_graph_relation(Counter(pos_tag_list_all), "All Relations")
 
 
-# count_nomen()
-# count_nomen_p()
-# count_adj()
-# count_adv()
-# count_all()
-# count_verb()
-#count_entities()
-count_relations()

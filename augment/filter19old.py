@@ -6,7 +6,8 @@ import operator
 from data import model
 from transformations import tokenmanager
 
-
+# Author: Benedikt
+# OLD
 class Filter19StepOld(base.AugmentationStep):
     def __init__(self, triples: typing.List=[()]):
         self.triples = triples

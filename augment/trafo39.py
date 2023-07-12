@@ -9,7 +9,7 @@ from numpy.random import binomial
 
 # English Mention Replacement for Ner
 
-
+# Author: Leonie
 class Trafo39Step(base.AugmentationStep):
 
     def __init__(self, prob=0.5):

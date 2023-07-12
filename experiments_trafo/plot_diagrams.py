@@ -11,7 +11,9 @@ from scipy.optimize import curve_fit
 import json
 
 
+# Methods for Plotting our results
 
+# Author: Benedikt
 def plot_scatter_with_regression(path):
     palette = sns.color_palette("flare", n_colors=20)
     df = pd.read_json(path_or_buf=path)
@@ -37,6 +39,7 @@ def plot_scatter_with_regression(path):
     #fig.savefig("./../experiment_results/trafo3/exp3.1/all_means.pdf")
 
 
+# Author: Leonie
 def all_means_prob_bert():
     sns.set_theme()
     str = "101"
@@ -90,6 +93,8 @@ def all_means_prob_bert():
     figg7.savefig(f"./../experiment_results/trafo{str}/exp{str2}/plots/all_means_bert_prob.pdf")
     plt.figure()
 
+
+# Author: Leonie
 def all_means_prob_bleu():
     sns.set_theme()
     str = "90"
@@ -139,7 +144,7 @@ def all_means_prob_bleu():
     plt.figure()
 
 
-
+# Author: Benedikt
 def all_entities_prob():
     sns.set_theme()
     str = "90"
@@ -195,6 +200,7 @@ def all_entities_prob():
     plt.figure()
 
 
+# Author: Benedikt
 def f1_norm():
     sns.set_theme()
     str = "101"
@@ -250,7 +256,7 @@ def f1_norm():
     figg.savefig("./../experiment_results/rate101/f1_norm.png")
     figg.savefig("./../experiment_results/rate101/f1_norm.pdf")
 
-
+# Author: Benedikt
 def f1_chi2():
     sns.set_theme()
     str = "101"
@@ -275,7 +281,7 @@ def f1_chi2():
     figg.savefig("./../experiment_results/rate101/f1_chi2.png")
     figg.savefig("./../experiment_results/rate101/f1_chi2.pdf")
 
-
+# Author: Benedikt
 def calc_pearson():
     str = "101"
     str2 = "3"
@@ -297,7 +303,7 @@ def calc_pearson():
     df_pear["Pear"] = [pear[0], pear[1]]
     df_pear.to_json(path_or_buf=f"./../experiment_results/rate{str}/Pearson.json", indent=4)
 
-
+# Author: Leonie
 def plot_rate_f1():
     sns.set_theme()
     str = "101"
@@ -319,6 +325,7 @@ def plot_rate_f1():
     figg2.savefig("./../experiment_results/rate101/f1_rate_scatter.png")
     figg2.savefig("./../experiment_results/rate101/f1_rate_scatter.pdf")
 
+# Author: Benedikt
 def plot_train_as_test():
     sns.set_theme()
     str = "101"
@@ -348,11 +355,11 @@ def plot_train_as_test():
     figg.savefig("./../experiment_results/Plots/train_as_testBenedikt.svg")
     plt.show()
 
-
+# Author: Benedikt
 def fn(x, c, s, df):
   return s * chi2.pdf(x, df) + c
 
-
+# Author: Benedikt
 def plot_with_diff_rates():
     sns.set_theme()
     str = "86"
@@ -467,7 +474,7 @@ def plot_with_diff_rates():
     plt.show()
 
 
-
+# Author: Leonie
 def get_df_with_all_ttr_means_per_prob_rate(trafo_nr=101):
     #trafo_nr = "5"
     df_all_ttr_means = pd.DataFrame()
@@ -538,7 +545,7 @@ def get_df_with_all_ttr_means_per_prob_rate(trafo_nr=101):
     df_new_all_means_aug_ttr.index = [0.25, 0.5, 0.75, 1.0]
     df_new_all_means_aug_ttr.to_json(path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_ttr_means_per_prob_and_rate.json", indent=4)
 
-
+# Author: Leonie
 def get_df_with_all_ucer_means_per_prob_rate(trafo_nr):
     # trafo_nr = "5"
     df_all_ttr_means = pd.DataFrame()
@@ -611,6 +618,7 @@ def get_df_with_all_ucer_means_per_prob_rate(trafo_nr):
     df_new_all_means_aug_ttr.to_json(
         path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_ucer_means_per_prob_and_rate.json", indent=4)
 
+# Author: Leonie
 def get_df_with_all_bleu_means_per_prob_rate(trafo_nr):
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
 
@@ -643,6 +651,7 @@ def get_df_with_all_bleu_means_per_prob_rate(trafo_nr):
     df_new_all_means_aug_ttr.to_json(
         path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_bleu_means_per_prob_and_rate.json", indent=4)
 
+# Author: Benedikt
 def get_df_with_all_bert_means_per_prob_rate(trafo_nr):
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
 
@@ -675,7 +684,7 @@ def get_df_with_all_bert_means_per_prob_rate(trafo_nr):
     df_new_all_means_aug_ttr.to_json(
         path_or_buf=f"./../experiment_results/rate{trafo_nr}/aaa_bert_means_per_prob_and_rate.json", indent=4)
 
-
+# Author: Leonie
 def plot_ttr_means_per_prob_and_rate_ratetottr(trafo_nr=101):
     sns.set_theme()
     #trafo_nr = "39"
@@ -705,7 +714,7 @@ def plot_ttr_means_per_prob_and_rate_ratetottr(trafo_nr=101):
     figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/ttr_per_prob.svg")
     plt.show()
 
-
+# Author: Leonie
 def plot_ucer_means_per_prob_and_rate_ratetottr(trafo_nr):
     sns.set_theme()
     # trafo_nr = "39"
@@ -737,100 +746,109 @@ def plot_ucer_means_per_prob_and_rate_ratetottr(trafo_nr):
     plt.show()
 
 
-
+# Author: Leonie
 def plot_ttr_mean_prob_to_ttr():
     sns.set_theme()
     trafo_nr = "3"
-    name = "bert"
-    name2 = "bleu"
+    name = "ttr"
+    name2 = "ttr"
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
 
     path = f"./../experiment_results/rate3/aaa_{name2}_means_per_prob_and_rate.json"
     df = pd.read_json(path_or_buf=path)
     df = df.set_axis(rate, axis=1)
-    df.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df.index = [ 0.25, 0.5, 0.75, 1.0, 0.00]
-    df = df.sort_index().reset_index(drop=True)
-    df.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    print(df)
+    df.index = [ 0.25, 0.5, 0.75, 1.0]
+    # df = df.sort_index().reset_index(drop=True)
+    # df.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path2 = f"./../experiment_results/rate39/aaa_{name2}_means_per_prob_and_rate.json"
     df2 = pd.read_json(path_or_buf=path2)
     df2 = df2.set_axis(rate, axis=1)
-    df2.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df2.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df2 = df2.sort_index().reset_index(drop=True)
-    df2.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+   # df2.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df2.index = [0.25, 0.5, 0.75, 1.0]
+    # df2 = df2.sort_index().reset_index(drop=True)
+    # df2.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path3 = f"./../experiment_results/rate40/aaa_{name2}_means_per_prob_and_rate.json"
     df3 = pd.read_json(path_or_buf=path3)
     df3 = df3.set_axis(rate, axis=1)
-    df3.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df3.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df3 = df3.sort_index().reset_index(drop=True)
-    df3.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df3.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df3.index = [0.25, 0.5, 0.75, 1.0]
+    # df3 = df3.sort_index().reset_index(drop=True)
+    # df3.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path4 = f"./../experiment_results/rate86/aaa_{name2}_means_per_prob_and_rate.json"
     df4 = pd.read_json(path_or_buf=path4)
     df4 = df4.set_axis(rate, axis=1)
-    df4.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df4.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df4 = df4.sort_index().reset_index(drop=True)
-    df4.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df4.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df4.index = [0.25, 0.5, 0.75, 1.0]
+    # df4 = df4.sort_index().reset_index(drop=True)
+    # df4.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path5 = f"./../experiment_results/rate90/aaa_{name2}_means_per_prob_and_rate.json"
     df5 = pd.read_json(path_or_buf=path5)
     df5 = df5.set_axis(rate, axis=1)
-    df5.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df5.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df5 = df5.sort_index().reset_index(drop=True)
-    df5.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df5.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df5.index = [0.25, 0.5, 0.75, 1.0]
+    # df5 = df5.sort_index().reset_index(drop=True)
+    # df5.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path6 = f"./../experiment_results/rate103/aaa_{name2}_means_per_prob_and_rate.json"
     df6 = pd.read_json(path_or_buf=path6)
     df6 = df6.set_axis(rate, axis=1)
-    df6.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df6.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df6 = df6.sort_index().reset_index(drop=True)
-    df6.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df6.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df6.index = [0.25, 0.5, 0.75, 1.0]
+    # df6 = df6.sort_index().reset_index(drop=True)
+    # df6.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path7 = f"./../experiment_results/rate5/aaa_{name}_means_per_prob_and_rate.json"
     df7 = pd.read_json(path_or_buf=path7)
     df7 = df7.set_axis(rate, axis=1)
-    df7.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df7.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df7 = df7.sort_index().reset_index(drop=True)
-    df7.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df7.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df7.index = [0.25, 0.5, 0.75, 1.0]
+    # df7 = df7.sort_index().reset_index(drop=True)
+    # df7.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path8 = f"./../experiment_results/rate82/aaa_{name}_means_per_prob_and_rate.json"
     df8 = pd.read_json(path_or_buf=path8)
     df8 = df8.set_axis(rate, axis=1)
-    df8.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df8.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df8 = df8.sort_index().reset_index(drop=True)
-    df8.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df8.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df8.index = [0.25, 0.5, 0.75, 1.0]
+    # df8 = df8.sort_index().reset_index(drop=True)
+    # df8.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path9 = f"./../experiment_results/rate100/aaa_{name}_means_per_prob_and_rate.json"
     df9 = pd.read_json(path_or_buf=path9)
     df9 = df9.set_axis(rate, axis=1)
-    df9.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df9.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df9 = df9.sort_index().reset_index(drop=True)
-    df9.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df9.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df9.index = [0.25, 0.5, 0.75, 1.0]
+    # df9 = df9.sort_index().reset_index(drop=True)
+    # df9.index = [0.00, 0.25, 0.5, 0.75, 1.0]
 
     path10 = f"./../experiment_results/rate101/aaa_{name}_means_per_prob_and_rate.json"
     df10 = pd.read_json(path_or_buf=path10)
     df10 = df10.set_axis(rate, axis=1)
-    df10.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    df10.index = [0.25, 0.5, 0.75, 1.0, 0.00]
-    df10 = df10.sort_index().reset_index(drop=True)
-    df10.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+    #df10.loc[0.00] = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    df10.index = [0.25, 0.5, 0.75, 1.0]
+    # df10 = df10.sort_index().reset_index(drop=True)
+    # df10.index = [0.00, 0.25, 0.5, 0.75, 1.0]
+
+    path11 = f"./../experiment_results/trafo58/exp58.1/all_means.json"
+    df11 = pd.read_json(path_or_buf=path11)
+    dff = pd.Series([df11["ETTR"][4],df11["ETTR"][9],df11["ETTR"][14],df11["ETTR"][19]  ])
+
+
+
+    dff.index = [0.25, 0.5, 0.75, 1.0]
 
     print(df)
     #full_df = pd.DataFrame({"Trafo 3": df[3.0], "Trafo 39": df2[3.0],"Trafo 40": df3[3.0],"Trafo 86": df4[3.0],
     #                       "Trafo 90": df5[3.0],"Trafo 103": df6[3.0]})
-    full_df = pd.DataFrame({"Trafo 5": df7[3.0], "Trafo 82": df8[3.0], "Trafo 100": df9[3.0], "Trafo 101": df10[3.0]})
+    full_df = pd.DataFrame({"Trafo 5": df7[3.0], "Trafo 82": df8[3.0], "Trafo 100": df9[3.0], "Trafo 101": df10[3.0], "Trafo 58": dff})
     fig = sns.lineplot(data=full_df)
-    fig.set(xlabel="Ersetzungswahrscheinlichkeit", ylabel=f"CETTR")
+    fig.set(xlabel="Ersetzungswahrscheinlichkeit", ylabel=f"ETTR")
     figg = fig.figure
     figg.tight_layout()
     figg.savefig(f"./../experiment_results/Plots/Benedikt/{name}_per_prob_new.pdf")
@@ -839,7 +857,7 @@ def plot_ttr_mean_prob_to_ttr():
     plt.show()
 
 
-
+# Author: Benedikt
 def plot_bert_means_per_prob_and_rate_ratetottr():
     sns.set_theme()
     trafo_nr = "103"
@@ -861,6 +879,7 @@ def plot_bert_means_per_prob_and_rate_ratetottr():
     # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/bleu_per_prob.svg")
     plt.show()
 
+# Author: Benedikt
 def scatter():
     sns.set_theme()
     bert_list = []
@@ -1223,6 +1242,7 @@ def scatter():
     figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.png")
     figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.svg")
 
+# Author: Benedikt
 def plot_with_diff_rates_rel():
     sns.set_theme()
     str = "86"
@@ -1333,20 +1353,26 @@ def plot_with_diff_rates_rel():
     figg.savefig(f"./../experiment_results/trafo{str}/plots/diff_rates_f1_relation.svg")
     plt.show()
 
+
+# Author: Benedikt
 def fn5(x, c, s, df):
   return s * chi2.pdf(x, 4.5) + c
+
+# Author: Benedikt
 def fn2(x, a, b, c):
     x2 = []
     for i in range(len(x)):
         x2.append(a*x[i]**2 + b*x[i] + c)
     return x2
 
+# Author: Benedikt
 def fn3(x, a, c):
     x2 = []
     for i in range(len(x)):
         x2.append(- a*np.exp(-x[i]) + c)
     return x2
 
+# Author: Benedikt
 def plot_filter():
     sns.set_theme()
     str = "9"
@@ -1387,6 +1413,15 @@ def plot_filter():
     figg.savefig(f"./../experiment_results/filter{str}/plots/{name}_length.png")
     figg.savefig(f"./../experiment_results/filter{str}/plots/{name}_length.svg")
 
+
+# Author: Benedikt
+def fnf(x, d, c):
+    x2 = []
+    for i in range(len(x)):
+        x2.append(x[i]/(2*x[i] + d)+c)
+    return x2
+
+# Author: Benedikt
 def plot_filter10_1():
     sns.set_theme()
     str = "19"
@@ -1402,8 +1437,8 @@ def plot_filter10_1():
     rate = [2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
 
-    df4 = pd.DataFrame({"Filter 10": df[name], "Filter 19": df2[name]})
-
+    #df4 = pd.DataFrame({"Filter 10": df[name], "Filter 19": df2[name]})
+    df4 = pd.DataFrame({"Filter 19": df2[name]})
     df4.index = rate
     palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
     fig = sns.lineplot(data=df4, palette=palette)
@@ -1413,18 +1448,19 @@ def plot_filter10_1():
 
 
    # a,b,c = np.polyfit(rate, df4["Filter 19"], deg=2)
-    c, cov = curve_fit(fn2, xdata=rate, ydata=df4["Filter 10"])
-    c2, cov2 = curve_fit(fn2, xdata=rate, ydata=df4["Filter 19"])
-    print(c)
-    fit2 = fn2(rate,*c)
-    fit3 = fn2(rate, *c2)
-    print(fit2)
+   # c, cov = curve_fit(fn2, xdata=rate, ydata=df4["Filter 10"])
+    c2, cov2 = curve_fit(fnf, xdata=rate, ydata=df4["Filter 19"])
+    #print(c)
+    #fit2 = fn2(rate,*c)
+    fit3 = fnf(rate, *c2)
+    #print(fit2)
     # fit = np.asarray(fit2)
     # max_x = fit.argmax(axis=0)
     # best_length = rate[max_x]
     # print(best_length)
-    fig.plot(rate, fit2, color="#FF1B1B", label="x² Fit für Filter 10")
-    fig.plot(rate, fit3, color="#1846FD", label="x² Fit für Filter 19")
+    #fig.plot(rate, fit2, color="#FF1B1B", label="x² Fit für Filter 10")
+    fig.plot(rate, fit3, color="#FF1B1B", label="x/(2x + d)+c Fit für Filter 19")
+    #fig.plot(rate, fit3, color="#1846FD", label="x/(2x + d)+c Fit für Filter 19")
     fig.legend()
     plt.show()
     print(df4)
@@ -1435,6 +1471,7 @@ def plot_filter10_1():
     figg.savefig(f"./../experiment_results/filter{str}/plots/f1_countAll.svg")
 
 
+# Author: Benedikt
 def plot_filter10_3():
     sns.set_theme()
     str = "10"
@@ -1477,6 +1514,8 @@ def plot_filter10_3():
     figg.savefig(f"./../experiment_results/filter{str}/plots/bert_pos.png")
     figg.savefig(f"./../experiment_results/filter{str}/plots/bert_pos.svg")
 
+
+# Author: Benedikt
 def scatter_filter():
     sns.set_theme()
     str = "19"
@@ -1496,39 +1535,6 @@ def scatter_filter():
     figg.savefig(f"./../experiment_results/trafo58/plots/scatter_fbert.png")
     figg.savefig(f"./../experiment_results/trafo58/plots/scatter_fbert.svg")
 
-# for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
-#     get_df_with_all_ttr_means_per_prob_rate(i)
-#     plot_ttr_means_per_prob_and_rate_ratetottr(i)
-#     #pass
-# #
-# #
-# #
-# for i in [3, 5, 39, 40, 82, 86, 90, 100, 101, 103]:
-#     get_df_with_all_ucer_means_per_prob_rate(i)
-#     plot_ucer_means_per_prob_and_rate_ratetottr(i)
-    #pass
-# #
-# #
-# for i in [3, 39, 40, 86, 90, 103]:
-#     get_df_with_all_bleu_means_per_prob_rate(i)
-#     #plot_ucer_means_per_prob_and_rate_ratetottr(i)
-#     #pass
-# for i in [5, 82, 100, 101]:
-#     get_df_with_all_bert_means_per_prob_rate(i)
-    #pass
-#plot_with_diff_rates()
-#plot_ttr_mean_prob_to_ttr()
-#plot_train_as_test()
-#plot_bert_means_per_prob_and_rate_ratetottr()
-#scatter()
-#plot_with_diff_rates_rel()
-#plot_filter10_1()
-#scatter()
-#plot_ttr_mean_prob_to_ttr()
-#plot_bert_means_per_prob_and_rate_ratetottr()
 
-#plot_ttr_means_per_prob_and_rate_ratetottr()
-#get_df_with_all_ttr_means_per_prob_rate()
-#get_df_with_all_ttr_means_per_prob_rate(100)
-#plot_ttr_means_per_prob_and_rate_ratetottr(100)
-scatter_filter()
+
+

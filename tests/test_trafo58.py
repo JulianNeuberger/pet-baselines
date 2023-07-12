@@ -1,14 +1,14 @@
 import copy
-from augment.trafo58 import Trafo54Step
+from augment.trafo58 import Trafo58Step
 from data import model
 import mockito
 from augment import trafo58
 
-
+# Author for entire script: Benedikt
 def test_do_augment():
     # Arrange
     # Testfall 1: ADj, Nomen und Verben auf Sprache Chinesisch
-    trafo1 = Trafo54Step(True, True, True, "zh")
+    trafo1 = Trafo58Step(True, True, True, "zh")
     tokens1 = [model.Token(text="I", index_in_document=0,
                            pos_tag="PRP", bio_tag="B-Actor",
                            sentence_index=0),

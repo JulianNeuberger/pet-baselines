@@ -4,6 +4,7 @@ from augment import Filter9Step
 from data import model
 
 
+# Author for entire script: Benedikt
 def test_do_augment():
     filter1 = Filter9Step(length=12)
     filter2 = Filter9Step(length=5)

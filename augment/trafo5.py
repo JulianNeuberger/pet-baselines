@@ -5,7 +5,7 @@ from augment import base
 from nltk.corpus import wordnet
 from data import model
 
-
+# Author: Benedikt
 class Trafo5Step(base.AugmentationStep):
     def __init__(self, p):
         self.p = p

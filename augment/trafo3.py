@@ -6,7 +6,7 @@ from random import random as rand
 
 # Adjective Antonym Switch - Wortebene
 
-
+# Author: Leonie
 class Trafo3Step(base.AugmentationStep):
 
     def __init__(self, no_dupl: bool = False, max_adj: int = 1, prob: float = 0.5):

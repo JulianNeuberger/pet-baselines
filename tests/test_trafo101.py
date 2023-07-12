@@ -4,6 +4,8 @@ import pytest
 from augment.trafo101 import Trafo101Step
 from data import model
 import mock
+
+# Author for entire script: Benedikt
 def test_do_augment():
     # Arrange
     trafo = Trafo101Step(type=True, no_dupl=False)

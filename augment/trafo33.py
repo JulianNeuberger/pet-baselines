@@ -5,7 +5,8 @@ from data import model
 from transformations import tokenmanager
 from collections import defaultdict
 
-
+# Author: Benedikt
+# not used in final work
 class Trafo33Step(base.AugmentationStep):
 
     def __init__(self, p: float = 1):

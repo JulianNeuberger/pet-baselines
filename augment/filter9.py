@@ -5,7 +5,7 @@ import operator
 from transformations import tokenmanager
 from data import model
 
-
+# Author: Benedikt
 class Filter9Step(base.AugmentationStep):
     def __init__(self, length: int=12, op: str="<"):
         self.length = length

@@ -4,7 +4,7 @@ from data import model
 import mockito
 from augment import trafo82
 
-
+# Author for entire script: Benedikt
 def test_separate_into_contracted_and_expanded_form():
     # Arrange
     trafo1 = Trafo82Step(False, False, False)
