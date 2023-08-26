@@ -362,25 +362,28 @@ def fn(x, c, s, df):
 # Author: Benedikt
 def plot_with_diff_rates():
     sns.set_theme()
-    str = "86"
+    str = "101"
     path05 = f"./../experiment_results/rate{str}/all_means.json"
     path025 = f"./../experiment_results/rate{str}/prob025/all_means.json"
     path075 = f"./../experiment_results/rate{str}/prob075/all_means.json"
     path10 = f"./../experiment_results/rate{str}/prob1/all_means.json"
-    path58 = f"./../experiment_results/trafo58/exp58.1/all_means.json"
+    #path58 = f"./../experiment_results/trafo58/exp58.1/all_means.json"
     df = pd.read_json(path_or_buf=path05)
     df2 = pd.read_json(path_or_buf=path025)
     df3 = pd.read_json(path_or_buf=path075)
     df5 = pd.read_json(path_or_buf=path10)
-    df58 = pd.read_json(path_or_buf=path58)
+    #df58 = pd.read_json(path_or_buf=path58)
     rate = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
     rate2 = [0.0, 0.3, 0.6, 0.9, 1.25, 1.5, 1.75, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
     rate3 = [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
                          0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
     #rate2 = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0]
-    df4 = pd.DataFrame({"F1 Score": df58["F1 CRF"], "ETTR": df58["TTR"], "CETTR": df58["UCER"],
-                        "Bert Score" : df58["BertScore"]})
-    df4.index = rate3
+    #df43 = pd.DataFrame({"F1 Score": df3["F1 CRF"], "ETTR": df3["TTR"], "CETTR": df3["UCER"],
+            #            "Bert Score" : df3["BertScore"]})
+    df4 = pd.DataFrame({"p = 0.25": df2["F1 CRF"],"p = 0.5": df["F1 CRF"],"p = 0.75": df3["F1 CRF"],"p = 1.0": df5["F1 CRF"]})
+    #df4 = pd.DataFrame(
+    #    { "p = 0.5": df["F1 CRF"], "p = 0.75": df3["F1 CRF"]})
+    df4.index = rate
 
     #min = np.min([np.min(df4["p = 0.5"]), np.min(df4["p = 0.25"]), np.min(df4["p = 0.75"]), np.min(df4["p = 1"])])
     #print(df4)
@@ -405,8 +408,8 @@ def plot_with_diff_rates():
 
     palette = sns.color_palette(["#FFAEAE", "#92A8FF", "#78D88B", "#E8D381" ],n_colors=4, desat=1)
     fig = sns.lineplot(data=df4, palette=palette)
-    fig.set(xlabel="Ersetzungswahrscheinlichkeit")
-
+    fig.set(xlabel="Augmentierungsrate")
+    fig.set(ylabel="F1 Score")
 
     # popt, pcov = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.25"])
     # popt2, pcov2 = curve_fit(f=fn, xdata=rate2, ydata=df4["p = 0.5"])
@@ -463,14 +466,14 @@ def plot_with_diff_rates():
     fig.legend()
     #fig.plot(rate, fit, color="black")
 
-    fig.set_title(f"Transformation 58")
+    fig.set_title(f"Transformation 101")
 
     #fig.plot(x, chi2.pdf(x, 5), color="black")
 
     figg = fig.figure
-    figg.savefig(f"./../experiment_results/trafo58/plots/58.pdf")
-    figg.savefig(f"./../experiment_results/trafo58/plots/58.png")
-    figg.savefig(f"./../experiment_results/trafo58/plots/58.svg")
+    figg.savefig(f"./../experiment_results/trafo101/plots/101.pdf")
+    figg.savefig(f"./../experiment_results/trafo101/plots/101.png")
+    figg.savefig(f"./../experiment_results/trafo101/plots/101.svg")
     plt.show()
 
 
@@ -1228,19 +1231,21 @@ def scatter():
 
     #cond = np.linalg.cond(pcov)
 
-
-    fig = plt.scatter(x=bert_list, y=f1_list )
+    print(np.argmax(ttr_list2))
+    print(np.argmin(ttr_list2))
+    print(len(f12_list))
+    fig = plt.scatter(x=ttr_list2, y=f12_list )
     #plt.plot(x, fit, color="#FF1B1B", label="chi²")
     #plt.legend(("p = 0.25", "p = 0.5", "p = 0.75", "p = 1"))
-    plt.xlabel("Bert Score")
+    plt.xlabel("ETTR")
     plt.ylabel("F1 Score")
     plt.legend()
     plt.show()
     figg = fig.figure
     figg.tight_layout()
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.pdf")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.png")
-    figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_bertbenny.svg")
+    # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_ettrleonie.pdf")
+    # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_ettrleonie.png")
+    # figg.savefig(f"./../experiment_results/trafo{trafo_nr}/plots/scatter_ALL_ettrleonie.svg")
 
 # Author: Benedikt
 def plot_with_diff_rates_rel():
@@ -1538,3 +1543,4 @@ def scatter_filter():
 
 
 
+scatter()
