@@ -8,12 +8,11 @@ import numpy as np
 
 # Author: Benedikt
 class Trafo101Step(base.AugmentationStep):
-
+    name = "101"
     def __init__(self, prob: float = 1, type=True, no_dupl=False):
         self.prob = prob
         self.type = type
         self.no_dupl = no_dupl
-
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
         changed_words = []

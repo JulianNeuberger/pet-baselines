@@ -359,6 +359,29 @@ def plot_train_as_test():
 def fn(x, c, s, df):
   return s * chi2.pdf(x, df) + c
 
+def paper_plot():
+    sns.set_theme()
+    path05 = f"./../paper_results/trafo101_rate/all_means.json"
+    df = pd.read_json(path_or_buf=path05)
+    rate = np.linspace(0, 10, 101)
+    df4 = pd.DataFrame({"Synonym Subst.": df["F1 CRF"]})
+    df4.index = rate
+
+    popt, pcov = curve_fit(f=fn, xdata=rate, ydata=df4["Synonym Subst."])
+    fit = fn(rate, *popt)
+
+
+    fig = sns.lineplot(data=df4)
+    fig.set(xlabel="Augmentierungsrate")
+    fig.set(ylabel="F1 Score")
+
+    #fig.plot(rate, fit, color="#FF1B1B", label="Chi²")
+    fig.legend()
+    figg = fig.figure
+    figg.savefig(f"./../paper_results/plots/101.pdf")
+    figg.savefig(f"./../paper_results/plots/101.png")
+    figg.savefig(f"./../paper_results/plots/101.svg")
+    plt.show()
 # Author: Benedikt
 def plot_with_diff_rates():
     sns.set_theme()
@@ -1543,4 +1566,4 @@ def scatter_filter():
 
 
 
-scatter()
+paper_plot()
