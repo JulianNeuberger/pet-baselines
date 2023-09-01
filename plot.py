@@ -1,8 +1,10 @@
+import dataclasses
 import math
 import os
 import sqlite3
 import typing
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas
@@ -15,6 +17,34 @@ from matplotlib.projections import register_projection
 from matplotlib.projections.polar import PolarAxes
 from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
+
+sns.set_theme(rc={
+    'figure.autolayout': False,
+    'font.family': ['Computer Modern', 'CMU Serif', 'cmu', 'serif'],
+    'font.serif': ['Computer Modern', 'CMU Serif', 'cmu'],
+    # 'text.usetex': True
+})
+matplotlib.rcParams.update({
+    'figure.autolayout': False,
+    'font.family': ['Computer Modern', 'CMU Serif', 'cmu', 'serif'],
+    'font.serif': ['Computer Modern', 'CMU Serif', 'cmu'],
+    # 'text.usetex': True
+})
+sns.set_style(rc={
+    'font.family': ['Computer Modern', 'CMU Serif', 'cmu', 'serif'],
+    'font.serif': ['Computer Modern', 'CMU Serif', 'cmu'],
+    # 'text.usetex': True
+})
+sns.set(font='Computer Modern')
+
+
+@dataclasses.dataclass
+class PlottingData:
+    data: pd.DataFrame
+    x: str
+    y: str
+    hue: str
+    type: str
 
 
 def radar_factory(num_vars, frame='circle'):
@@ -180,11 +210,14 @@ def place_text_at_spoke(ax, theta: float, r: float, text: str,
             color=color,
             rotation=rotation,
             fontsize=font_size,
+            fontfamily='serif',
             horizontalalignment=ha,
             verticalalignment=va)
 
 
 def make_spider(df: pd.DataFrame, grid_spec, title: str):
+    assert len(df) > 0, f'Empty df for title "{title}"'
+
     categories = list(df)[0:]
     num_categories = len(categories)
 
@@ -225,42 +258,46 @@ def make_spider(df: pd.DataFrame, grid_spec, title: str):
         spoke_label = '\n'.join(label_rows)
         place_text_at_spoke(ax, theta[i], 1.0, spoke_label, offset=offset, rotate=True, font_size=13)
 
-    ax.set_title(title, loc='left', pad=30, fontdict=dict(fontsize=15))
+    ax.set_title(title, loc='left', pad=30, fontsize=14, fontfamily='serif')
 
     return handles
 
 
 def label_from_experiment_name(experiment_name: str) -> str:
-    if 'cat-boost' in experiment_name:
-        return 'ours'
-    elif 'rule-based' in experiment_name:
-        return 'baseline'
-    elif 'mention-extraction-only' == experiment_name:
-        return 'baseline'
-    elif 'jerex' in experiment_name:
-        return 'jerex'
-    elif 'naive' in experiment_name:
-        return 'naive'
-    elif 'neural' in experiment_name:
-        return 'neural'
-    else:
-        raise ValueError(f'Unknown approach in experiment name {experiment_name}')
+    mapping = {
+        'cat-boost': 'BoostRelEx',
+        'rule-based': 'RuleRelEx',
+        'jerex': 'Jerex',
+        'neural-coref': 'neural ER',
+        'naive-coref': 'naive ER'
+    }
+
+    for k, v in mapping.items():
+        if k in experiment_name:
+            return v
+    raise ValueError(f'Unknown approach in experiment name {experiment_name}')
 
 
-def make_bars(df: pd.DataFrame, grid_spec, title: str):
+def make_bars(df: pd.DataFrame, grid_spec, title: str, x: str, y: str, hue: str):
     ax = plt.subplot(grid_spec)
-
-    df = df.reset_index()
-    df = df.melt(id_vars='experiment_name', value_vars=list(df.columns[1:]), var_name='tag', value_name='f1')
 
     for experiment_name in df['experiment_name'].values:
         df = df.replace(experiment_name, label_from_experiment_name(experiment_name))
 
-    sns.barplot(df, x='tag', y='f1', hue='experiment_name')
+    sns.barplot(df, x=x, y=y, hue=hue)
 
     ax.xaxis.label.set_visible(False)
+    ax.set_ylim((0, 1.0))
+    ax.set_ylabel(ax.get_ylabel(), fontfamily='serif')
+    ax.set_xlabel(ax.get_xlabel(), fontfamily='serif')
 
-    ax.set_title(title, loc='left', pad=30, fontdict=dict(fontsize=15))
+    for label in ax.get_xticklabels():
+        label.set_fontproperties('serif')
+
+    for label in ax.get_yticklabels():
+        label.set_fontproperties('serif')
+
+    ax.set_title(title, loc='left', pad=30, fontsize=14, fontfamily='serif')
     handles, _ = ax.get_legend_handles_labels()
 
     for container in handles:
@@ -276,50 +313,95 @@ def make_bars(df: pd.DataFrame, grid_spec, title: str):
     return handles
 
 
-def plot_experiment_results(grouped_experiment_names: typing.List[typing.List[str]],
+def plot_experiment_results(grouped_data: typing.List[PlottingData],
                             name: str, legends_at: typing.Dict[int, int],
-                            widths: typing.List[float] = None):
-    df: pd.DataFrame = pd.read_pickle('experiments.jerex.pkl')
-    df = df.loc[df['tag'] != 'overall']
-    df = df[['experiment_name', 'tag', 'f1']]
-    df = df.pivot_table(values='f1', index='experiment_name', columns='tag')
-
+                            widths: typing.List[float] = None, margins: typing.Dict[str, float] = None):
     fig: plt.Figure
     fig = plt.figure(figsize=(15, 5))
-    grid_spec = gridspec.GridSpec(2, len(grouped_experiment_names), height_ratios=[1, 5], width_ratios=widths)
+    grid_spec = gridspec.GridSpec(2, len(grouped_data), height_ratios=[1, 5], width_ratios=widths)
 
     sns.set_theme()
 
     handles = []
-    for i, experiment_names in enumerate(grouped_experiment_names):
-        data = df.filter(items=experiment_names, axis=0).dropna(axis=1)
-        print(data)
-        if len(data.columns) > 2:
-            _handles = make_spider(data, grid_spec[i + len(grouped_experiment_names)], title=f'{chr(i + 97)})')
+    for i, plotting_data in enumerate(grouped_data):
+        # data = df.filter(items=experiment_names, axis=0).dropna(axis=1)
+        # print(data)
+        if plotting_data.type == 'spider':
+            _handles = make_spider(plotting_data.data, grid_spec[i + len(grouped_data)], title=f'{chr(i + 97)})')
         else:
-            _handles = make_bars(data, grid_spec[i + len(grouped_experiment_names)], title=f'{chr(i + 97)})')
+            _handles = make_bars(plotting_data.data, grid_spec[i + len(grouped_data)],
+                                 title=f'{chr(i + 97)})',
+                                 x=plotting_data.x, y=plotting_data.y, hue=plotting_data.hue)
         handles.append(_handles)
 
     assert len(handles) > 0
 
     for legend_to, legend_from in legends_at.items():
-        legend_axis = fig.add_subplot(int(f'2{len(grouped_experiment_names)}{legend_to + 1}'))
+        legend_axis = fig.add_subplot(int(f'2{len(grouped_data)}{legend_to + 1}'))
         legend_axis.axis('off')
         legend_axis.legend(handles=handles[legend_from], borderaxespad=0, ncol=len(handles[legend_from]),
+                           prop={'family': 'serif'},
                            bbox_to_anchor=(1, 1), loc='upper right')
+
+    if margins is not None:
+        plt.subplots_adjust(**margins)
 
     os.makedirs('figures/results', exist_ok=True)
     plt.savefig(f'figures/results/{name}.png', bbox_inches='tight')
     plt.savefig(f'figures/results/{name}.pdf', bbox_inches='tight')
 
 
-if __name__ == '__main__':
-    plot_experiment_results([['complete-cat-boost', 'complete-rule-based', 'jerex-relations'],
-                             ['co-ref-only-cat-boost', 'co-ref-only-rule-based'],
-                             ['cat-boost-isolated', 'rule-based-isolated']],
-                            name='scenario-4-5-6', legends_at={2: 0})
+def plot_scenario_4_5_6():
+    df: pd.DataFrame = pd.read_pickle('experiments.jerex.pkl')
+    df = df.reset_index()
+    df = df.loc[df['tag'] != 'overall']
+    df = df[['experiment_name', 'tag', 'f1']]
+    df = df.pivot_table(values='f1', index='experiment_name', columns='tag')
 
-    plot_experiment_results([['mention-extraction-only'],
-                             ['naive-coref', 'neural-coref', 'jerex-entities'],
-                             ['naive-coref-perfect-mentions', 'neural-coref-perfect-mentions']],
-                            name='scenario-1-2-3', legends_at={0: 0, 2: 1}, widths=[2, 1.6, 1])
+    grouped_data = [
+        PlottingData(data=df.filter(items=experiment_names, axis=0).dropna(axis=1),
+                     hue='experiment_name', x='tag', y='f1', type='spider')
+        for experiment_names in [['complete-cat-boost', 'complete-rule-based', 'jerex-relations'],
+                                 ['co-ref-only-cat-boost', 'co-ref-only-rule-based'],
+                                 ['cat-boost-isolated', 'rule-based-isolated']]
+    ]
+
+    plot_experiment_results(grouped_data, name='scenario-4-5-6', legends_at={2: 0})
+
+
+def plot_scenario_1_2_3():
+    grouped_data = []
+
+    for experiment_names in [['cat-boost-isolated', 'rule-based-isolated'],
+                             ['complete-cat-boost', 'complete-rule-based', 'jerex-relations']]:
+        df: pd.DataFrame = pd.read_pickle('experiments.jerex.pkl')
+        df = df.reset_index()
+        df = df.loc[df['tag'] == 'overall']
+        df = df[['experiment_name', 'f1', 'p', 'r']]
+        df = df.melt(id_vars=['experiment_name'], var_name='metric', value_name='score')
+        df = df[df['experiment_name'].isin(experiment_names)]
+        grouped_data.append(PlottingData(data=df, hue='experiment_name', x='metric', y='score', type='bar'))
+
+    for experiment_names in [['neural-coref', 'naive-coref'],
+                             ['neural-coref-perfect-mentions', 'naive-coref-perfect-mentions']]:
+        df: pd.DataFrame = pd.read_pickle('experiments.jerex.pkl')
+        df = df.reset_index()
+        df = df.loc[df['tag'] != 'overall']
+        df = df[['experiment_name', 'tag', 'f1']]
+        df = df.pivot_table(values='f1', index='experiment_name', columns='tag')
+        data = df.filter(items=experiment_names, axis=0)
+        data = data.dropna(axis=1)
+        data = data.reset_index()
+        data = data.melt(id_vars='experiment_name', value_vars=list(data.columns[1:]), var_name='tag',
+                         value_name='f1')
+        grouped_data.append(PlottingData(data=data, hue='experiment_name', x='tag', y='f1', type='bar'))
+
+    plot_experiment_results(grouped_data, name='scenario-1-2-3',
+                            legends_at={1: 1, 3: 3},
+                            widths=[1.25, 1.25, .9, .9],
+                            margins={'wspace': .3, 'hspace': 0.15})
+
+
+if __name__ == '__main__':
+    plot_scenario_4_5_6()
+    plot_scenario_1_2_3()

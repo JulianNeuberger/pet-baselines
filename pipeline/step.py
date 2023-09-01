@@ -1,6 +1,8 @@
 import abc
 import dataclasses
+import math
 import pathlib
+import time
 import typing
 
 import coref
@@ -39,7 +41,10 @@ class PipelineStep(abc.ABC):
         train_data = [d.copy() for d in train_documents]
         test_data = [d.copy() for d in test_documents]
         result = self._run(train_documents=train_data, test_documents=test_data)
+        print('Running evaluation...')
+        start = time.time_ns()
         stats = self._eval(ground_truth=ground_truth_documents, predictions=result)
+        print(f'Evaluation done after {(time.time_ns() - start) / 1e6:.1f}ms!')
         return PipelineStepResult(result, stats)
 
     def _eval(self, *,
@@ -54,20 +59,36 @@ class PipelineStep(abc.ABC):
 
 
 class CatBoostRelationExtractionStep(PipelineStep):
-    def __init__(self, name: str, num_trees: int, negative_sampling_rate: float, context_size: int,
+    def __init__(self, *,
+                 name: str,
+                 num_trees: int = 1000,
+                 negative_sampling_rate: float = 40,
+                 context_size: int = 2,
+                 depth: int = 8,
+                 num_passes: int = 1,
+                 learning_rate: float = None,
                  use_pos_features: bool = False,
-                 verbose: bool = False, seed: int = 42):
+                 use_embedding_features: bool = False,
+                 verbose: bool = False,
+                 class_weighting: float = 0.0,
+                 seed: int = 42):
         super().__init__(name)
         self._num_trees = num_trees
+        self._num_passes = num_passes
         self._negative_sampling = negative_sampling_rate
         self._context_size = context_size
         self._verbose = verbose
         self._seed = seed
+        self._depth = depth
         self._use_pos_features = use_pos_features
+        self._use_embedding_features = use_embedding_features
+        self._learning_rate = learning_rate
+        self._class_weighting = class_weighting
 
     def _eval(self, *, predictions: typing.List[data.Document],
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
-        return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth,
+        return metrics.relation_f1_stats(predicted_documents=predictions,
+                                         ground_truth_documents=ground_truth,
                                          verbose=self._verbose)
 
     def _run(self, *, train_documents: typing.List[data.Document],
@@ -75,15 +96,32 @@ class CatBoostRelationExtractionStep(PipelineStep):
         ner_tags = ['Activity', 'Actor', 'Activity Data', 'Condition Specification',
                     'Further Specification', 'AND Gateway', 'XOR Gateway']
         relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
+        class_weights = {t.lower(): 0 for t in relation_tags}
+        if self._class_weighting != 0.0:
+            for d in train_documents:
+                for r in d.relations:
+                    class_weights[r.tag.lower()] += 1
+            num_samples = sum(class_weights.values())
+            num_classes = len(relation_tags)
+            class_weights = {k: num_samples / (num_classes * v) for k, v in class_weights.items()}
+            class_weights = {k: math.pow(v, 1 / self._class_weighting) for k, v in class_weights.items()}
+        else:
+            class_weights = {k: 1.0 for k, v in class_weights.items()}
+        print(f'Using class weights {class_weights}')
         estimator = relations.CatBoostRelationEstimator(negative_sampling_rate=self._negative_sampling,
                                                         num_trees=self._num_trees,
                                                         use_pos_features=self._use_pos_features,
+                                                        use_embedding_features=self._use_embedding_features,
+                                                        num_passes=self._num_passes,
                                                         context_size=self._context_size,
                                                         relation_tags=relation_tags,
                                                         ner_tags=ner_tags,
                                                         name=self._name,
                                                         seed=self._seed,
-                                                        verbose=False)
+                                                        depth=self._depth,
+                                                        learning_rate=self._learning_rate,
+                                                        class_weights=class_weights,
+                                                        verbose=True)
         estimator.train(train_documents)
         test_documents = [d.copy(clear_relations=True) for d in test_documents]
         return estimator.predict(test_documents)

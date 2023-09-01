@@ -21,23 +21,52 @@ class Document:
                 return True
         return False
 
+    def get_relations_by_mention(self, mention_index: int,
+                                 only_head=False, only_tail=False) -> typing.List['Relation']:
+        if only_tail and only_head:
+            raise ValueError('The mention can not be only head and tail at the same time!')
+        entity_index = self.entity_index_for_mention_index(mention_index)
+        ret = []
+        for relation in self.relations:
+            is_head = relation.head_entity_index == entity_index
+            if only_head and is_head:
+                ret.append(relation)
+                continue
+
+            is_tail = relation.tail_entity_index == entity_index
+            if only_tail and is_tail:
+                ret.append(relation)
+                continue
+
+            if is_tail or is_head:
+                ret.append(relation)
+        return ret
+
     def contains_relation(self, relation: 'Relation') -> bool:
         return relation.to_tuple(self) in [e.to_tuple(self) for e in self.relations]
 
     def contains_entity(self, entity: 'Entity') -> bool:
         return entity.to_tuple(self) in [e.to_tuple(self) for e in self.entities]
 
-    def entity_index_for_mention(self, mention: 'Mention') -> int:
-        mentions_as_tuples = [m.to_tuple(self) for m in self.mentions]
-        mention_index = mentions_as_tuples.index(mention.to_tuple(self))
+    def entity_index_for_mention_index(self, mention_index: int) -> int:
         for i, e in enumerate(self.entities):
             if mention_index in e.mention_indices:
                 return i
         print(mention_index)
         print(self.entities)
+        mention = self.mentions[mention_index]
         raise ValueError(f'Document contains no entity using mention {mention}, '
                          f'which should not happen, but can happen, '
                          f'if entities are not properly resolved')
+
+    def mention_index(self, mention: 'Mention') -> int:
+        mentions_as_tuples = [m.to_tuple(self) for m in self.mentions]
+        mention_index = mentions_as_tuples.index(mention.to_tuple(self))
+        return mention_index
+
+    def entity_index_for_mention(self, mention: 'Mention') -> int:
+        mention_index = self.mention_index(mention)
+        return self.entity_index_for_mention_index(mention_index)
 
     def copy(self,
              clear_mentions: bool = False,
