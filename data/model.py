@@ -12,11 +12,35 @@ class Document:
     entities: typing.List['Entity'] = dataclasses.field(default_factory=list)
     relations: typing.List['Relation'] = dataclasses.field(default_factory=list)
 
+    def token_offset_for_sentence(self, sentence: int) -> int:
+        return sum([s.num_tokens for s in self.sentences[:sentence]])
+
     def relation_exists_between(self, head_entity_index: int, tail_entity_index: int) -> bool:
         for r in self.relations:
             if r.head_entity_index == head_entity_index and r.tail_entity_index == tail_entity_index:
                 return True
         return False
+
+    def get_relations_by_mention(self, mention_index: int,
+                                 only_head=False, only_tail=False) -> typing.List['Relation']:
+        if only_tail and only_head:
+            raise ValueError('The mention can not be only head and tail at the same time!')
+        entity_index = self.entity_index_for_mention_index(mention_index)
+        ret = []
+        for relation in self.relations:
+            is_head = relation.head_entity_index == entity_index
+            if only_head and is_head:
+                ret.append(relation)
+                continue
+
+            is_tail = relation.tail_entity_index == entity_index
+            if only_tail and is_tail:
+                ret.append(relation)
+                continue
+
+            if is_tail or is_head:
+                ret.append(relation)
+        return ret
 
     def contains_relation(self, relation: 'Relation') -> bool:
         return relation.to_tuple(self) in [e.to_tuple(self) for e in self.relations]
@@ -24,17 +48,25 @@ class Document:
     def contains_entity(self, entity: 'Entity') -> bool:
         return entity.to_tuple(self) in [e.to_tuple(self) for e in self.entities]
 
-    def entity_index_for_mention(self, mention: 'Mention') -> int:
-        mentions_as_tuples = [m.to_tuple(self) for m in self.mentions]
-        mention_index = mentions_as_tuples.index(mention.to_tuple(self))
+    def entity_index_for_mention_index(self, mention_index: int) -> int:
         for i, e in enumerate(self.entities):
             if mention_index in e.mention_indices:
                 return i
         print(mention_index)
         print(self.entities)
+        mention = self.mentions[mention_index]
         raise ValueError(f'Document contains no entity using mention {mention}, '
                          f'which should not happen, but can happen, '
                          f'if entities are not properly resolved')
+
+    def mention_index(self, mention: 'Mention') -> int:
+        mentions_as_tuples = [m.to_tuple(self) for m in self.mentions]
+        mention_index = mentions_as_tuples.index(mention.to_tuple(self))
+        return mention_index
+
+    def entity_index_for_mention(self, mention: 'Mention') -> int:
+        mention_index = self.mention_index(mention)
+        return self.entity_index_for_mention_index(mention_index)
 
     def copy(self,
              clear_mentions: bool = False,
@@ -87,6 +119,10 @@ class Mention:
     ner_tag: str
     sentence_index: int
     token_indices: typing.List[int] = dataclasses.field(default_factory=list)
+
+    def document_level_token_indices(self, document: Document) -> typing.List[int]:
+        offset = document.token_offset_for_sentence(self.sentence_index)
+        return [t + offset for t in self.token_indices]
 
     def get_tokens(self, document: Document) -> typing.List['Token']:
         return [document.sentences[self.sentence_index].tokens[i] for i in self.token_indices]

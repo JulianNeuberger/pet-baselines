@@ -11,34 +11,29 @@ method and reproduce results.
 # Install
 
 You can either install dependencies (including the correct python version) via
-conda, which requires an installation of conda, e.g., 
-https://docs.conda.io/en/latest/miniconda.html.
+mamba (recommended), *or* conda (slower). These require an installation of mamba
+(https://mamba.readthedocs.io/en/latest/installation.html), or conda
+(https://docs.conda.io/en/latest/miniconda.html) respectively.
 
-Or you can install the dependencies manually, e.g., via pip. In this
+Alternatively, you can install the dependencies manually via pip. In this
 case please refer to the contents of env.yaml to get a list of
 dependencies and python version.
 
-Below you can find instructions for installing dependencies with conda.
+Below you can find the instructions for installing dependencies with mamba.
+Note, that the environment still has to be activated with `conda`.
+
+```bash
+mamba env create -f env.yaml
+conda activate pet-baseline
+```
+
+Similarly, you can find instructions for installing dependencies with conda.
 Beware that this may take several (> 5) minutes, depending on your machine!
 
 ```bash
 conda env create -f env.yaml
 conda activate pet-baseline
 ```
-
-After you installed the basic dependencies, you will then have to
-change to the directory, where this file is located, and then run 
-
-```bash
-python -m spacy download en_core_web_md-2.3.1 --direct
-git clone https://github.com/huggingface/neuralcoref.git
-cd neuralcoref
-pip install -r requirements.txt
-pip install -e .
-```
-
-In case of errors that may occur during installation of neuralcoref, 
-please refer to https://github.com/huggingface/neuralcoref
 
 ## Running
 

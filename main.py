@@ -52,7 +52,10 @@ def cross_validate_pipeline(p: pipeline.Pipeline, *,
     pipeline_results = []
     for n_fold, (train_fold, test_fold) in tqdm.tqdm(enumerate(zip(train_folds, test_folds)),
                                                      total=len(train_folds), desc='cross validation fold'):
+        start = time.time_ns()
         ground_truth = [d.copy() for d in test_fold]
+        print(f'copy of {len(test_fold)} documents took {(time.time_ns() - start) / 1e6:.4f}ms')
+
         pipeline_result = p.run(train_documents=train_fold,
                                 test_documents=test_fold,
                                 ground_truth_documents=ground_truth)
@@ -68,25 +71,32 @@ def cross_validate_pipeline(p: pipeline.Pipeline, *,
     if save_results:
         df_persistence = 'experiments.pkl'
         if os.path.isfile(df_persistence):
-            df = pd.read_pickle(df_persistence)
+            df: pd.DataFrame = pd.read_pickle(df_persistence)
         else:
-            df = pd.DataFrame(columns=['experiment_name', 'tag', 'p', 'r', 'f1'])
+            df = pd.DataFrame(columns=['experiment_name', 'tag', 'p', 'r', 'f1']).set_index(['experiment_name', 'tag'])
         final_result = res[p.steps[-1]]
+
+        new_rows = []
         for tag, value in final_result.scores_by_tag.items():
-            df = df.append({
+            new_rows.append({
                 'experiment_name': p.name,
                 'tag': tag,
                 'p': value.p,
                 'r': value.r,
                 'f1': value.f1
-            }, ignore_index=True)
-        df = df.append({
+            })
+        new_rows.append({
             'experiment_name': p.name,
             'tag': 'overall',
             'p': final_result.overall_scores.p,
             'r': final_result.overall_scores.r,
             'f1': final_result.overall_scores.f1
-        }, ignore_index=True)
+        })
+
+        new_rows_df = pd.DataFrame.from_records(new_rows).set_index(['experiment_name', 'tag'])
+
+        df = new_rows_df.combine_first(df)
+
         pd.to_pickle(df, df_persistence)
 
     print_pipeline_results(p, res)
@@ -148,7 +158,7 @@ def scenario_4_5_6():
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
-                                                     mention_overlap=.8,
+                                                     mention_overlap=.5,
                                                      ner_strategy='frequency'),
             pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
         ]),
@@ -171,10 +181,11 @@ def scenario_4_5_6():
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
-                                                     mention_overlap=.8,
+                                                     mention_overlap=.5,
                                                      ner_strategy='frequency'),
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=False,
+                                                    context_size=2, num_trees=2000, negative_sampling_rate=40.0,
+                                                    depth=8, class_weighting=0, num_passes=1)
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
@@ -220,8 +231,9 @@ def ablation_studies():
             pipeline.NaiveCoReferenceResolutionStep(name='naive coreference resolution',
                                                     resolved_tags=['Actor', 'Activity Data'],
                                                     mention_overlap=.8),
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=False,
+                                                    context_size=2, num_trees=2000, negative_sampling_rate=40.0,
+                                                    depth=8, class_weighting=0, num_passes=1)
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
@@ -253,8 +265,9 @@ def ablation_studies():
     start = time.time()
     cross_validate_pipeline(
         p=pipeline.Pipeline(name='cat-boost-isolated', steps=[
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=False,
+                                                    context_size=2, num_trees=2000, negative_sampling_rate=40.0,
+                                                    depth=8, class_weighting=0, num_passes=1)
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
@@ -273,7 +286,7 @@ def ablation_studies():
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
-                                                     mention_overlap=.8,
+                                                     mention_overlap=.5,
                                                      ner_strategy='frequency'),
             pipeline.RuleBasedRelationExtraction(name='rule-based relation extraction')
         ]),
@@ -294,10 +307,11 @@ def ablation_studies():
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
-                                                     mention_overlap=.8,
+                                                     mention_overlap=.5,
                                                      ner_strategy='frequency'),
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=False,
+                                                    context_size=2, num_trees=2000, negative_sampling_rate=40.0,
+                                                    depth=8, class_weighting=0, num_passes=1)
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
@@ -347,17 +361,67 @@ def catboost_debug():
     train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
     test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
 
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
+            # pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            # pipeline.NaiveCoReferenceResolutionStep(name='naive coreference resolution',
+            #                                         resolved_tags=['Actor', 'Activity Data'],
+            #                                         mention_overlap=.8)
+            # pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
+            #                                          resolved_tags=['Actor', 'Activity Data'],
+            #                                          cluster_overlap=.5,
+            #                                          mention_overlap=.5,
+            #                                          ner_strategy='frequency'),
+            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction', use_pos_features=False,
+                                                    context_size=2, num_trees=100, negative_sampling_rate=40.0,
+                                                    depth=8, class_weighting=0, num_passes=2)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds,
+        save_results=False,
+        dump_predictions_dir='predictions/test/'
+    )
+
+
+def neural_rel_debug():
+    train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
+
     print('Running pipeline with neural entity resolution, and cat-boost relation extraction')
     cross_validate_pipeline(
         p=pipeline.Pipeline(name='complete-cat-boost', steps=[
-            pipeline.CrfMentionEstimatorStep(name='crf mention extraction'),
+            pipeline.NeuralRelationExtraction(name='neural relation extraction', negative_sampling_rate=40.0)
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds,
+        save_results=False
+    )
+
+
+def coref_debug():
+    train_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/train.json') for i in range(5)]
+    test_folds = [data.loader.read_documents_from_json(f'./jsonl/fold_{i}/test.json') for i in range(5)]
+
+    print('neural entity resolution on perfect mentions')
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
                                                      mention_overlap=.8,
-                                                     ner_strategy='frequency'),
-            pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
-                                                    context_size=2, num_trees=1000, negative_sampling_rate=40.0)
+                                                     ner_strategy='frequency')
+        ]),
+        train_folds=train_folds,
+        test_folds=test_folds,
+        save_results=False
+    )
+
+    print('naive entity resolution on perfect mentions')
+    cross_validate_pipeline(
+        p=pipeline.Pipeline(name='complete-cat-boost', steps=[
+            pipeline.NaiveCoReferenceResolutionStep(name='naive coreference resolution',
+                                                    resolved_tags=['Actor', 'Activity Data'],
+                                                    mention_overlap=.8)
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
@@ -391,7 +455,7 @@ def scenario_2_3():
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
-        save_results=False
+        save_results=True
     )
     cross_validate_pipeline(
         p=pipeline.Pipeline(name='naive-coref', steps=[
@@ -402,7 +466,7 @@ def scenario_2_3():
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
-        save_results=False
+        save_results=True
     )
 
     print()
@@ -414,12 +478,12 @@ def scenario_2_3():
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
-                                                     mention_overlap=.8,
+                                                     mention_overlap=.5,
                                                      ner_strategy='frequency'),
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
-        save_results=False
+        save_results=True
     )
     cross_validate_pipeline(
         p=pipeline.Pipeline(name='neural-coref', steps=[
@@ -427,21 +491,23 @@ def scenario_2_3():
             pipeline.NeuralCoReferenceResolutionStep(name='neural coreference resolution',
                                                      resolved_tags=['Actor', 'Activity Data'],
                                                      cluster_overlap=.5,
-                                                     mention_overlap=.8,
+                                                     mention_overlap=.5,
                                                      ner_strategy='frequency'),
         ]),
         train_folds=train_folds,
         test_folds=test_folds,
-        save_results=False
+        save_results=True
     )
 
 
 def main():
     # ablation_studies()
-    catboost_debug()
+    # catboost_debug()
+    # coref_debug()
+    # neural_rel_debug()
 
     # scenario_1()
-    # scenario_2_3()
+    scenario_2_3()
     # scenario_4_5_6()
 
 
