@@ -1,0 +1,30 @@
+{
+    "Actor":{
+        "Nomen":0.7157021512,
+        "Adjektive":0.7072039778
+    },
+    "Activity":{
+        "Nomen":0.7718411537,
+        "Adjektive":0.7792992221
+    },
+    "Activity Data":{
+        "Nomen":0.6345393237,
+        "Adjektive":0.6357513172
+    },
+    "Further Specification":{
+        "Nomen":0.2841558442,
+        "Adjektive":0.286769554
+    },
+    "XOR Gateway":{
+        "Nomen":0.7238943208,
+        "Adjektive":0.7317460718
+    },
+    "Condition Specification":{
+        "Nomen":0.6538006868,
+        "Adjektive":0.6131245417
+    },
+    "AND Gateway":{
+        "Nomen":0.3,
+        "Adjektive":0.3
+    }
+}

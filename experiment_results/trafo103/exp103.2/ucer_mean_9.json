@@ -1,0 +1,26 @@
+{
+    "Actor":{
+        "0":0.3642566348
+    },
+    "Activity":{
+        "0":0.4290505104
+    },
+    "Activity Data":{
+        "0":0.3966895225
+    },
+    "Further Specification":{
+        "0":0.464143321
+    },
+    "XOR Gateway":{
+        "0":0.4055634897
+    },
+    "Condition Specification":{
+        "0":0.4570696731
+    },
+    "AND Gateway":{
+        "0":0.5
+    },
+    "All":{
+        "0":0.3976380088
+    }
+}

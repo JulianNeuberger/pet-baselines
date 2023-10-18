@@ -1,0 +1,32 @@
+{
+    "F1 CRF":{
+        "Short to Long":0.5856735734,
+        "Long to Short":0.5848482362,
+        "Both":0.6032925131
+    },
+    "F1 Neural":{
+        "Short to Long":0.3309106524,
+        "Long to Short":0.3273466516,
+        "Both":0.3395109062
+    },
+    "F1 Relation":{
+        "Short to Long":0.3227785269,
+        "Long to Short":0.3280669246,
+        "Both":0.3290284165
+    },
+    "TTR":{
+        "Short to Long":0.0612915414,
+        "Long to Short":0.0596588473,
+        "Both":0.0615852043
+    },
+    "UCER":{
+        "Short to Long":0.2178465834,
+        "Long to Short":0.1993681496,
+        "Both":0.2185743709
+    },
+    "BertScore":{
+        "Short to Long":0.9800013065,
+        "Long to Short":0.9998262882,
+        "Both":0.9797942162
+    }
+}

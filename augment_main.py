@@ -2,16 +2,17 @@ import data
 import augment
 import pipeline
 import main as console
+from transformations import tokenmanager
 
 
 def augmentation_test():
     train_set = data.loader.read_documents_from_json('./jsonl/fold_0/train.json')
     test_set = data.loader.read_documents_from_json('./jsonl/fold_0/test.json')
 
-    augmentation_step: augment.AugmentationStep = augment.ExampleAugmentationStep()
-
+    # augmentation_step: augment.AugmentationStep = augment.Trafo82Step(True, True, 1)
+    augmentation_step: augment.AugmentationStep = augment.Trafo101Step()
     augmented_train_set = augment.run_augmentation(train_set, augmentation_step)
-
+    augmented_train_set.extend(train_set)
     # relation_extraction_step = pipeline.CatBoostRelationExtractionStep(name='cat-boost relation extraction',
     #                                                                    context_size=2, num_trees=1000,
     #                                                                    negative_sampling_rate=40.0)
@@ -24,7 +25,7 @@ def augmentation_test():
                                                  cluster_overlap=.5,
                                                  mention_overlap=.8,
                                                  ner_strategy='frequency'),
-        relation_extraction_step
+        #relation_extraction_step
     ])
 
     un_augmented_result = p.run(train_documents=train_set, test_documents=test_set, ground_truth_documents=test_set)
@@ -38,6 +39,7 @@ def augmentation_test():
     print()
     print('Augmented:')
     console.print_pipeline_results(p, console.accumulate_pipeline_results([augmented_result]))
+    # tokenmanager.save_to_json(p)
 
 
 def main():

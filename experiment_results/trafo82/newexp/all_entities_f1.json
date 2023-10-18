@@ -1,0 +1,37 @@
+{
+    "Actor":{
+        "Short to Long":0.7200373108,
+        "Long to Short":0.7254263925,
+        "Both":0.7275222971
+    },
+    "Activity":{
+        "Short to Long":0.7747927723,
+        "Long to Short":0.7808565645,
+        "Both":0.7666557006
+    },
+    "Activity Data":{
+        "Short to Long":0.6364983195,
+        "Long to Short":0.6339944432,
+        "Both":0.6291664667
+    },
+    "Further Specification":{
+        "Short to Long":0.2507441016,
+        "Long to Short":0.2673094063,
+        "Both":0.2583879052
+    },
+    "XOR Gateway":{
+        "Short to Long":0.735913254,
+        "Long to Short":0.7150988142,
+        "Both":0.7207848831
+    },
+    "Condition Specification":{
+        "Short to Long":0.6217292554,
+        "Long to Short":0.6379186992,
+        "Both":0.6271970059
+    },
+    "AND Gateway":{
+        "Short to Long":0.36,
+        "Long to Short":0.3333333333,
+        "Both":0.4933333333
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "Actor":{
+        "uncertain&Further":0.7250725277,
+        "uncertain&XOR":0.7317970914,
+        "uncertain&AND":0.7243609369,
+        "uncertain&Condition":0.7196193981,
+        "uncertain&Data":0.7162627374,
+        "speaker&Further":0.7105362573,
+        "speaker&XOR":0.7246784979,
+        "speaker&AND":0.7158734269,
+        "speaker&Condition":0.7064418358,
+        "speaker&Data":0.7193122249
+    },
+    "Activity":{
+        "uncertain&Further":0.7815474445,
+        "uncertain&XOR":0.7760385784,
+        "uncertain&AND":0.7650234614,
+        "uncertain&Condition":0.784882441,
+        "uncertain&Data":0.7626223994,
+        "speaker&Further":0.7811316189,
+        "speaker&XOR":0.7910943796,
+        "speaker&AND":0.7709394499,
+        "speaker&Condition":0.7649370372,
+        "speaker&Data":0.7609161308
+    },
+    "Activity Data":{
+        "uncertain&Further":0.6336714067,
+        "uncertain&XOR":0.641684819,
+        "uncertain&AND":0.6272917495,
+        "uncertain&Condition":0.6348827236,
+        "uncertain&Data":0.6181374656,
+        "speaker&Further":0.6361979481,
+        "speaker&XOR":0.6344281321,
+        "speaker&AND":0.6408718068,
+        "speaker&Condition":0.6191951117,
+        "speaker&Data":0.6078360717
+    },
+    "Further Specification":{
+        "uncertain&Further":0.1342857143,
+        "uncertain&XOR":0.2443606573,
+        "uncertain&AND":0.269483066,
+        "uncertain&Condition":0.2292929293,
+        "uncertain&Data":0.2533278191,
+        "speaker&Further":0.128030303,
+        "speaker&XOR":0.2557416268,
+        "speaker&AND":0.2624724691,
+        "speaker&Condition":0.2193803419,
+        "speaker&Data":0.271101585
+    },
+    "XOR Gateway":{
+        "uncertain&Further":0.7378092633,
+        "uncertain&XOR":0.7267935547,
+        "uncertain&AND":0.7148457686,
+        "uncertain&Condition":0.7056909521,
+        "uncertain&Data":0.7298804983,
+        "speaker&Further":0.7288535407,
+        "speaker&XOR":0.6708641442,
+        "speaker&AND":0.7346948055,
+        "speaker&Condition":0.7103291665,
+        "speaker&Data":0.7286859903
+    },
+    "Condition Specification":{
+        "uncertain&Further":0.5847522848,
+        "uncertain&XOR":0.6513945035,
+        "uncertain&AND":0.6446060606,
+        "uncertain&Condition":0.5871890428,
+        "uncertain&Data":0.6288028638,
+        "speaker&Further":0.5484102564,
+        "speaker&XOR":0.5362337662,
+        "speaker&AND":0.6372993538,
+        "speaker&Condition":0.5406280193,
+        "speaker&Data":0.604969475
+    },
+    "AND Gateway":{
+        "uncertain&Further":0.1333333333,
+        "uncertain&XOR":0.1333333333,
+        "uncertain&AND":0.08,
+        "uncertain&Condition":0.36,
+        "uncertain&Data":0.16,
+        "speaker&Further":0.3333333333,
+        "speaker&XOR":0.36,
+        "speaker&AND":0.1,
+        "speaker&Condition":0.36,
+        "speaker&Data":0.16
+    }
+}

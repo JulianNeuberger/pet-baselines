@@ -1,0 +1,37 @@
+{
+    "Actor":{
+        "hyponym":0.7178076348,
+        "hypernym":0.7174438628,
+        "random":0.7327238885
+    },
+    "Activity":{
+        "hyponym":0.7755839466,
+        "hypernym":0.7820803782,
+        "random":0.7715031705
+    },
+    "Activity Data":{
+        "hyponym":0.6367040724,
+        "hypernym":0.6366324965,
+        "random":0.6376842324
+    },
+    "Further Specification":{
+        "hyponym":0.2115384615,
+        "hypernym":0.2163258637,
+        "random":0.2164102564
+    },
+    "XOR Gateway":{
+        "hyponym":0.7180114696,
+        "hypernym":0.7488736044,
+        "random":0.7195175005
+    },
+    "Condition Specification":{
+        "hyponym":0.5846806527,
+        "hypernym":0.6746042363,
+        "random":0.6459330144
+    },
+    "AND Gateway":{
+        "hyponym":0.36,
+        "hypernym":0.36,
+        "random":0.16
+    }
+}
