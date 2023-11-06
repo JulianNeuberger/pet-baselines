@@ -8,9 +8,9 @@ import mockito
 # Author for entire script: Leonie
 def test_do_augment():
     # ARRANGE
-    trafo1 = Trafo103Step(num_of_words=2, prob=1, kind_of_word=None)
-    trafo2 = Trafo103Step(num_of_words=3, prob=1, kind_of_word=['NN', 'IN', 'DT', 'NN'])
-    trafo3 = Trafo103Step(num_of_words=3, prob=1, kind_of_word=['NN', 'IN'])
+    trafo1 = Trafo103Step(num_of_words=2, prob=1, pos_tags=None)
+    trafo2 = Trafo103Step(num_of_words=3, prob=1, pos_tags=['NN', 'IN', 'DT', 'NN'])
+    trafo3 = Trafo103Step(num_of_words=3, prob=1, pos_tags=['NN', 'IN'])
 
     tokens1 = [Token(text="I", index_in_document=0, pos_tag="PRP", bio_tag="O", sentence_index=0),
                Token(text="am", index_in_document=1, pos_tag="VBP", bio_tag="O", sentence_index=0),

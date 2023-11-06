@@ -1549,7 +1549,7 @@ def experiment103_3():
         str = [ent_list[i]]
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=2, kind_of_word=str)
+        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=2, pos_tags=str)
 
         # actual augmentation
         for j in range(5):
@@ -5307,7 +5307,7 @@ def exp103_3():
         str_name = ent_list[i]
         augmented_train_folds = copy.deepcopy(train_folds)
         unaugmented_train_folds = copy.deepcopy(train_folds)
-        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=2, kind_of_word=str4)
+        augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob=0.5, num_of_words=2, pos_tags=str4)
 
         # actual augmentation
         for j in range(5):
@@ -5680,7 +5680,7 @@ def exp103_rel():
 
     augmented_train_folds = copy.deepcopy(train_folds)
     unaugmented_train_folds = copy.deepcopy(train_folds)
-    augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob= 0.5, num_of_words=1, kind_of_word=["NNP"])  # adapt Adjektive
+    augmentation_step: augment.AugmentationStep = augment.Trafo103Step(prob= 0.5, num_of_words=1, pos_tags=["NNP"])  # adapt Adjektive
 
     # actual augmentation
     for j in range(5):

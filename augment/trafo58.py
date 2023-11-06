@@ -1,18 +1,27 @@
 import copy
+import typing
 from random import random
 
 from transformers import pipeline
 
 from data import model
-from augment import base
+from augment import base, params
 from transformations import tokenmanager
+
 
 # Author: Benedikt
 class Trafo58Step(base.AugmentationStep):
-
-    def __init__(self, p: float = 1, lang: str = "de"):
+    def __init__(self, p: float = 1, lang: str = "de", **kwargs):
+        super().__init__(**kwargs)
         self.lang = lang
         self.p = p
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return [
+            params.FloatParam(name="p", min_value=0.0, max_value=1.0),
+            params.ChoiceParam(name="lang", choices=["de", "fr", "es"]),
+        ]
 
     def do_augment(self, doc2: model.Document):
         doc = copy.deepcopy(doc2)
@@ -23,7 +32,10 @@ class Trafo58Step(base.AugmentationStep):
                 current_bio = tokenmanager.get_bio_tag_short(token.bio_tag)
                 text_before = ""
                 j = 0
-                while tokenmanager.get_bio_tag_short(sentence.tokens[i + j].bio_tag) == current_bio:
+                while (
+                    tokenmanager.get_bio_tag_short(sentence.tokens[i + j].bio_tag)
+                    == current_bio
+                ):
                     if i + j < len(sentence.tokens) - 1:
                         if j == 0:
                             text_before += sentence.tokens[i + j].text
@@ -49,23 +61,34 @@ class Trafo58Step(base.AugmentationStep):
                     token.pos_tag = tokenmanager.get_pos_tag([token.text])[0]
                     if len(translated_list) > 1:
                         for k in range(1, len(translated_list)):
-                            tok = model.Token(text=translated_list[k],
-                                              index_in_document=token.index_in_document + i + k,
-                                              pos_tag=tokenmanager.get_pos_tag([token.text])[0],
-                                              bio_tag=tokenmanager.get_bio_tag_based_on_left_token(token.bio_tag),
-                                              sentence_index=token.sentence_index)
+                            tok = model.Token(
+                                text=translated_list[k],
+                                index_in_document=token.index_in_document + i + k,
+                                pos_tag=tokenmanager.get_pos_tag([token.text])[0],
+                                bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
+                                    token.bio_tag
+                                ),
+                                sentence_index=token.sentence_index,
+                            )
                             tokenmanager.create_token(doc, tok, i + k)
                 elif diff == 0:
                     for k in range(0, len(translated_list)):
                         index_in_doc = token.index_in_document
                         sentence.tokens[i + k].text = translated_list[k]
-                        sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag([token.text])[0]
+                        sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag(
+                            [token.text]
+                        )[0]
                 else:
                     for k in range(len(translated_list)):
                         sentence.tokens[i + k].text = translated_list[k]
-                        sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag([token.text])[0]
+                        sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag(
+                            [token.text]
+                        )[0]
                     for k in range(len(translated_list), len(text_before_list)):
-                        tokenmanager.delete_token(doc, sentence.tokens[i + len(translated_list)].index_in_document)
+                        tokenmanager.delete_token(
+                            doc,
+                            sentence.tokens[i + len(translated_list)].index_in_document,
+                        )
                 i = i + j + diff
         return doc
 
