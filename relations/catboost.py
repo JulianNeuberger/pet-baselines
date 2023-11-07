@@ -40,7 +40,9 @@ class CatBoostRelationEstimator:
                  learning_rate: float = None,
                  class_weights: typing.Dict[str, float] = None,
                  depth: int = 8,
-                 seed: int = 42):
+                 seed: int = 42,
+                 device: str = None,
+                 device_ids: str = None):
         self._no_relation_tag = 'NO REL'
         if class_weights is not None:
             class_weights[self._no_relation_tag] = 1.0
@@ -64,6 +66,8 @@ class CatBoostRelationEstimator:
         if self._use_embedding_features:
             self._embedder = downloader.load('glove-twitter-25')
         self._nlp = spacy.load('en_core_web_sm')
+        self._device = device
+        self._device_ids = device_ids
 
     def train(self, documents: typing.List[data.Document]) -> 'CatBoostRelationEstimator':
         random.seed(self._seed)
@@ -74,7 +78,9 @@ class CatBoostRelationEstimator:
                                                                random_state=self._seed,
                                                                depth=self._depth,
                                                                class_weights=self._class_weights,
-                                                               learning_rate=self._learning_rate)
+                                                               learning_rate=self._learning_rate,
+                                                               task_type=self._device,
+                                                               devices=self._device_ids)
 
             samples = self._get_samples(documents, pass_id)
             xs = [x for x, _ in samples]

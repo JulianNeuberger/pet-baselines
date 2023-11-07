@@ -71,7 +71,9 @@ class CatBoostRelationExtractionStep(PipelineStep):
                  use_embedding_features: bool = False,
                  verbose: bool = False,
                  class_weighting: float = 0.0,
-                 seed: int = 42):
+                 seed: int = 42,
+                 device: str = None,
+                 device_ids: str = None):
         super().__init__(name)
         self._num_trees = num_trees
         self._num_passes = num_passes
@@ -84,6 +86,8 @@ class CatBoostRelationExtractionStep(PipelineStep):
         self._use_embedding_features = use_embedding_features
         self._learning_rate = learning_rate
         self._class_weighting = class_weighting
+        self._device = device
+        self._device_ids = device_ids
 
     def _eval(self, *, predictions: typing.List[data.Document],
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
@@ -121,7 +125,9 @@ class CatBoostRelationExtractionStep(PipelineStep):
                                                         depth=self._depth,
                                                         learning_rate=self._learning_rate,
                                                         class_weights=class_weights,
-                                                        verbose=True)
+                                                        verbose=True,
+                                                        device=self._device,
+                                                        device_ids=self._device_ids)
         estimator.train(train_documents)
         test_documents = [d.copy(clear_relations=True) for d in test_documents]
         return estimator.predict(test_documents)

@@ -1,5 +1,6 @@
 import itertools
 import random
+import sys
 import traceback
 import typing
 
@@ -128,7 +129,9 @@ def objective_factory(
             )
             dev_folds.append(dev_documents)
 
-        augmented_pipeline_step = pipeline_step_class(name="crf mention extraction", **kwargs)
+        augmented_pipeline_step = pipeline_step_class(
+            name="crf mention extraction", **kwargs
+        )
         augmented_results = cross_validate_pipeline(
             p=pipeline.Pipeline(
                 name=f"augmentation-{pipeline_step_class.__name__}",
@@ -139,7 +142,9 @@ def objective_factory(
             save_results=False,
         )
 
-        unaugmented_pipeline_step = pipeline_step_class(name="crf mention extraction", **kwargs)
+        unaugmented_pipeline_step = pipeline_step_class(
+            name="crf mention extraction", **kwargs
+        )
         un_augmented_results = cross_validate_pipeline(
             p=pipeline.Pipeline(
                 name=f"augmentation-{pipeline_step_class.__name__}",
@@ -162,6 +167,18 @@ def objective_factory(
 
 
 def main():
+    device = "CPU"
+    device_ids = None
+
+    if len(sys.argv) > 1:
+        assert len(sys.argv) == 3, (
+            "If you specify devices to train on, please specify either GPU/CPU "
+            "as first argument and the id(s) as second one, see "
+            "https://catboost.ai/en/docs/features/training-on-gpu"
+        )
+        device = sys.argv[1]
+        device_ids = sys.argv[2]
+
     for strategy_class in strategies:
         errors = []
         try:
@@ -182,7 +199,7 @@ def main():
     for strategy_class in strategies:
         print(f"Running optimization for strategy {strategy_class.__name__}")
         objective = objective_factory(
-            strategy_class, pipeline_step_class, train_set, num_trees=100
+            strategy_class, pipeline_step_class, train_set, num_trees=100, device=device, device_ids=device_ids
         )
         study = optuna.create_study(
             direction="maximize",
