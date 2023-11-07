@@ -43,7 +43,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo103.Trafo103Step,
 ]
 
-max_runs_per_step = 10
+max_runs_per_step = 150
 random_state = 42
 random.seed(random_state)
 
@@ -97,11 +97,13 @@ def instantiate_step(
 
 
 def objective_factory(
-    step_class: typing.Type[base.AugmentationStep],
+    augmentor_class: typing.Type[base.AugmentationStep],
+    pipeline_step_class: typing.Type[pipeline.PipelineStep],
     documents: typing.List[data.Document],
+    **kwargs,
 ):
     def objective(trial: optuna.Trial):
-        step = instantiate_step(step_class, trial)
+        step = instantiate_step(augmentor_class, trial)
         kf = sklearn.model_selection.KFold(
             n_splits=5, random_state=random_state, shuffle=True
         )
@@ -126,30 +128,32 @@ def objective_factory(
             )
             dev_folds.append(dev_documents)
 
-        pipeline_step = pipeline.CrfMentionEstimatorStep(name="crf mention extraction")
-
+        augmented_pipeline_step = pipeline_step_class(name="crf mention extraction", **kwargs)
         augmented_results = cross_validate_pipeline(
             p=pipeline.Pipeline(
-                name="complete-cat-boost",
-                steps=[pipeline_step],
+                name=f"augmentation-{pipeline_step_class.__name__}",
+                steps=[augmented_pipeline_step],
             ),
             train_folds=augmented_train_folds,
             test_folds=dev_folds,
             save_results=False,
         )
 
+        unaugmented_pipeline_step = pipeline_step_class(name="crf mention extraction", **kwargs)
         un_augmented_results = cross_validate_pipeline(
             p=pipeline.Pipeline(
-                name="complete-cat-boost",
-                steps=[pipeline_step],
+                name=f"augmentation-{pipeline_step_class.__name__}",
+                steps=[unaugmented_pipeline_step],
             ),
             train_folds=un_augmented_train_folds,
             test_folds=dev_folds,
             save_results=False,
         )
 
-        augmented_f1 = augmented_results[pipeline_step].overall_scores.f1
-        un_augmented_f1 = un_augmented_results[pipeline_step].overall_scores.f1
+        augmented_f1 = augmented_results[augmented_pipeline_step].overall_scores.f1
+        un_augmented_f1 = un_augmented_results[
+            unaugmented_pipeline_step
+        ].overall_scores.f1
         improvement = augmented_f1 - un_augmented_f1
         print(f"Improvement of {improvement:.2%}")
         return improvement
@@ -173,14 +177,17 @@ def main():
     num_test_documents = int(len(all_documents) * test_percentage)
     test_set = all_documents[:num_test_documents]
     train_set = all_documents[num_test_documents:]
+    pipeline_step_class = pipeline.CatBoostRelationExtractionStep
 
     for strategy_class in strategies:
         print(f"Running optimization for strategy {strategy_class.__name__}")
-        objective = objective_factory(strategy_class, train_set)
+        objective = objective_factory(
+            strategy_class, pipeline_step_class, train_set, num_trees=100
+        )
         study = optuna.create_study(
             direction="maximize",
             load_if_exists=True,
-            study_name=f"{strategy_class.__name__}",
+            study_name=f"{strategy_class.__name__}-{pipeline_step_class.__name__}",
             storage="sqlite:///out/augmentation_runs.db",
         )
         trials = study.get_trials(states=(optuna.trial.TrialState.COMPLETE,))

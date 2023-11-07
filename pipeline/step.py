@@ -19,7 +19,7 @@ class PipelineStepResult:
 
 
 class PipelineStep(abc.ABC):
-    def __init__(self, name: str):
+    def __init__(self, name: str, **kwargs):
         self._name = name
 
     @property
