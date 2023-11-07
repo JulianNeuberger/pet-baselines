@@ -210,7 +210,7 @@ def main():
             direction="maximize",
             load_if_exists=True,
             study_name=f"{strategy_class.__name__}-{pipeline_step_class.__name__}",
-            storage="mysql://root@localhost/pet_data_augment",
+            storage="mysql://optuna@localhost/pet_data_augment",
         )
         trials = study.get_trials(states=(optuna.trial.TrialState.COMPLETE,))
         if len(trials) >= max_runs_per_step:
