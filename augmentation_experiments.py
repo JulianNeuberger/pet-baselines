@@ -199,13 +199,18 @@ def main():
     for strategy_class in strategies:
         print(f"Running optimization for strategy {strategy_class.__name__}")
         objective = objective_factory(
-            strategy_class, pipeline_step_class, train_set, num_trees=100, device=device, device_ids=device_ids
+            strategy_class,
+            pipeline_step_class,
+            train_set,
+            num_trees=100,
+            device=device,
+            device_ids=device_ids,
         )
         study = optuna.create_study(
             direction="maximize",
             load_if_exists=True,
             study_name=f"{strategy_class.__name__}-{pipeline_step_class.__name__}",
-            storage="sqlite:///out/augmentation_runs.db",
+            storage="mysql://root@localhost/pet_data_augment",
         )
         trials = study.get_trials(states=(optuna.trial.TrialState.COMPLETE,))
         if len(trials) >= max_runs_per_step:
@@ -223,7 +228,9 @@ def main():
                     )
                 ],
             )
-        except:
+        except Exception as e:
+            if type(e) == KeyboardInterrupt:
+                raise e
             print(f"Error in strategy {strategy_class.__name__}, skipping.")
             print(traceback.format_exc())
 
