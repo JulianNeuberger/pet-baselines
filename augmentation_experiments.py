@@ -24,7 +24,7 @@ from augment import (
     trafo100,
     trafo101,
     trafo103,
-    trafo40,
+    trafo40, trafo_null,
 )
 from data import loader
 from main import cross_validate_pipeline
@@ -42,6 +42,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo100.Trafo100Step,
     trafo101.Trafo101Step,
     trafo103.Trafo103Step,
+    trafo_null.TrafoNullStep
 ]
 
 max_runs_per_step = 150
@@ -82,7 +83,10 @@ def suggest_param(param: params.Param, trial: optuna.Trial) -> typing.Any:
     if isinstance(param, params.ChoiceParam):
         choices = get_combinations_of_choices(param.choices, param.max_num_picks)
         choice = trial.suggest_categorical(name=param.name, choices=choices)
-        return choice.split("##")
+        choice_as_list = choice.split("##")
+        if param.max_num_picks == 1:
+            return choice_as_list[0]
+        return choice_as_list
 
     if isinstance(param, params.BooleanParameter):
         return trial.suggest_categorical(name=param.name, choices=[True, False])
