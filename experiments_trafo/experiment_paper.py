@@ -16,8 +16,8 @@ def run_exp(aug_step_list, rate):
     for augmentation_step in aug_step_list:
 
         # Get the data for augmenting and training
-        train_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/train.json') for i in range(5)]
-        test_folds = [data.loader.read_documents_from_json(f'jsonl/fold_{i}/test.json') for i in range(5)]
+        train_folds = [data.loader.read_documents_from_json(f'../jsonl/fold_{i}/train.json') for i in range(5)]
+        test_folds = [data.loader.read_documents_from_json(f'../jsonl/fold_{i}/test.json') for i in range(5)]
         names = ["all_means", "ttr", "ucer", "ttr_mean", "ucer_mean", "bleu", "ttr_un", "ucer_un", "ttr_mean_un",
                  "ucer_mean_un"]
         # specific for this experiment
@@ -65,13 +65,19 @@ def run_exp(aug_step_list, rate):
         results.append((df_complete, df_entities, augmentation_step.name))
     return results
 
-def control_experiments():
-    rate = np.linspace(0, 10, 101)
+def control_experiments(step):
+    rate = np.linspace(1, 1, 1)
     aug_step_list = []
-    augmentation_step: augment.AugmentationStep = augment.Trafo101Step(prob=0.5)
-    aug_step_list.append(augmentation_step)
+
+    aug_step_list.append(step)
     results = run_exp(aug_step_list, rate)
     for result in results:
 
         result[0].to_json(path_or_buf=f"./paper_results/all_means/all_means{result[2]}.json", indent=4)
         result[1].to_json(path_or_buf=f"./paper_results/all_entities/all_entities_f1{result[2]}.json", indent=4)
+
+
+step: augment.AugmentationStep = augment.Trafo101Step(prob=0.5)
+step2: augment.AugmentationStep = augment.Trafo8Step()
+
+control_experiments(step2)

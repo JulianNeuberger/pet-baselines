@@ -17,3 +17,4 @@ from augment.trafo100 import Trafo100Step
 from augment.filter9 import Filter9Step
 from augment.filter10 import Filter10Step
 from augment.filter19 import Filter19Step
+from augment.trafo8 import Trafo8Step
