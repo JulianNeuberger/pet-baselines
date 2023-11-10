@@ -1,7 +1,7 @@
 from transformations.tokenmanager import get_pos_tag, get_bio_tag_based_on_left_token, insert_token_in_mentions, \
     create_token, get_index_in_sentence, get_mentions, insert_token_in_tokens, delete_token_from_tokens, \
     delete_token_from_mention_token_indices, change_mention_indices_in_entities, delete_mention_from_entity, \
-    delete_relations, delete_sentence
+    delete_relations, delete_sentence, replace_mention_text
 from data import model
 import copy
 
@@ -641,3 +641,57 @@ def test_delete_sentence():
 
     # ASSERT
     assert doc_to_aug1 == doc_sol1
+
+def test_replace_mention_text():
+    # ARRANGE
+    tokens = [model.Token(text="I", index_in_document=0, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="am", index_in_document=1, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=2, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="chief", index_in_document=3, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="of", index_in_document=4, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="the", index_in_document=5, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text="department", index_in_document=6, pos_tag="", bio_tag="", sentence_index=0),
+              model.Token(text=".", index_in_document=7, pos_tag="", bio_tag="", sentence_index=0)]
+    tokens1 = [model.Token(text="I", index_in_document=8, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="can", index_in_document=9, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="do", index_in_document=10, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text="everything", index_in_document=11, pos_tag="", bio_tag="", sentence_index=1),
+               model.Token(text=".", index_in_document=12, pos_tag="", bio_tag="", sentence_index=1)]
+    tokens2 = [model.Token(text="The", index_in_document=13, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="job", index_in_document=14, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="is", index_in_document=15, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text="nice", index_in_document=16, pos_tag="", bio_tag="", sentence_index=2),
+               model.Token(text=".", index_in_document=17, pos_tag="", bio_tag="", sentence_index=2)]
+    tokens3 = [model.Token(text="I", index_in_document=18, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text="like", index_in_document=19, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text="the", index_in_document=20, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text="job", index_in_document=21, pos_tag="", bio_tag="", sentence_index=3),
+               model.Token(text=".", index_in_document=22, pos_tag="", bio_tag="", sentence_index=3)]
+
+    sentence = model.Sentence(tokens=tokens)
+    sentence1 = model.Sentence(tokens=tokens1)
+    sentence2 = model.Sentence(tokens=tokens2)
+    sentence3 = model.Sentence(tokens=tokens3)
+
+    mentions = [model.Mention(ner_tag="Actor", sentence_index=0, token_indices=[2, 3]),
+                model.Mention(ner_tag="Actor", sentence_index=1, token_indices=[0]),
+                model.Mention(ner_tag="Actor", sentence_index=2, token_indices=[4]),
+                model.Mention(ner_tag="Object", sentence_index=3, token_indices=[2, 3])]
+
+    doc = model.Document(text="I am the chief of the department. I can do everything. The job is nice. I like the job.",
+                         name="1", sentences=[sentence, sentence1, sentence2, sentence3],
+                         mentions=mentions, entities=[], relations=[])
+
+    # same length
+    replace_mention_text(doc, 0, ["a", "boss"])
+    assert doc.mentions[0].text(doc) == "a boss"
+
+    # longer text
+    replace_mention_text(doc, 1, ["The", "boss"])
+    assert doc.mentions[1].text(doc) == "The boss"
+    assert " ".join([t.text for t in doc.sentences[1].tokens]) == "The boss can do everything ."
+
+    # shorter text
+    replace_mention_text(doc, 3, ["it"])
+    assert doc.mentions[3].text(doc) == "it"
+    assert " ".join([t.text for t in doc.sentences[3].tokens]) == "I like it ."
