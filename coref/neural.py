@@ -1,21 +1,16 @@
 import collections
 import typing
 
-import data
-import neuralcoref
 import spacy
+from spacy import tokens
 
+import data
 from coref import util
 
 
 class NeuralCoRefSolver:
     # loading an english SpaCy model
-    nlp = spacy.load('en_core_web_md')
-
-    # load NeuralCoref and add it to the pipe of SpaCy's model
-    coref = neuralcoref.NeuralCoref(nlp.vocab)
-    nlp.add_pipe(coref, name='neuralcoref')
-    nlp.tokenizer = nlp.tokenizer.tokens_from_list
+    nlp = spacy.load('en_coreference_web_trf')
 
     def __init__(self, co_referencable_tags: typing.List[str],
                  ner_tag_strategy: str = 'skip',
@@ -107,33 +102,28 @@ class NeuralCoRefSolver:
 
         :returns: index of the matched data.Mention if we could find one, None otherwise
         """
-        for mention_index, mention in enumerate(document.mentions):
-            if mention.ner_tag.lower() not in valid_tags:
-                # this mentions is of a type which we don't do co-references for (e.g. Activity)
-                continue
+        candidates = collections.defaultdict(int)
+        for token_index in token_indices:
+            token = document.tokens[token_index]
+            for mention_index, mention in enumerate(document.mentions):
+                if mention.contains_token(token, document):
+                    candidates[mention_index] += 1
+                    break
+        if len(candidates) == 0:
+            # no mention found
+            if verbose:
+                print(f'No candidates found')
+            return None
 
-            num_matching_tokens = 0
-            for co_ref_mention_index in token_indices:
-                co_ref_token = document.tokens[co_ref_mention_index]
-                # TODO: currently we mark a cluster as resolved, if one of its token indices are part of the cluster
-                # TODO: this could lead to very poor precision, maybe calculate an "overlap" instead?
+        mention_index = max(candidates, key=candidates.get)
+        mention = document.mentions[mention_index]
+        overlap = candidates[mention_index] / len(token_indices)
 
-                if mention.contains_token(co_ref_token, document):
-                    # found a predicted mention which is of the correct type and contains a least one
-                    # of the cluster's token indices, add it to the list of mentions for the new entity
-                    num_matching_tokens += 1
-
-            prediction_matched = num_matching_tokens / len(token_indices)
-            mention_matched = num_matching_tokens / len(mention.token_indices)
-
-            overlap = (prediction_matched + mention_matched) / 2.0
-
-            is_above_threshold = overlap >= threshold
-            if is_above_threshold:
-                if verbose:
-                    print(f'{mention.pretty_print(document)} with an overlap of {overlap:.2%}')
-                return mention_index
-        return None
+        is_above_threshold = overlap >= threshold
+        if is_above_threshold:
+            if verbose:
+                print(f'{mention.pretty_print(document)} with an overlap of {overlap:.2%}')
+            return mention_index
 
     def _get_co_reference_indices(self, document: data.Document) -> typing.List[typing.List[typing.List[int]]]:
         """
@@ -144,12 +134,15 @@ class NeuralCoRefSolver:
         All token indices are document level!
         """
 
-        clusters: typing.List[neuralcoref.neuralcoref.Cluster]
-        clusters = self.nlp([token.text for token in document.tokens])._.coref_clusters
+        doc = self.nlp(spacy.tokens.Doc(self.nlp.vocab, [token.text for token in document.tokens]))
+
+        clusters: typing.List[spacy.tokens.span_group.SpanGroup]
+        clusters = [cluster for cluster_id, cluster in doc.spans.items() if cluster_id.startswith('coref_clusters')]
+
         entities = []
         for cluster in clusters:
             entity = []
-            for mention in cluster.mentions:
+            for mention in cluster:
                 entity.append(list(range(mention.start, mention.end)))
             entities.append(entity)
         return entities

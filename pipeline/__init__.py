@@ -1,9 +1,10 @@
 import dataclasses
+import time
 import typing
 
 import data
 from pipeline.step import PipelineStep, PipelineStepResult
-from pipeline.step import CatBoostRelationExtractionStep, RuleBasedRelationExtraction
+from pipeline.step import CatBoostRelationExtractionStep, RuleBasedRelationExtraction, NeuralRelationExtraction
 from pipeline.step import CrfMentionEstimatorStep
 from pipeline.step import NeuralCoReferenceResolutionStep, NaiveCoReferenceResolutionStep
 
@@ -34,6 +35,7 @@ class Pipeline:
             train_documents: typing.List[data.Document],
             test_documents: typing.List[data.Document],
             ground_truth_documents: typing.List[data.Document]) -> PipelineResult:
+        print(f'Running {self.description()}')
         pipeline_result = PipelineResult({})
 
         train_documents = [d.copy() for d in train_documents]
@@ -47,3 +49,6 @@ class Pipeline:
             test_documents = [d.copy() for d in result.predictions]
 
         return pipeline_result
+
+    def description(self):
+        return f'pipeline with {len(self.steps)} steps: {", ".join(self.step_names)}'

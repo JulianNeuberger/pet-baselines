@@ -160,8 +160,9 @@ def _f1_stats(*, predicted_documents: typing.List[data.Document],
         _add_to_stats_by_tag(stats_by_tag, lambda e: _get_ner_tag_for_tuple(attribute, e, p), pred_as_set, 'pred')
 
         ok_preds = true_as_set.intersection(pred_as_set)
-        non_ok = [e.pretty_print(p) for e in pred_attribute if e.to_tuple(p) not in true_as_set if
-                  _get_ner_tag_for_tuple(attribute, e.to_tuple(p), p).lower() == 'same gateway']
+        non_ok = [e.pretty_print(p) for e in pred_attribute if e.to_tuple(p) not in true_as_set
+                  # if _get_ner_tag_for_tuple(attribute, e.to_tuple(p), p).lower() == 'actor'
+                  ]
         if verbose and len(non_ok) > 0:
             print('=' * 150)
             print(p.text)

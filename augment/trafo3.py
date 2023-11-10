@@ -1,18 +1,30 @@
-from augment import base
+import typing
+
+from augment import base, params
 from data import model
 from nltk.corpus import wordnet
 from transformations import tokenmanager
 from random import random as rand
 
+
 # Adjective Antonym Switch - Wortebene
+
 
 # Author: Leonie
 class Trafo3Step(base.AugmentationStep):
-
-    def __init__(self, no_dupl: bool = False, max_adj: int = 1, prob: float = 0.5):
+    def __init__(self, no_dupl: bool = False, max_adj: int = 1, prob: float = 0.5, **kwargs):
+        super().__init__(**kwargs)
         self.max_adj = max_adj
         self.no_dupl = no_dupl
         self.prob = prob
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return [
+            params.BooleanParameter(name="no_dupl"),
+            params.IntegerParam(name="max_adj", min_value=0, max_value=20),
+            params.FloatParam(name="prob", min_value=0.0, max_value=1.0),
+        ]
 
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
@@ -26,8 +38,11 @@ class Trafo3Step(base.AugmentationStep):
 
                 # if the adjective already has been changed, exists is set to True
                 exists = False
-                if token.pos_tag in ["JJ", "JJS", "JJR"] and (num_of_changes < self.max_adj) and rand() <= self.prob:
-
+                if (
+                    token.pos_tag in ["JJ", "JJS", "JJR"]
+                    and (num_of_changes < self.max_adj)
+                    and rand() <= self.prob
+                ):
                     # in case of no_dupl == True set exists = True if token.text is in changed_adjectives
                     if self.no_dupl is True and (token.text in changed_adjectives):
                         exists = True
@@ -56,16 +71,27 @@ class Trafo3Step(base.AugmentationStep):
                             # Replace adjective with antonym
                             token.text = first_antonym[0]
                             if len(first_antonym) > 1:
-                                ment_ind = tokenmanager.get_mentions(doc,j ,token.sentence_index)
+                                ment_ind = tokenmanager.get_mentions(
+                                    doc, j, token.sentence_index
+                                )
                                 for i in range(1, len(first_antonym)):
-                                    tok = model.Token(text=first_antonym[i],
-                                                      index_in_document=token.index_in_document + i,
-                                                      pos_tag=tokenmanager.get_pos_tag([first_antonym[i]])[0], bio_tag=tokenmanager.get_bio_tag_based_on_left_token(token.bio_tag),
-                                                      sentence_index=token.sentence_index)
+                                    tok = model.Token(
+                                        text=first_antonym[i],
+                                        index_in_document=token.index_in_document + i,
+                                        pos_tag=tokenmanager.get_pos_tag(
+                                            [first_antonym[i]]
+                                        )[0],
+                                        bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
+                                            token.bio_tag
+                                        ),
+                                        sentence_index=token.sentence_index,
+                                    )
                                     if ment_ind == []:
                                         tokenmanager.create_token(doc, tok, j + i, None)
                                     else:
-                                        tokenmanager.create_token(doc, tok, j + i, ment_ind[0])
+                                        tokenmanager.create_token(
+                                            doc, tok, j + i, ment_ind[0]
+                                        )
                                     j += 1
                             num_of_changes += 1
                 j += 1

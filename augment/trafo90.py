@@ -1,15 +1,25 @@
-from augment import base
+import typing
+
+from augment import base, params
 from data import model
 import itertools
 from numpy.random import binomial, shuffle
 
+
 # Shuffle within Segments - Satzebene
+
 
 # Author: Leonie
 class Trafo90Step(base.AugmentationStep):
-
-    def __init__(self, prob: float = 0.5):
+    def __init__(self, prob: float = 0.5, **kwargs):
+        super().__init__(**kwargs)
         self.prob = prob
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return [
+            params.FloatParam(name="prob", min_value=0.0, max_value=1.0),
+        ]
 
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
@@ -61,4 +71,3 @@ class Trafo90Step(base.AugmentationStep):
                     sentence.tokens[pos].pos_tag = pos_seq[indices_shuffeld[i]]
                     pos += 1
         return doc
-

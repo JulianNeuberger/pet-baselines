@@ -1,25 +1,58 @@
-from augment import base
+from augment import base, params
 from data import model
 from transformations import tokenmanager
 import typing
 from random import random as rand
 from random import choice
+
+
 # Filler Word Augmentation - Rauschen
+
 
 # Author: Leonie
 class Trafo40Step(base.AugmentationStep):
-
-    def __init__(self, prob=0.166, speaker_p:bool=True, uncertain_p:bool =True, filler_p:bool =True, tags: typing.List = None):
+    def __init__(
+        self,
+        prob=0.166,
+        speaker_p: bool = True,
+        uncertain_p: bool = True,
+        filler_p: bool = True,
+        tags: typing.List = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
         self.prob = prob
         self.speaker_p = speaker_p
         self.uncertain_p = uncertain_p
         self.filler_p = filler_p
         self.tags = tags
 
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        # TODO: hard coded for PET dataset
+        tags = [
+            "Actor",
+            "Activity",
+            "Activity Data",
+            "Further Specification",
+            "XOR Gateway",
+            "Condition Specification",
+            "AND Gateway",
+        ]
+        return [
+            params.FloatParam(name="prob", min_value=0, max_value=1),
+            params.BooleanParameter(name="speaker_p"),
+            params.BooleanParameter(name="uncertain_p"),
+            params.BooleanParameter(name="filler_p"),
+            params.ChoiceParam(name="tags", choices=tags, max_num_picks=len(tags)),
+        ]
+
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
         for mention in doc.mentions:
-            assert max(mention.token_indices) < len(doc.sentences[mention.sentence_index].tokens), "broken before trafo 40"
+            assert max(mention.token_indices) < len(
+                doc.sentences[mention.sentence_index].tokens
+            ), "broken before trafo 40"
         # Speaker opinion/mental state phrases
         # Taken from Kovatchev et al. (2021)
         speaker_phrases = [
@@ -76,7 +109,9 @@ class Trafo40Step(base.AugmentationStep):
             # token counter to determine the sentence index and skip inserted words
             token_counter = 0
 
-            while token_counter < len(sentence.tokens) - 1:  # -1 so that nothing can be inserted after the point
+            while (
+                token_counter < len(sentence.tokens) - 1
+            ):  # -1 so that nothing can be inserted after the point
                 token = sentence.tokens[token_counter]
                 # only if tags are given the tokens should be checked for tags
                 if self.tags is not None:
@@ -89,27 +124,41 @@ class Trafo40Step(base.AugmentationStep):
                     random_filler = choice(all_fill).split()
 
                     # generate bio-tag
-                    bio_tag = tokenmanager.get_bio_tag_based_on_left_token(token.bio_tag)
+                    bio_tag = tokenmanager.get_bio_tag_based_on_left_token(
+                        token.bio_tag
+                    )
 
                     # get mention_index
-                    mentions = tokenmanager.get_mentions(doc, token_counter, sentence_counter)
+                    mentions = tokenmanager.get_mentions(
+                        doc, token_counter, sentence_counter
+                    )
 
                     # set index_in_sentence
                     index_in_sentence = token_counter
                     for i in range(0, len(random_filler)):
                         # create tokens per inserted word
-                        tok = model.Token(text=random_filler[i], index_in_document=token.index_in_document + i + 1,
-                                          pos_tag=tokenmanager.get_pos_tag([random_filler[i]])[0], bio_tag=bio_tag,
-                                          sentence_index=token.sentence_index)
+                        tok = model.Token(
+                            text=random_filler[i],
+                            index_in_document=token.index_in_document + i + 1,
+                            pos_tag=tokenmanager.get_pos_tag([random_filler[i]])[0],
+                            bio_tag=bio_tag,
+                            sentence_index=token.sentence_index,
+                        )
                         if mentions == []:
-                            tokenmanager.create_token(doc, tok, index_in_sentence + i + 1, None)
+                            tokenmanager.create_token(
+                                doc, tok, index_in_sentence + i + 1, None
+                            )
                         else:
-                            tokenmanager.create_token(doc, tok, index_in_sentence + i + 1, mentions[0])
+                            tokenmanager.create_token(
+                                doc, tok, index_in_sentence + i + 1, mentions[0]
+                            )
 
                         # increase the token_counter so that the inserted words get skipped
                         token_counter += 1
 
                 token_counter += 1
         for mention in doc.mentions:
-            assert max(mention.token_indices) < len(doc.sentences[mention.sentence_index].tokens), "broken after trafo 40"
+            assert max(mention.token_indices) < len(
+                doc.sentences[mention.sentence_index].tokens
+            ), "broken after trafo 40"
         return doc

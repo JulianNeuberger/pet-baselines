@@ -1,16 +1,21 @@
-
+import typing
 from random import randint, random
-from augment import base
+from augment import base, params
 from data import model
 from transformations import tokenmanager
 from collections import defaultdict
 
+
 # Author: Benedikt
 # not used in final work
 class Trafo33Step(base.AugmentationStep):
-
     def __init__(self, p: float = 1):
         self.p = p
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return [params.FloatParam(name="p", min_value=0.0, max_value=1.0)]
+
     def do_augment(self, doc: model.Document):
         together = Trafo33Step.separate(self)
         # old list, to search the matching text in the Document, new list is the text that replaces the old text
@@ -43,16 +48,23 @@ class Trafo33Step(base.AugmentationStep):
                                 if j < len(marker_list):
                                     if i + j < len(sentence.tokens):
                                         sentence.tokens[i + j].text = new[j]
-                                        sentence.tokens[i + j].pos_tag = tokenmanager.get_pos_tag([new[j]])[0]
+                                        sentence.tokens[
+                                            i + j
+                                        ].pos_tag = tokenmanager.get_pos_tag([new[j]])[
+                                            0
+                                        ]
                                         sentence.tokens[i + j].bio_tag = bio_t
                                     if j != 0:
                                         pass
                                 #  if the new has more words than the old, new tokens must be created
                                 if j >= len(marker_list):
-                                    tok = model.Token(text=new[j], index_in_document=token.index_in_document + j,
-                                                      pos_tag=tokenmanager.get_pos_tag([new[j]])[0],
-                                                      bio_tag=bio_t,
-                                                      sentence_index=token.sentence_index)
+                                    tok = model.Token(
+                                        text=new[j],
+                                        index_in_document=token.index_in_document + j,
+                                        pos_tag=tokenmanager.get_pos_tag([new[j]])[0],
+                                        bio_tag=bio_t,
+                                        sentence_index=token.sentence_index,
+                                    )
                                     tokenmanager.create_token(doc, tok, i + j)
                                     i += 1
                                 #  when the new has lesser words than the old, the tokens, that are too much must be
@@ -60,7 +72,9 @@ class Trafo33Step(base.AugmentationStep):
                                 if len(marker_list) > len(new):
                                     num_of_changes = len(marker_list) - len(new)
                                     for i in range(num_of_changes):
-                                        tokenmanager.delete_token(doc, token.index_in_document + len(new))
+                                        tokenmanager.delete_token(
+                                            doc, token.index_in_document + len(new)
+                                        )
 
                 i += 1
         return doc
@@ -111,13 +125,10 @@ class Trafo33Step(base.AugmentationStep):
             "thus": "Contingency.Cause.Result",
         }
         class_to_markers = defaultdict(list)
-        for (k, v) in marker_to_class.items():
+        for k, v in marker_to_class.items():
             class_to_markers[v].append(k.rstrip(","))
         class_to_markers = dict(class_to_markers)
         for m in marker_to_class:
             before.append(m)
             after.append(class_to_markers[marker_to_class[m]])
         return before, after
-
-
-

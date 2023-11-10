@@ -1,6 +1,8 @@
 from random import random
 
-from augment import base
+import typing
+
+from augment import base, params
 from nltk.corpus import wordnet
 from data import model
 import numpy as np
@@ -9,10 +11,21 @@ import numpy as np
 # Author: Benedikt
 class Trafo101Step(base.AugmentationStep):
     name = "101"
-    def __init__(self, prob: float = 1, type=True, no_dupl=False):
+
+    def __init__(self, prob: float = 1, type=True, no_dupl=False, **kwargs):
+        super().__init__(**kwargs)
         self.prob = prob
         self.type = type
         self.no_dupl = no_dupl
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return [
+            params.FloatParam(name="prob", min_value=0.0, max_value=1.0),
+            params.BooleanParameter(name="type"),
+            params.BooleanParameter(name="no_dupl"),
+        ]
+
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
         changed_words = []

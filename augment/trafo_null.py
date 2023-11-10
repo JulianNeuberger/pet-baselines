@@ -1,11 +1,16 @@
+import typing
+
+from augment import base, params
 from data import model
-import numpy as np
-from augment import base
+
 
 # Author: Benedikt
 class TrafoNullStep(base.AugmentationStep):
-
     name = "null"
 
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return []
+
     def do_augment(self, doc: model.Document) -> model.Document:
-        return doc
+        return doc.copy()
