@@ -63,3 +63,10 @@ def test_do_augment():
 
     # assert a replacement has been made
     assert any([l.text != r.text for l, r in zip(doc.tokens, augmented_doc.tokens)])
+
+
+def test_truncation():
+    trafo = trafo106.Trafo106Step(n=10)
+    doc = get_doc()
+    doc.sentences += doc.sentences * 100
+    augmented_doc = trafo.do_augment(doc)

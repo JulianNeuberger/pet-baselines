@@ -75,6 +75,12 @@ class Trafo106Step(base.AugmentationStep):
 
     def do_augment(self, doc: model.Document) -> model.Document:
         token_texts = [t.text for t in doc.tokens]
+        max_token_count = self.tokenizer.model_max_length - self.context_length - 4
+        token_texts = token_texts[:max_token_count]
+        num_tokens_to_truncate = self.tokens_to_truncate(" ".join(token_texts), max_token_count)
+        while num_tokens_to_truncate > 0:
+            token_texts = token_texts[:-num_tokens_to_truncate]
+
         spacy_doc = spacy.tokens.Doc(vocab=self.nlp.vocab, words=token_texts)
         spacy_doc = self.nlp(spacy_doc, disable=["ner", "lemmatizer"])
         masked_texts, original_words = self.get_masked_sentences_from_sentence(
@@ -92,18 +98,18 @@ class Trafo106Step(base.AugmentationStep):
             params.BooleanParameter(name="sample_top_k"),
         ]
 
-    def truncate(self, text: str) -> str:
+    def tokens_to_truncate(self, text: str, max_length: int) -> int:
         """
-        Truncates the passed text or sentence according to the max model length, context length and start/end token
+        Estimates the number of (original) tokens to truncate to fit the model
         """
-        return self.tokenizer.decode(
-            self.tokenizer.encode(
-                text,
-                truncation=True,
-                add_special_tokens=False,
-                max_length=self.tokenizer.model_max_length - self.context_length - 4,
-            )
+
+        encoded = self.tokenizer.encode(
+            text,
+            truncation=True,
+            add_special_tokens=False,
+            max_length=self.tokenizer.model_max_length - self.context_length - 4,
         )
+        return len(encoded) - max_length
 
     def get_masked_sentences_from_sentence(
         self, doc: spacy.tokens.Doc
