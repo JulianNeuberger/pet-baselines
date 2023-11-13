@@ -24,10 +24,10 @@ class Trafo8Step(base.AugmentationStep):
         self.max_outputs = min(num_beams, max_outputs)
         self.num_beams = num_beams
         name_en_de = "facebook/wmt19-en-de"
-        self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de).to('cuda')
+        self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de)
         self.model_en_de = FSMTForConditionalGeneration.from_pretrained(name_en_de).to('cuda')
         name_de_en = "facebook/wmt19-de-en"
-        self.tokenizer_de_en = FSMTTokenizer.from_pretrained(name_de_en).to('cuda')
+        self.tokenizer_de_en = FSMTTokenizer.from_pretrained(name_de_en)
         self.model_de_en = FSMTForConditionalGeneration.from_pretrained(name_de_en).to('cuda')
 
     @staticmethod
@@ -119,13 +119,13 @@ class Trafo8Step(base.AugmentationStep):
         return en_new
 
     def en2de(self, input):
-        input_ids = self.tokenizer_en_de.encode(input, return_tensors="pt")
+        input_ids = self.tokenizer_en_de.encode(input, return_tensors="pt").to('cuda')
         outputs = self.model_en_de.generate(input_ids)
-        decoded = self.tokenizer_en_de.decode(outputs[0], skip_special_tokens=True)
+        decoded = self.tokenizer_en_de.decode(outputs[0].to('cuda'), skip_special_tokens=True)
         return decoded
 
     def de2en(self, input):
-        input_ids = self.tokenizer_de_en.encode(input, return_tensors="pt")
+        input_ids = self.tokenizer_de_en.encode(input, return_tensors="pt").to('cuda')
         outputs = self.model_de_en.generate(
             input_ids,
             num_return_sequences=self.max_outputs,
@@ -133,7 +133,7 @@ class Trafo8Step(base.AugmentationStep):
         )
         predicted_outputs = []
         for output in outputs:
-            decoded = self.tokenizer_de_en.decode(output, skip_special_tokens=True)
+            decoded = self.tokenizer_de_en.decode(output.to('cuda'), skip_special_tokens=True)
             # TODO: this should be able to return multiple sequences
             predicted_outputs.append(decoded)
         return predicted_outputs[0]
