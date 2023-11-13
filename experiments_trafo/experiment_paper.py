@@ -11,6 +11,8 @@ from experiments_trafo.experiments import run_experiment, evaluate_experiment_bl
     evaluate_experiment_test, evaluate_experiment_bert_filter, run_experiment_re, run_experiment_crf
 import augment
 
+
+
 def run_exp(aug_step_list, rate):
     results = []
     for augmentation_step in aug_step_list:
@@ -79,5 +81,11 @@ def control_experiments(step):
 
 step: augment.AugmentationStep = augment.Trafo101Step(prob=0.5)
 step2: augment.AugmentationStep = augment.Trafo8Step()
-
-control_experiments(step2)
+complete = data.loader.read_documents_from_json("complete.json")
+#control_experiments(step2)
+not_counter = 0
+for doc in complete:
+    for sentence in doc.sentences:
+        for tok in sentence.tokens:
+            if tok.text.lower() ==  "not":
+                not_counter += 1

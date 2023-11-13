@@ -9,6 +9,7 @@ from transformations import tokenmanager
 
 from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
+
 # Author: Benedikt
 class Trafo8Step(base.AugmentationStep):
 
