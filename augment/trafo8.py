@@ -39,8 +39,8 @@ class Trafo8Step(base.AugmentationStep):
             params.IntegerParam(name="num_beams", min_value=1, max_value=20),
         ]
 
-    def do_augment(self, doc2: model.Document):
-        doc = copy.deepcopy(doc2)
+    def do_augment(self, doc: model.Document):
+        doc = doc.copy()
         for sentence in doc.sentences:
             i = 0
             while i < len(sentence.tokens) - 1:
