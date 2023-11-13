@@ -80,6 +80,7 @@ class Trafo106Step(base.AugmentationStep):
         num_tokens_to_truncate = self.tokens_to_truncate(" ".join(token_texts), max_token_count)
         while num_tokens_to_truncate > 0:
             token_texts = token_texts[:-num_tokens_to_truncate]
+            num_tokens_to_truncate = self.tokens_to_truncate(" ".join(token_texts), max_token_count)
 
         spacy_doc = spacy.tokens.Doc(vocab=self.nlp.vocab, words=token_texts)
         spacy_doc = self.nlp(spacy_doc, disable=["ner", "lemmatizer"])
