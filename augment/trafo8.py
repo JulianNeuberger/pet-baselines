@@ -22,7 +22,7 @@ class Trafo8Step(base.AugmentationStep):
         super().__init__(**kwargs)
         self.lang = lang
         self.p = p
-        self.max_outputs = max_outputs
+        self.max_outputs = min(num_beams, max_outputs)
         self.num_beams = num_beams
         name_en_de = "facebook/wmt19-en-de"
         self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de)
