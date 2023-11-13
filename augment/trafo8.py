@@ -11,12 +11,19 @@ from transformations import tokenmanager
 
 # Author: Benedikt
 class Trafo8Step(base.AugmentationStep):
-    def __init__(self, p: float = 1, lang: str = "de", **kwargs):
+    def __init__(
+        self,
+        p: float = 1,
+        max_outputs: int = 1,
+        num_beams: int = 2,
+        lang: str = "de",
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.lang = lang
         self.p = p
-        self.max_outputs = 1
-        self.num_beams = 2
+        self.max_outputs = max_outputs
+        self.num_beams = num_beams
         name_en_de = "facebook/wmt19-en-de"
         self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de)
         self.model_en_de = FSMTForConditionalGeneration.from_pretrained(name_en_de)
