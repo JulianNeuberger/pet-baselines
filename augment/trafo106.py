@@ -72,10 +72,13 @@ class Trafo106Step(base.AugmentationStep):
                 context_text, truncation=True, add_special_tokens=False
             )
         )
+        # number of tokens to reserve for expansions of masks
+        # (e.g. 1 token gets masked and replaced by 3 tokens)
+        self.padding = 32
 
     def do_augment(self, doc: model.Document) -> model.Document:
         token_texts = [t.text for t in doc.tokens]
-        max_token_count = self.tokenizer.model_max_length - self.context_length - 4
+        max_token_count = self.tokenizer.model_max_length - self.padding - self.context_length - 4
         token_texts = token_texts[:max_token_count]
         num_tokens_to_truncate = self.tokens_to_truncate(" ".join(token_texts), max_token_count)
         while num_tokens_to_truncate > 0:
