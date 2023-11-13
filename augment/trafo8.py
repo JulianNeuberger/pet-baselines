@@ -1,4 +1,3 @@
-import copy
 import typing
 from random import random
 
@@ -25,11 +24,11 @@ class Trafo8Step(base.AugmentationStep):
         self.max_outputs = min(num_beams, max_outputs)
         self.num_beams = num_beams
         name_en_de = "facebook/wmt19-en-de"
-        self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de)
-        self.model_en_de = FSMTForConditionalGeneration.from_pretrained(name_en_de)
+        self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de).to('cuda')
+        self.model_en_de = FSMTForConditionalGeneration.from_pretrained(name_en_de).to('cuda')
         name_de_en = "facebook/wmt19-de-en"
-        self.tokenizer_de_en = FSMTTokenizer.from_pretrained(name_de_en)
-        self.model_de_en = FSMTForConditionalGeneration.from_pretrained(name_de_en)
+        self.tokenizer_de_en = FSMTTokenizer.from_pretrained(name_de_en).to('cuda')
+        self.model_de_en = FSMTForConditionalGeneration.from_pretrained(name_de_en).to('cuda')
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
