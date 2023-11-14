@@ -15,7 +15,6 @@ from augment import (
     trafo3,
     trafo5,
     trafo8,
-    trafo33,
     trafo39,
     params,
     trafo58,
@@ -37,7 +36,6 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo3.Trafo3Step,
     trafo5.Trafo5Step,
     trafo8.Trafo8Step,
-    # trafo33.Trafo33Step,  # broken code?
     trafo39.Trafo39Step,
     trafo58.Trafo58Step,  # runs too long?
     trafo82.Trafo82Step,
