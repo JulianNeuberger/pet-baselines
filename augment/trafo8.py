@@ -8,6 +8,7 @@ from data import model
 from transformations import tokenmanager
 
 
+
 # Author: Benedikt
 class Trafo8Step(base.AugmentationStep):
     def __init__(
