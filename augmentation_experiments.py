@@ -35,7 +35,7 @@ from main import cross_validate_pipeline
 strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo3.Trafo3Step,
     trafo5.Trafo5Step,
-    trafo8.Trafo8Step,
+    # trafo8.Trafo8Step,  # long runtime
     trafo39.Trafo39Step,
     trafo58.Trafo58Step,  # runs too long?
     trafo82.Trafo82Step,
