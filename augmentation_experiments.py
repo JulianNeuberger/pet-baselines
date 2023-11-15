@@ -14,6 +14,7 @@ from augment import (
     base,
     trafo3,
     trafo5,
+    trafo6,
     trafo8,
     trafo26,
     trafo33,
@@ -38,6 +39,7 @@ from main import cross_validate_pipeline
 strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo3.Trafo3Step,
     trafo5.Trafo5Step,
+    trafo6.Trafo6Step,
     # trafo8.Trafo8Step,  # long runtime
     trafo26.Trafo26Step,
     trafo39.Trafo39Step,
