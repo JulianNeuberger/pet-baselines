@@ -8,54 +8,37 @@ from augment import base, params
 from data import model
 from transformations import tokenmanager
 
+from pos_enum import Pos
 
 # Subsequence Substitution for Sequence Tagging
 
 
 # Author: Leonie
 class Trafo103Step(base.AugmentationStep):
-    def __init__(self, num_of_words=2, prob: float = 0.5, pos_tags=None, **kwargs):
+    def __init__(self, num_of_words=2, prob: float = 0.5, tag_groups: typing.List[Pos] = None, **kwargs):
         super().__init__(**kwargs)
         self.num_of_words = num_of_words
-        self.pos_tags = pos_tags
+        self.pos_tags_to_consider: typing.List[str] = [
+            v
+            for group in tag_groups
+            for v in group.tags
+        ]
         self.prob = prob
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
-        possible_pos_tags = [
-            "JJ",
-            "JJS",
-            "JJR",
-            "NN",
-            "NNS",
-            "NNP",
-            "NNPS",
-            "RB",
-            "RBS",
-            "RBR",
-            "DT",
-            "IN",
-            "VBN",
-            "VBP",
-            "VBZ",
-            "PRP",
-            "WP",
-        ]
+
         return [
             params.FloatParam(name="prob", min_value=0, max_value=1),
             params.IntegerParam(name="num_of_words", min_value=0, max_value=5),
-            params.ChoiceParam(
-                name="pos_tags",
-                choices=possible_pos_tags,
-                max_num_picks=len(possible_pos_tags),
-            ),
+            params.ChoiceParam(name="tag_groups", choices=list(Pos), max_num_picks=4),
         ]
 
     def do_augment(self, doc2: model.Document) -> model.Document:
         doc = copy.deepcopy(doc2)
         possible_sequences = []
         for i in range(len(doc.sentences)):
-            kind_of_words = copy.deepcopy(self.pos_tags)
+            kind_of_words = copy.deepcopy(self.pos_tags_to_consider)
             sentence = doc.sentences[i]
 
             # length of the sentence must be greater than the number of words to be replaced (without punct)
@@ -142,13 +125,13 @@ class Trafo103Step(base.AugmentationStep):
                 # possible_sequences = []
                 # get all word-sequences from the document with the determined pos_tags
                 length = 0
-                if self.pos_tags is None:
+                if self.pos_tags_to_consider is None:
                     length = 0
                 else:
-                    length = len(self.pos_tags)
+                    length = len(self.pos_tags_to_consider)
                 if (
                     (i == 0 and length >= self.num_of_words)
-                    or self.pos_tags is None
+                    or self.pos_tags_to_consider is None
                     or length < self.num_of_words
                 ):
                     possible_sequences = []
@@ -186,6 +169,6 @@ class Trafo103Step(base.AugmentationStep):
                     if len(possible_seq) > 0:
                         # choose the new text out of the possibilities
                         new_text = choice(possible_seq)
-                        for m in range(num_of_words):
+                        for m in range(self.num_of_words):
                             sentence.tokens[index_in_sentence + m].text = new_text[m]
         return doc

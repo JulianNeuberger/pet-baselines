@@ -8,6 +8,7 @@ import spacy.tokens
 import torch
 import transformers
 
+from pos_enum import Pos
 import data
 from augment import base, params
 from data import model
@@ -49,7 +50,7 @@ class Trafo106Step(base.AugmentationStep):
         top_k: int = 5,
         context_text: str = "",
         device: int = -1,
-        pos_tokens: typing.Set[str] = None,
+        tag_groups: typing.List[Pos] = None,
         sample_top_k: bool = False,
         **kwargs,
     ):
@@ -59,8 +60,11 @@ class Trafo106Step(base.AugmentationStep):
         self.fill_pipeline = transformers.pipeline(
             "fill-mask", model=transformer_model, top_k=top_k, device=device
         )
-        if pos_tokens is None:
-            self.pos_tokens = set(POS_TYPES)
+        self.pos_tags_to_consider: typing.List[str] = [
+            v
+            for group in tag_groups
+            for v in group.tags
+        ]
         self.sample_top_k = sample_top_k
 
         # context text gets prepended to sentence - can be used to prime transformer predictions
@@ -100,6 +104,7 @@ class Trafo106Step(base.AugmentationStep):
         return [
             params.IntegerParam(name="n", min_value=1, max_value=10),
             params.BooleanParameter(name="sample_top_k"),
+            params.ChoiceParam(name="tag_groups", choices=list(Pos), max_num_picks=4),
         ]
 
     def tokens_to_truncate(self, text: str, max_length: int) -> int:
@@ -121,7 +126,7 @@ class Trafo106Step(base.AugmentationStep):
         masked_texts = []
         original_words = []
         for token in doc:
-            if token.pos_ in self.pos_tokens:
+            if token.pos_ in self.pos_tags_to_consider:
                 masked_texts.append(
                     (
                         self.context_text

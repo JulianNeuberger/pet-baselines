@@ -6,27 +6,27 @@ import data
 from data import model
 from augment import base, params
 import copy
-
+from pos_enum import Pos
 class Trafo26Step(base.AugmentationStep):
 
-    def __init__(self, p = 0.5, pos=0, **kwargs):
+    def __init__(self, p = 0.5, tag_groups: typing.List[Pos] = None, **kwargs):
         super().__init__(**kwargs)
         self.p = p
         self.unmasker = pipeline(
             "fill-mask", model="xlm-roberta-base", top_k=1
         )
-        if pos == 0:
-            self.pos_to_change = ["NNS", "NN", "NNP", "NNPS"]
-        elif pos == 1:
-            self.pos_to_change = ["RB", "RBS", "RBR", "JJ", "JJR", "JJS"]
-        else:
-            self.pos_to_change = ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"]
+        self.pos_tags_to_consider: typing.List[str] = [
+            v
+            for group in tag_groups
+            for v in group.tags
+        ]
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
-            params.IntegerParam(name="pos", min_value=0, max_value=2),
+            params.ChoiceParam(name="tag_groups", choices=list(Pos), max_num_picks=4),
             params.FloatParam(name="p", min_value=0.0, max_value=1.0),
+
         ]
     def do_augment(self, doc2: model.Document) -> model.Document:
         doc = copy.deepcopy(doc2)
@@ -34,7 +34,7 @@ class Trafo26Step(base.AugmentationStep):
             sentence_string = ""
             changed_id = []
             for i, token in enumerate(sentence.tokens):
-                if token.pos_tag in self.pos_to_change:
+                if token.pos_tag in self.pos_tags_to_consider:
                     sentence_string += " <mask>"
                     changed_id.append(i)
                 else:
