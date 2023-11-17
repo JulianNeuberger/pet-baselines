@@ -119,6 +119,10 @@ class Trafo40Step(base.AugmentationStep):
                         token_counter += 1
                         continue
 
+                if len(all_fill) == 0:
+                    token_counter += 1
+                    continue
+
                 if rand() <= self.prob:
                     # choose filler phrase
                     random_filler = choice(all_fill).split()
