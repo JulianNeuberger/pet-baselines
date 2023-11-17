@@ -1,7 +1,8 @@
 import copy
 import typing
-from random import random
+from random import random, randint
 
+from nltk.corpus import wordnet
 from transformers import pipeline
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 import data
@@ -56,111 +57,32 @@ def do_augment2(doc2: model.Document) -> model.Document:
 
 
 
-model = M2M100ForConditionalGeneration.from_pretrained(
-            "facebook/m2m100_418M"
-        )
-tokenizer = M2M100Tokenizer.from_pretrained(
-            "facebook/m2m100_418M"
-        )
-src_lang = "en"
-pivot_lang = "de"
-p = 1
 
 
-def do_augment(doc):
-    doc = doc.copy()
+def do_augment(doc2: model.Document, count_insertions=10) -> model.Document:
+    doc = copy.deepcopy(doc2)
     for sentence in doc.sentences:
-        i = 0
-        while i < len(sentence.tokens) - 1:
-            token = sentence.tokens[i]
-            current_bio = tokenmanager.get_bio_tag_short(token.bio_tag)
-            text_before = ""
-            j = 0
-            while (
-                    tokenmanager.get_bio_tag_short(sentence.tokens[i + j].bio_tag)
-                    == current_bio
-            ):
-                if i + j < len(sentence.tokens) - 1:
-                    if j == 0:
-                        text_before += sentence.tokens[i + j].text
-                    else:
-                        text_before += " "
-                        text_before += sentence.tokens[i + j].text
-                j += 1
-                if i + j > len(sentence.tokens) - 1:
-                    break
+        counter = 0
+        while counter < count_insertions:
+            ran = randint(0, len(sentence.tokens) - 1)
+            text = "Test"
+            if sentence.tokens[ran].bio_tag == "O":
+                bio = sentence.tokens[ran].bio_tag
+            else:
+                bio = "I-" + tokenmanager.get_bio_tag_short(sentence.tokens[ran].bio_tag)
+            tok = model.Token(text, sentence.tokens[ran].index_in_document + 1,
+                              tokenmanager.get_pos_tag([text]),
+                              bio,
+                              sentence.tokens[ran].sentence_index)
 
-            if random() >= p:
-                i += j
-                continue
-            if text_before in [",", ".", "?", "!", ":", "#", "-"]:
-                translated = text_before
+            mentions = tokenmanager.get_mentions(doc, ran, sentence.tokens[ran].sentence_index)
+            if mentions != []:
+                tokenmanager.create_token(doc, tok, ran + 1, mentions[0])
             else:
-                translated = back_translate(en=text_before)
-            text_before_list = text_before.split()
-            translated_list = translated
-            diff = len(translated_list) - len(text_before_list)
-            if diff > 0:
-                token.text = translated_list[0]
-                token.pos_tag = tokenmanager.get_pos_tag([token.text])[0]
-                if len(translated_list) > 1:
-                    for k in range(1, len(translated_list)):
-                        tok = model.Token(
-                            text=translated_list[k],
-                            index_in_document=token.index_in_document + i + k,
-                            pos_tag=tokenmanager.get_pos_tag([token.text])[0],
-                            bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
-                                token.bio_tag
-                            ),
-                            sentence_index=token.sentence_index,
-                        )
-                        tokenmanager.create_token(doc, tok, i + k)
-            elif diff == 0:
-                for k in range(0, len(translated_list)):
-                    index_in_doc = token.index_in_document
-                    sentence.tokens[i + k].text = translated_list[k]
-                    sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag(
-                        [token.text]
-                    )[0]
-            else:
-                for k in range(len(translated_list)):
-                    sentence.tokens[i + k].text = translated_list[k]
-                    sentence.tokens[i + k].pos_tag = tokenmanager.get_pos_tag(
-                        [token.text]
-                    )[0]
-                for k in range(len(translated_list), len(text_before_list)):
-                    tokenmanager.delete_token(
-                        doc,
-                        sentence.tokens[i + len(translated_list)].index_in_document,
-                    )
-            i = i + j + diff
+                tokenmanager.create_token(doc, tok, ran + 1)
+            counter += 1
     return doc
 
-
-#  returns the back translated text, when it's not working, it returns the old text
-def back_translate(en: str):
-    try:
-        de = translate(en, pivot_lang, model, tokenizer)
-        en_new = translate(de, src_lang, model, tokenizer)
-    except Exception as ex:
-        print(ex)
-        print("Returning Default due to Run Time Exception")
-        en_new = en
-    return en_new
-
-
-def translate(sentence, target_lang, model, tokenizer):
-    tokenizer.src_lang = src_lang
-    encoded_source_sentence = tokenizer(sentence, return_tensors="pt")
-    generated_target_tokens = model.generate(
-        **encoded_source_sentence,
-        forced_bos_token_id=tokenizer.get_lang_id(target_lang)
-    )
-    target_sentence = tokenizer.batch_decode(
-        generated_target_tokens, skip_special_tokens=True
-    )
-    return target_sentence
-
 #tokenmanager.delete_sentence(docs[0], 0)
-print(translate(sentence="the nice professor", target_lang="de", model=model, tokenizer=tokenizer)[0].split())
+print(wordnet.synsets("word"))
 #print(do_augment(docs[0]))
