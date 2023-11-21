@@ -3,11 +3,11 @@ from random import random
 
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
-import data
 from augment import base, params
 from data import model
 from transformations import tokenmanager
-docs: typing.List[model.Document] = data.loader.read_documents_from_json('../complete.json')
+
+
 class Trafo62Step(base.AugmentationStep):
     def __init__(
         self,
@@ -125,7 +125,3 @@ class Trafo62Step(base.AugmentationStep):
             generated_target_tokens, skip_special_tokens=True
         )
         return target_sentence
-
-
-step = Trafo62Step()
-print(step.do_augment(docs[0]))
