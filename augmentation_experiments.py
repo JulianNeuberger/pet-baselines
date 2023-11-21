@@ -32,6 +32,10 @@ from augment import (
     trafo40,
     trafo_null,
     trafo106,
+    trafo24,
+    trafo62,
+    trafo79,
+    trafo_insert
 )
 from data import loader
 from main import cross_validate_pipeline
@@ -41,10 +45,13 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo5.Trafo5Step,
     trafo6.Trafo6Step,
     # trafo8.Trafo8Step,  # long runtime
+    trafo24.Trafo24Step,
     trafo26.Trafo26Step,
     trafo39.Trafo39Step,
     trafo40.Trafo40Step,
     trafo58.Trafo58Step,  # runs too long?
+    trafo62.Trafo62Step,
+    trafo79.Trafo79Step,
     trafo82.Trafo82Step,
     trafo86.Trafo86Step,
     trafo88.Trafo88Step,
@@ -54,6 +61,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo103.Trafo103Step,
     trafo106.Trafo106Step,
     trafo_null.TrafoNullStep,
+    trafo_insert.TrafoInsertStep
 ]
 
 max_runs_per_step = 150
