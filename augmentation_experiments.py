@@ -16,12 +16,15 @@ from augment import (
     trafo5,
     trafo6,
     trafo8,
+    trafo24,
     trafo26,
     trafo33,
     trafo39,
     trafo40,
     params,
     trafo58,
+    trafo62,
+    trafo79,
     trafo82,
     trafo86,
     trafo88,
@@ -29,12 +32,9 @@ from augment import (
     trafo100,
     trafo101,
     trafo103,
+    trafo106,
     trafo40,
     trafo_null,
-    trafo106,
-    trafo24,
-    trafo62,
-    trafo79,
     trafo_insert
 )
 from data import loader
@@ -50,7 +50,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo39.Trafo39Step,
     trafo40.Trafo40Step,
     trafo58.Trafo58Step,  # runs too long?
-    trafo62.Trafo62Step,
+    # trafo62.Trafo62Step, # runs too long
     trafo79.Trafo79Step,
     trafo82.Trafo82Step,
     trafo86.Trafo86Step,
