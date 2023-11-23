@@ -45,30 +45,29 @@ def delete_token_from_tokens(
 
 # Author: Benedikt
 def delete_token_from_mention_token_indices(
-    doc: Document, index_in_sentence, sentence_index
-):  # deletes the token
-    # from the mention token indices
-    counter = 0
+    doc: Document, token_index_in_sentence: int, sentence_index: int
+):
     mention_to_delete = None
-    for mention in doc.mentions:
-        assert mention.sentence_index == sentence_index
+    for mention_id, mention in enumerate(doc.mentions):
+        if mention.sentence_index != sentence_index:
+            continue
 
-        if index_in_sentence in mention.token_indices:
+        if token_index_in_sentence in mention.token_indices:
             if len(mention.token_indices) == 1:
                 doc.mentions.remove(mention)
-                delete_mention_from_entities(doc, counter)
-                adjust_mention_indices_in_entities(doc, counter)
-                mention_to_delete = counter
+                delete_mention_from_entities(doc, mention_id)
+                adjust_mention_indices_in_entities(doc, mention_id)
+                mention_to_delete = mention_id
             else:
-                mention.token_indices.remove(index_in_sentence)
+                mention.token_indices.remove(token_index_in_sentence)
                 for i in range(len(mention.token_indices)):
-                    if mention.token_indices[i] > index_in_sentence:
+                    if mention.token_indices[i] > token_index_in_sentence:
                         mention.token_indices[i] -= 1
         else:
             for i in range(len(mention.token_indices)):
-                if mention.token_indices[i] > index_in_sentence:
+                if mention.token_indices[i] > token_index_in_sentence:
                     mention.token_indices[i] -= 1
-        counter += 1
+        mention_id += 1
     return mention_to_delete
 
 
