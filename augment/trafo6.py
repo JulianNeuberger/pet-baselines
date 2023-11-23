@@ -36,6 +36,6 @@ class Trafo6Step(base.AugmentationStep):
                 if len(spacy_document) <= 1:
                     continue
 
-                if spacy_document[1] == "n't":
+                if spacy_document[1].text == "n't":
                     token.text = spacy_document[0].text
         return doc
