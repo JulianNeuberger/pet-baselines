@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Pos(Enum):
     VERB = 1
     NOUN = 2

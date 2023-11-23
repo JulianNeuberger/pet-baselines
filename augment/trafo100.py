@@ -41,8 +41,6 @@ class Trafo100Step(base.AugmentationStep):
             while i < len(sentence.tokens):
                 token = sentence.tokens[i]
                 if token.pos_tag in self.pos_tags_to_consider:
-
-
                     word = token.text
                     if word in self.stopwords:
                         pass
