@@ -1,4 +1,3 @@
-import itertools
 import random
 import sys
 import traceback
@@ -69,25 +68,6 @@ random_state = 42
 random.seed(random_state)
 
 
-def get_combinations_of_choices(
-    choices: typing.Sequence, max_length: int = 1
-) -> typing.Sequence:
-    """
-    generates all the combinations from choices with a given max length
-    """
-    for c in choices:
-        assert (
-            "##" not in choices
-        ), "A choice contains the char sequence ## which is not supported right now."
-    assert max_length <= len(choices)
-    combinations = []
-    for length in range(1, max_length + 1):
-        combinations.extend(
-            ["##".join(x) for x in itertools.combinations(choices, length)]
-        )
-    return combinations
-
-
 def suggest_param(param: params.Param, trial: optuna.Trial) -> typing.Any:
     if isinstance(param, params.IntegerParam):
         return trial.suggest_int(
@@ -100,9 +80,9 @@ def suggest_param(param: params.Param, trial: optuna.Trial) -> typing.Any:
         )
 
     if isinstance(param, params.ChoiceParam):
-        choices = get_combinations_of_choices(param.choices, param.max_num_picks)
+        choices = param.get_combinations_as_bit_masks()
         choice = trial.suggest_categorical(name=param.name, choices=choices)
-        choice_as_list = choice.split("##")
+        choice_as_list = param.bit_mask_to_choices(choice)
         if param.max_num_picks == 1:
             return choice_as_list[0]
         return choice_as_list
