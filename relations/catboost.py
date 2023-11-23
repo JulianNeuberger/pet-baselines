@@ -158,6 +158,10 @@ class CatBoostRelationEstimator:
             for relation in document.relations:
                 head_entity = document.entities[relation.head_entity_index]
                 tail_entity = document.entities[relation.tail_entity_index]
+
+                assert len(head_entity.mention_indices) is not 0
+                assert len(tail_entity.mention_indices) is not 0
+
                 mention_index_pairs = itertools.product(head_entity.mention_indices, tail_entity.mention_indices)
 
                 mention_index_pairs = [
