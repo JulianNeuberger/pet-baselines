@@ -21,10 +21,10 @@ class Trafo6Step(base.AugmentationStep):
             params.FloatParam(name="p", min_value=0.0, max_value=1.0),
         ]
 
-    def do_augment(self, doc2: model.Document) -> model.Document:
-        doc = copy.deepcopy(doc2)
+    def do_augment(self, doc: model.Document) -> model.Document:
+        doc = doc.copy()
         for sentence in doc.sentences:
-            for i, token in enumerate(sentence.tokens):
+            for token in sentence.tokens:
                 if random() >= self.p:
                     continue
 

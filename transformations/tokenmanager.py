@@ -51,66 +51,68 @@ def delete_token_from_mention_token_indices(
     counter = 0
     mention_to_delete = None
     for mention in doc.mentions:
-        if mention.sentence_index == sentence_index:
-            if index_in_sentence in mention.token_indices:
-                if len(mention.token_indices) == 1:
-                    doc.mentions.remove(mention)
-                    delete_mention_from_entity(doc, counter)
-                    change_mention_indices_in_entities(doc, counter)
-                    mention_to_delete = counter
-                else:
-                    mention.token_indices.remove(index_in_sentence)
-                    for i in range(len(mention.token_indices)):
-                        if mention.token_indices[i] > index_in_sentence:
-                            mention.token_indices[i] -= 1
+        assert mention.sentence_index == sentence_index
 
+        if index_in_sentence in mention.token_indices:
+            if len(mention.token_indices) == 1:
+                doc.mentions.remove(mention)
+                delete_mention_from_entities(doc, counter)
+                adjust_mention_indices_in_entities(doc, counter)
+                mention_to_delete = counter
             else:
+                mention.token_indices.remove(index_in_sentence)
                 for i in range(len(mention.token_indices)):
                     if mention.token_indices[i] > index_in_sentence:
                         mention.token_indices[i] -= 1
+        else:
+            for i in range(len(mention.token_indices)):
+                if mention.token_indices[i] > index_in_sentence:
+                    mention.token_indices[i] -= 1
         counter += 1
     return mention_to_delete
 
 
-# Author: Benedikt
-def change_mention_indices_in_entities(
-    doc: Document, mention_index: int
-):  # adapt the mention indices in the entities
+def adjust_mention_indices_in_entities(doc: Document, mention_index: int):
     for entity in doc.entities:
         for i in range(len(entity.mention_indices)):
             if entity.mention_indices[i] > mention_index:
                 entity.mention_indices[i] -= 1
 
 
-# Author: Benedikt
-def delete_mention_from_entity(
-    doc: Document, mention_index: int
-):  # delete the mention from the entity
-    counter = 0
-    for entity in doc.entities:
-        if mention_index in entity.mention_indices:
-            if len(entity.mention_indices) == 1:
-                doc.entities.remove(entity)
-                delete_relations(doc, counter)
-                break
-            else:
-                entity.mention_indices.remove(mention_index)
-        counter += 1
+def adjust_entity_indices_in_relations(doc: Document, entity_index: int):
+    for relation in doc.relations:
+        if relation.head_entity_index > entity_index:
+            relation.head_entity_index -= 1
+
+        if relation.tail_entity_index > entity_index:
+            relation.tail_entity_index -= 1
 
 
-# Author: Benedikt
-def delete_relations(
-    doc: Document, entity_index: int
-):  # delete the relation, if an entity from a relation is deleted
-    i = 0
-    while i < len(doc.relations):
-        if entity_index in [
-            doc.relations[i].head_entity_index,
-            doc.relations[i].tail_entity_index,
-        ]:
-            doc.relations.remove(doc.relations[i])
+def delete_mention_from_entities(doc: Document, mention_index: int):
+    for entity_id, entity in enumerate(doc.entities):
+        if mention_index not in entity.mention_indices:
+            continue
+
+        is_last_mention = len(entity.mention_indices) == 1
+
+        if is_last_mention:
+            doc.entities.remove(entity)
+            delete_relations(doc, entity_id)
+            adjust_entity_indices_in_relations(doc, entity_id)
+            break
         else:
-            i += 1
+            entity.mention_indices.remove(mention_index)
+
+
+def delete_relations(doc: Document, entity_index: int):
+    affected_relation_indices = set()
+    for relation_index, relation in enumerate(doc.relations):
+        if relation.head_entity_index == entity_index:
+            affected_relation_indices.add(relation_index)
+        if relation.tail_entity_index == entity_index:
+            affected_relation_indices.add(relation_index)
+    for relation_index in sorted(list(affected_relation_indices), reverse=True):
+        doc.relations.pop(relation_index)
 
 
 # CREATE A NEW TOKEN #
@@ -156,7 +158,9 @@ def replace_mention_text(
             new_token_texts, new_pos_tags, range(len(new_token_texts)), new_bio_tags
         )
     ]
-    old_tokens = [doc.sentences[mention.sentence_index].tokens[i] for i in mention.token_indices]
+    old_tokens = [
+        doc.sentences[mention.sentence_index].tokens[i] for i in mention.token_indices
+    ]
 
     length_difference = len(new_tokens) - len(old_tokens)
 
@@ -184,7 +188,10 @@ def replace_mention_text(
             ] = token
         for i, new_token in enumerate(new_tokens[len(old_tokens) :]):
             create_token(
-                doc, new_token, sentence_level_mention_start + len(old_tokens) + i, mention_index
+                doc,
+                new_token,
+                sentence_level_mention_start + len(old_tokens) + i,
+                mention_index,
             )
 
 

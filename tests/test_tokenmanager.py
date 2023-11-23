@@ -1,6 +1,6 @@
 from transformations.tokenmanager import get_pos_tag, get_bio_tag_based_on_left_token, insert_token_in_mentions, \
     create_token, get_index_in_sentence, get_mentions, insert_token_in_tokens, delete_token_from_tokens, \
-    delete_token_from_mention_token_indices, change_mention_indices_in_entities, delete_mention_from_entity, \
+    delete_token_from_mention_token_indices, adjust_mention_indices_in_entities, delete_mention_from_entities, \
     delete_relations, delete_sentence, replace_mention_text
 from data import model
 import copy
@@ -511,7 +511,7 @@ def test_change_mention_indices_in_entities():
 
     # ACT
     # test1
-    change_mention_indices_in_entities(doc_to_aug1, ment_id)
+    adjust_mention_indices_in_entities(doc_to_aug1, ment_id)
 
     # ASSERT
     assert doc_to_aug1 == doc_sol1
@@ -540,7 +540,7 @@ def test_delete_mention_from_entity():
 
     # ACT
     # test1
-    delete_mention_from_entity(doc_to_aug1, ment_ind)
+    delete_mention_from_entities(doc_to_aug1, ment_ind)
 
     # ASSERT
     assert doc_to_aug1 == doc_sol1
