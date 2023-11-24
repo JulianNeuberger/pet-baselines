@@ -1,15 +1,15 @@
+import random
 import typing
-import copy
-from data import model
+
 from augment import base, params
+from data import model
 from transformations import tokenmanager
-from random import random
 
 
 class Trafo24Step(base.AugmentationStep):
-    def __init__(self, dataset: typing.List[model.Document], p=0.5):
+    def __init__(self, dataset: typing.List[model.Document], n: int):
         super().__init__(dataset)
-        self.p = p
+        self.n = n
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
@@ -17,37 +17,43 @@ class Trafo24Step(base.AugmentationStep):
             params.FloatParam(name="p", min_value=0.0, max_value=1.0),
         ]
 
-    def do_augment(self, doc2: model.Document) -> model.Document:
-        doc = copy.deepcopy(doc2)
-        i = 0
-        while i < len(doc.sentences):
-            if random() > self.p:
-                sent_length = len(doc.sentences[i].tokens) - 1
-                if i < len(doc.sentences) - 1:
-                    # transfer Mentions
-                    for mention in doc.mentions:
-                        if mention.sentence_index == i + 1:
-                            mention.sentence_index -= 1
-                            for ment_id in mention.token_indices:
-                                ment_id += sent_length
-                    # transfer Tokens
-                    tok_arr = []
-                    for j, token in enumerate(doc.sentences[i + 1].tokens):
-                        tok = model.Token(
-                            token.text,
-                            token.index_in_document - 1,
-                            token.pos_tag,
-                            token.bio_tag,
-                            token.sentence_index - 1,
-                        )
-                        tok_arr.append(tok)
-                    # delete sentence
-                    tokenmanager.delete_sentence(doc, i + 1)
+    def do_augment(self, doc: model.Document) -> model.Document:
+        for _ in range(self.n):
+            num_sentences = len(doc.sentences)
+            if num_sentences == 1:
+                return doc
 
-                    for j, tok in enumerate(tok_arr):
-                        tokenmanager.create_token(doc, tok, sent_length + j)
+            first_index = random.randint(0, num_sentences - 1)
 
-                    # delete punct
-                    tokenmanager.delete_token(doc, tok_arr[-1].index_in_document + 1)
-            i += 1
-        return doc
+            self.merge_sentences(first_index, doc)
+
+    @staticmethod
+    def merge_sentences(first_index: int, doc: model.Document):
+        second_index = first_index + 1
+
+        first_sentence = doc.sentences[first_index]
+        second_sentence = doc.sentences[first_index + 1]
+
+        new_sentence = first_sentence.copy()
+        tokenmanager.delete_token(
+            doc, index_in_document=new_sentence.tokens[-1].index_in_document
+        )
+        new_sentence.tokens += second_sentence.tokens
+
+        first_sentence_length = len(new_sentence.tokens)
+
+        for mention in doc.mentions:
+            if mention.sentence_index == first_index + 1:
+                mention.sentence_index = first_index
+                mention.token_indices = [
+                    t + first_sentence_length for t in mention.token_indices
+                ]
+
+        for relation in doc.relations:
+            if second_index in relation.evidence:
+                relation.evidence = [
+                    first_index if e is second_index else e for e in relation.evidence
+                ]
+
+        doc.sentences[first_index] = new_sentence
+        doc.sentences.pop(second_index)
