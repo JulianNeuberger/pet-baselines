@@ -6,6 +6,7 @@ from transformers import pipeline
 from augment import base, params
 from data import model
 from pos_enum import Pos
+from transformations import tokenmanager
 
 
 class Trafo26Step(base.AugmentationStep):
@@ -19,7 +20,7 @@ class Trafo26Step(base.AugmentationStep):
         self.n = n
         self.unmasker = pipeline("fill-mask", model="xlm-roberta-base", top_k=1)
         self.pos_tags_to_consider: typing.List[str] = [
-            v for group in tag_groups for v in group.tags
+            v.lower() for group in tag_groups for v in group.tags
         ]
 
     @staticmethod
@@ -42,14 +43,25 @@ class Trafo26Step(base.AugmentationStep):
 
         candidates: typing.List[model.Token] = []
         for token in doc.tokens:
-            if token.pos_tag in self.pos_tags_to_consider:
+            if token.pos_tag.lower() in self.pos_tags_to_consider:
                 candidates.append(token)
         random.shuffle(candidates)
 
+        num_changes = 0
         for candidate in candidates:
+            original = candidate.text
             sentence = doc.sentences[candidate.sentence_index]
             masked_sentence = self.mask_sentence(doc, sentence, candidate)
-            new_sentence = self.unmasker(masked_sentence)[0]
-            doc.tokens[candidate.index_in_document].text = new_sentence["token_str"]
+            new_token = self.unmasker(masked_sentence)[0]["token_str"]
+
+            if new_token == original:
+                continue
+
+            doc.tokens[candidate.index_in_document].text = new_token
+            doc.tokens[candidate.index_in_document].pos_tag = tokenmanager.get_pos_tag([new_token])
+
+            num_changes += 1
+            if num_changes == self.n:
+                break
 
         return doc

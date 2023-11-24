@@ -317,10 +317,7 @@ def delete_sentence(doc: Document, sent_index: int):
             mention.sentence_index -= 1
 
 
-# Methods needed inside the transformations #
-# Author: Leonie
-# get the pos Tag from the wordnet
-def get_pos_tag(text: typing.List):  # text has to be an array of strings # passed
+def get_pos_tag(text: typing.List[str]):
     tagged_text = nltk.pos_tag(text)
     tags = [tagged_text[i][1] for i in range(len(text))]
     return tags
