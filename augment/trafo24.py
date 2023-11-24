@@ -35,7 +35,7 @@ class Trafo24Step(base.AugmentationStep):
         second_index = first_index + 1
 
         first_sentence = doc.sentences[first_index]
-        second_sentence = doc.sentences[first_index + 1]
+        second_sentence = doc.sentences[second_index]
 
         tokenmanager.delete_token(
             doc, index_in_document=first_sentence.tokens[-1].index_in_document

@@ -68,6 +68,38 @@ def test_do_augment():
                 ),
             ]
         ),
+        model.Sentence(
+            tokens=[
+                model.Token(
+                    text="Third",
+                    index_in_document=8,
+                    pos_tag="",
+                    bio_tag="",
+                    sentence_index=2,
+                ),
+                model.Token(
+                    text="and",
+                    index_in_document=9,
+                    pos_tag="",
+                    bio_tag="",
+                    sentence_index=2,
+                ),
+                model.Token(
+                    text="last",
+                    index_in_document=10,
+                    pos_tag="",
+                    bio_tag="",
+                    sentence_index=2,
+                ),
+                model.Token(
+                    text="!",
+                    index_in_document=11,
+                    pos_tag="",
+                    bio_tag="",
+                    sentence_index=2,
+                ),
+            ]
+        ),
     ]
 
     mentions = [
@@ -96,9 +128,10 @@ def test_do_augment():
 
     augmented = trafo.do_augment(document)
 
-    print(" ".join([t.text for t in document.tokens]))
-    print(" ".join([t.text for t in augmented.tokens]))
-
     assert augmented != document
-    assert len(augmented.sentences) == 1
+    assert len(augmented.sentences) == 2
     assert len(augmented.tokens) == len(document.tokens) - 1
+
+    augmented = trafo.do_augment(augmented)
+
+    assert len(augmented.sentences) == 1

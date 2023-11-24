@@ -24,10 +24,15 @@ def delete_token_from_tokens(
     sentence_id = token.sentence_index
     index_in_sentence = -1
 
+    assert sentence_id < len(
+        doc.sentences
+    ), f"Got sentence index of {sentence_id}, " \
+       f"but doc only has {len(doc.sentences)} sentences, " \
+       f"sentence ids of tokens are {list(set([t.sentence_index for t in doc.tokens]))}"
+
     for i, token in enumerate(doc.sentences[sentence_id].tokens):
         if token.index_in_document == index_in_document:
             index_in_sentence = i
-            found_token = True
             break
 
     doc.sentences[sentence_id].tokens.pop(index_in_sentence)
