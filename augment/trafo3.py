@@ -58,23 +58,5 @@ class Trafo3Step(base.AugmentationStep):
 
         antonym_tokens = antonym.split("_")
 
-        token.text = antonym_tokens[0]
-        token_index_in_sentence = token.index_in_sentence(doc)
-
-        for i, remaining_antonym_token in enumerate(antonym_tokens[1:]):
-            mention_indices = tokenmanager.get_mentions(
-                doc, token.index_in_sentence(doc), token.sentence_index
-            )
-            mention_index = mention_indices[0] if len(mention_indices) > 0 else None
-            new_token = model.Token(
-                text=remaining_antonym_token,
-                index_in_document=token.index_in_document + i,
-                pos_tag=tokenmanager.get_pos_tag([remaining_antonym_token])[0],
-                bio_tag=tokenmanager.get_bio_tag_based_on_left_token(token.bio_tag),
-                sentence_index=token.sentence_index,
-            )
-            tokenmanager.create_token(
-                doc, new_token, token_index_in_sentence + i, mention_index
-            )
-
+        tokenmanager.expand_token(doc, token, antonym_tokens)
         return True

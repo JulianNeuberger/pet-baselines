@@ -24,11 +24,11 @@ def delete_token_from_tokens(
     sentence_id = token.sentence_index
     index_in_sentence = -1
 
-    assert sentence_id < len(
-        doc.sentences
-    ), f"Got sentence index of {sentence_id}, " \
-       f"but doc only has {len(doc.sentences)} sentences, " \
-       f"sentence ids of tokens are {list(set([t.sentence_index for t in doc.tokens]))}"
+    assert sentence_id < len(doc.sentences), (
+        f"Got sentence index of {sentence_id}, "
+        f"but doc only has {len(doc.sentences)} sentences, "
+        f"sentence ids of tokens are {list(set([t.sentence_index for t in doc.tokens]))}"
+    )
 
     for i, token in enumerate(doc.sentences[sentence_id].tokens):
         if token.index_in_document == index_in_document:
@@ -133,6 +133,27 @@ def create_token(
         else:
             # a new given Token gets inserted in the token array of the belonging sentence and all index_in_doc are adjusted
             insert_token_in_tokens(doc, token, index_in_sentence)
+
+
+def expand_token(doc: model.Document, token: model.Token, new_tokens: typing.List[str]):
+    assert len(new_tokens) > 0
+
+    token.text = new_tokens[0]
+    token_index_in_sentence = token.index_in_sentence(doc)
+
+    for i, remaining_token in enumerate(new_tokens[1:]):
+        mention_indices = get_mentions(
+            doc, token_index_in_sentence, token.sentence_index
+        )
+        mention_index = mention_indices[0] if len(mention_indices) > 0 else None
+        new_token = model.Token(
+            text=remaining_token,
+            index_in_document=token.index_in_document + i,
+            pos_tag=get_pos_tag([remaining_token])[0],
+            bio_tag=get_bio_tag_based_on_left_token(token.bio_tag),
+            sentence_index=token.sentence_index,
+        )
+        create_token(doc, new_token, token_index_in_sentence + i, mention_index)
 
 
 def replace_mention_text(

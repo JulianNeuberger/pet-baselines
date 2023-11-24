@@ -1,88 +1,103 @@
-import copy
+import itertools
 import typing
-from random import random
 
 from nltk.corpus import wordnet
 
 from augment import base, params
 from data import model
 
-
 # Author: Benedikt
+from transformations import tokenmanager
+
+
 class Trafo5Step(base.AugmentationStep):
-    def __init__(self, dataset: typing.List[model.Document], p):
+    def __init__(self, dataset: typing.List[model.Document], n: int = 1):
         super().__init__(dataset)
-        self.p = p
+        self.n = n
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
-        return [params.FloatParam(name="p", min_value=0.0, max_value=1.0)]
+        return [params.IntegerParam(name="n", min_value=1, max_value=20)]
+
+    def switch_antonyms_in_sentence(self, sentence: model.Sentence):
+        pass
 
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
         # Choose from Adjectives and Adverbs
         pos_tags = ["JJ", "JJS", "JJR", "RB", "RBR", "RBS"]
         # for all sentences and all tokens in the Document
+
+        candidates: typing.List[typing.Tuple[model.Token, model.Token]] = []
         for sentence in doc.sentences:
-            token_list = []
-            for token in sentence.tokens:
-                # when the text of the token has the wanted POS Tag go on
-                if token.pos_tag in pos_tags:
-                    wn_pos = "s"
-                    antonyms = []
-                    synsets = wordnet.synsets(token.text, wn_pos)
-                    # get the antonym of the word and put it in a token list with the new Tokens
-                    if synsets:
-                        first_synset = synsets[0]
-                        lemmas = first_synset.lemmas()
-                        first_lemma = lemmas[0]
-                        antonyms = first_lemma.antonyms()
-                    if antonyms:
-                        antonyms.sort(key=lambda x: str(x).split(".")[2])
-                        token_2 = copy.deepcopy(token)
-                        token_2.text = antonyms[0].name()
-                        if token_2 not in token_list:
-                            token_list.append(token_2)
-            # if there is even number of adjectives or adverbs and if list are synonyms or antonyms --> replace tokens
-            if (
-                len(token_list) % 2 == 0
-                and not Trafo5Step.is_ant_syn(self, token_list)
-                and random() < self.p
-            ):
-                for token_2 in token_list:
-                    for token in sentence.tokens:
-                        if token_2.index_in_document == token.index_in_document:
-                            token.text = token_2.text
+            sentence_candidates = [t for t in sentence.tokens if t.pos_tag in pos_tags]
+            candidates.extend(itertools.combinations(sentence_candidates, 2))
+
+        num_changes = 0
+        for left, right in candidates:
+            if self.are_antonym(left.text, right.text):
+                continue
+            if self.are_synonym(left.text, right.text):
+                continue
+
+            left_antonym = self.get_antonym(left)
+            if len(left_antonym) == 0:
+                continue
+
+            right_antonym = self.get_antonym(right)
+            if len(right_antonym) == 0:
+                continue
+
+            tokenmanager.expand_token(doc, left, left_antonym)
+            tokenmanager.expand_token(doc, right, right_antonym)
+
+            num_changes += 1
+            if num_changes == self.n:
+                break
         return doc
 
-    # returns, whether words in a token list are synonyms or antonyms
-    def is_ant_syn(self, token_list):
-        for token_2 in token_list:
-            for token_3 in token_list:
-                if token_2 != token_3:
-                    if Trafo5Step.is_ant(
-                        self, token_2.text, token_3.text
-                    ) or Trafo5Step.is_syn(self, token_2.text, token_3.text):
-                        return True
+    @staticmethod
+    def get_antonym(token: model.Token) -> typing.List[str]:
+        syn_sets = wordnet.synsets(token.text, "a")
+        syn_sets = [s for s in syn_sets if ".a." in s.name()]
+
+        if len(syn_sets) == 0:
+            return []
+
+        first_syn_set = syn_sets[0]
+        lemma = first_syn_set.lemmas()[0]
+        antonyms = lemma.antonyms()
+
+        if len(antonyms) == 0:
+            return []
+
+        antonyms.sort(key=lambda x: str(x).split(".")[2])
+        antonym = antonyms[0].name()
+
+        return antonym.split("_")
+
+    @staticmethod
+    def contains_antonyms_or_synonyms(tokens):
+        for left, right in itertools.combinations(tokens, 2):
+            if Trafo5Step.are_antonym(left, right):
+                return True
+            if Trafo5Step.are_synonym(left, right):
+                return True
         return False
 
-    # returns, whether two words are antonyms
-    def is_ant(self, word1, word2):
+    @staticmethod
+    def are_antonym(left: str, right: str):
         antonyms = []
-        for syn in wordnet.synsets(word1):
+        for syn in wordnet.synsets(left):
             for lemma in syn.lemmas():
                 if lemma.antonyms():
                     antonyms.append(lemma.antonyms()[0].name())
-        if word2 in antonyms:
-            return True
-        return False
+        return right in antonyms
 
-    # returns, whether two words are synonyms
-    def is_syn(self, word1, word2):
+    @staticmethod
+    def are_synonym(left: str, right: str):
         synonyms = []
-        for syn in wordnet.synsets(word1):
+        for syn in wordnet.synsets(left):
             for lemma in syn.lemmas():
                 synonyms.append(lemma.name())
-        if word2 in synonyms:
-            return True
-        return False
+        return right in synonyms
