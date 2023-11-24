@@ -27,6 +27,7 @@ class Trafo24Step(base.AugmentationStep):
             first_index = random.randrange(0, num_sentences - 1)
 
             self.merge_sentences(first_index, doc)
+        return doc
 
     @staticmethod
     def merge_sentences(first_index: int, doc: model.Document):
