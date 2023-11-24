@@ -14,7 +14,7 @@ class Trafo24Step(base.AugmentationStep):
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
-            params.FloatParam(name="p", min_value=0.0, max_value=1.0),
+            params.IntegerParam(name="n", min_value=1, max_value=20),
         ]
 
     def do_augment(self, doc: model.Document) -> model.Document:
