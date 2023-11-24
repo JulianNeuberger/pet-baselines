@@ -402,7 +402,8 @@ class CatBoostRelationEstimator:
             mention.token_indices
         ), f"Mention refers to tokens {mention.token_indices}, " \
            f"but there are only {len(spacy_tokens)} tokens " \
-           f"in sentence {spacy_tokens.text}"
+           f"in sentence {spacy_tokens.text}, with original " \
+           f"tokens {[t.text for t in sentence.tokens]}"
 
         mention_token_depths = {
             mention_token_index: self._get_token_depth(
