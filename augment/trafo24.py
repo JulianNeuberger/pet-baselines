@@ -41,6 +41,10 @@ class Trafo24Step(base.AugmentationStep):
             doc, index_in_document=first_sentence.tokens[-1].index_in_document
         )
         first_sentence_length = len(first_sentence.tokens)
+
+        for token in second_sentence.tokens:
+            token.sentence_index = first_index
+
         first_sentence.tokens += second_sentence.tokens
 
         for mention in doc.mentions:

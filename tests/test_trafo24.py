@@ -135,3 +135,4 @@ def test_do_augment():
     augmented = trafo.do_augment(augmented)
 
     assert len(augmented.sentences) == 1
+    assert all([t.sentence_index == 0 for t in augmented.sentences[0].tokens])
