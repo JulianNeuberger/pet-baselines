@@ -131,13 +131,22 @@ def test_do_augment():
     assert augmented != document
     assert len(augmented.sentences) == 2
     assert len(augmented.tokens) == len(document.tokens) - 1
+    for mention in augmented.mentions:
+        assert mention.sentence_index < len(augmented.sentences)
+        assert all([i < len(augmented.tokens) for i in mention.token_indices])
 
     augmented = trafo.do_augment(augmented)
 
     assert len(augmented.sentences) == 1
     assert all([t.sentence_index == 0 for t in augmented.sentences[0].tokens])
+    for mention in augmented.mentions:
+        assert mention.sentence_index < len(augmented.sentences)
+        assert all([i < len(augmented.tokens) for i in mention.token_indices])
 
     augmented = document.copy()
     trafo.merge_sentences(0, augmented)
 
     assert set([t.sentence_index for t in augmented.tokens]) == {0, 1}
+    for mention in augmented.mentions:
+        assert mention.sentence_index < len(augmented.sentences)
+        assert all([i < len(augmented.tokens) for i in mention.token_indices])
