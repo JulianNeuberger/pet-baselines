@@ -8,8 +8,8 @@ from data import model
 
 
 class AugmentationStep(abc.ABC):
-    def __init__(self, **kwargs):
-        pass
+    def __init__(self, dataset: typing.List[model.Document], **kwargs):
+        self.dataset = dataset
 
     def do_augment(self, doc: model.Document) -> model.Document:
         raise NotImplementedError()
