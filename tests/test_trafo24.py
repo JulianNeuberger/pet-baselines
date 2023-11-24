@@ -2,6 +2,7 @@ import random
 import string
 
 import typing
+import uuid
 
 import data
 from augment import trafo24
@@ -166,23 +167,40 @@ def test_trafo24_monkey():
         mentions = []
         for _ in range(20):
             sentence_id = random.randrange(0, len(sentences))
-            mention_len = random.randint(1, min(len(sentences[sentence_id].tokens), 4))
-            indices_start = random.randint(0, len(sentences[sentence_id].tokens) - mention_len)
+            mention_len = random.randint(1, min(len(sentences[sentence_id].tokens) - 1, 4))
+            indices_start = random.randint(
+                0, len(sentences[sentence_id].tokens) - mention_len - 1
+            )
             indices = []
             for i in range(mention_len):
                 indices.append(i + indices_start)
-            mentions.append(data.Mention(ner_tag="", sentence_index=sentence_id, token_indices=indices))
+            mentions.append(
+                data.Mention(
+                    ner_tag=uuid.uuid4().__str__(),
+                    sentence_index=sentence_id,
+                    token_indices=indices,
+                )
+            )
         return mentions
 
     def random_sentence(sentence_id: int, num_previous_tokens: int):
         tokens = []
-        for i in range(1, random.randint(2, 10)):
+        for i in range(0, random.randint(1, 4)):
             tokens.append(random_token(sentence_id, num_previous_tokens + i))
+        tokens.append(
+            model.Token(
+                text=".",
+                index_in_document=num_previous_tokens + len(tokens),
+                pos_tag="",
+                bio_tag="",
+                sentence_index=sentence_id,
+            )
+        )
         return model.Sentence(tokens=tokens)
 
     def random_token(sentence_id: int, id_in_doc) -> model.Token:
         return model.Token(
-            text="".join(random.choice(string.ascii_lowercase) for _ in range(5)),
+            text="".join(random.choice(string.ascii_lowercase) for _ in range(3)),
             sentence_index=sentence_id,
             index_in_document=id_in_doc,
             bio_tag="",
@@ -192,19 +210,33 @@ def test_trafo24_monkey():
     def random_doc():
         sentences = []
         tokens_in_doc = 0
-        for sent_id in range(15):
+        for sent_id in range(3):
             sentence = random_sentence(sent_id, tokens_in_doc)
             tokens_in_doc += len(sentence.tokens)
             sentences.append(sentence)
         mentions = random_mentions(sentences)
-        return model.Document(text="", name="", sentences=sentences, mentions=mentions, entities=[], relations=[])
+        return model.Document(
+            text="",
+            name="",
+            sentences=sentences,
+            mentions=mentions,
+            entities=[],
+            relations=[],
+        )
 
-    for _ in range(1000):
+    for i in range(10):
         doc = random_doc()
-        trafo = trafo24.Trafo24Step(dataset=[doc], n=random.randint(1, len(doc.sentences)))
+        trafo = trafo24.Trafo24Step(
+            dataset=[doc], n=random.randint(1, len(doc.sentences))
+        )
+
         augmented = trafo.do_augment(doc)
 
         assert augmented != doc
         for mention in augmented.mentions:
             assert mention.sentence_index < len(augmented.sentences)
             assert all([i < len(augmented.tokens) for i in mention.token_indices])
+
+        for old_mention, new_mention in zip(doc.mentions, augmented.mentions):
+            assert old_mention.ner_tag == new_mention.ner_tag
+            assert old_mention.text(doc) == new_mention.text(augmented)

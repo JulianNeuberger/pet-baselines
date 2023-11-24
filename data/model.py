@@ -107,6 +107,10 @@ class Sentence:
     def num_tokens(self):
         return len(self.tokens)
 
+    @property
+    def text(self):
+        return " ".join([t.text for t in self.tokens])
+
     def copy(self) -> 'Sentence':
         return Sentence([t.copy() for t in self.tokens])
 

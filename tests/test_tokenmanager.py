@@ -434,6 +434,8 @@ def test_delete_token_from_tokens():
     assert doc_to_aug2 == doc_sol2
     assert index2 == (1, 2)
 
+    assert tuple([t.index_in_document for t in doc_to_aug2.tokens]) == tuple(range(len(doc_to_aug2.tokens)))
+
 
 def test_delete_token_from_mention_token_indices():
     # ARRANGE

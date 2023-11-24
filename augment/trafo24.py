@@ -37,8 +37,9 @@ class Trafo24Step(base.AugmentationStep):
         first_sentence = doc.sentences[first_index]
         second_sentence = doc.sentences[second_index]
 
+        last_token = first_sentence.tokens[-1]
         tokenmanager.delete_token(
-            doc, index_in_document=first_sentence.tokens[-1].index_in_document
+            doc, index_in_document=last_token.index_in_document
         )
         first_sentence_length = len(first_sentence.tokens)
 
@@ -59,7 +60,7 @@ class Trafo24Step(base.AugmentationStep):
         for mention in doc.mentions:
             if mention.sentence_index > second_index:
                 mention.sentence_index -= 1
-            if mention.sentence_index == second_index:
+            elif mention.sentence_index == second_index:
                 mention.sentence_index -= 1
                 mention.token_indices = [
                     t + first_sentence_length for t in mention.token_indices
