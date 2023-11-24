@@ -23,7 +23,8 @@ class Trafo24Step(base.AugmentationStep):
             if num_sentences == 1:
                 return doc
 
-            first_index = random.randint(0, num_sentences - 1)
+            # first index can not be the last sentence!
+            first_index = random.randrange(0, num_sentences - 1)
 
             self.merge_sentences(first_index, doc)
 
