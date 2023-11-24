@@ -1,6 +1,5 @@
-import copy
+import random
 import typing
-from random import random
 
 from transformers import pipeline
 
@@ -13,11 +12,11 @@ class Trafo26Step(base.AugmentationStep):
     def __init__(
         self,
         dataset: typing.List[model.Document],
-        p=0.5,
+        n=1,
         tag_groups: typing.List[Pos] = None,
     ):
         super().__init__(dataset)
-        self.p = p
+        self.n = n
         self.unmasker = pipeline("fill-mask", model="xlm-roberta-base", top_k=1)
         self.pos_tags_to_consider: typing.List[str] = [
             v for group in tag_groups for v in group.tags
@@ -27,30 +26,30 @@ class Trafo26Step(base.AugmentationStep):
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
             params.ChoiceParam(name="tag_groups", choices=list(Pos), max_num_picks=4),
-            params.FloatParam(name="p", min_value=0.0, max_value=1.0),
+            params.IntegerParam(name="n", min_value=1, max_value=20),
         ]
 
-    def do_augment(self, doc2: model.Document) -> model.Document:
-        doc = copy.deepcopy(doc2)
-        for sentence in doc.sentences:
-            sentence_string = ""
-            changed_id = []
-            for i, token in enumerate(sentence.tokens):
-                if token.pos_tag in self.pos_tags_to_consider:
-                    sentence_string += " <mask>"
-                    changed_id.append(i)
-                else:
-                    sentence_string += f" {token.text}"
-            if len(changed_id) == 0:
-                continue
-            new_sent = self.unmasker(sentence_string)
-            new_words = []
-            for nw in new_sent:
-                if len(changed_id) == 1:
-                    new_words.append(nw["token_str"])
-                else:
-                    new_words.append(nw[0]["token_str"])
-            for j, i in enumerate(changed_id):
-                if random() >= self.p:
-                    sentence.tokens[i].text = new_words[j]
+    @staticmethod
+    def mask_sentence(
+        doc: model.Document, sentence: model.Sentence, token_to_mask: model.Token
+    ) -> str:
+        tokens = [t.text for t in sentence.tokens]
+        tokens[token_to_mask.index_in_sentence(doc)] = "<mask>"
+        return " ".join(tokens)
+
+    def do_augment(self, doc: model.Document) -> model.Document:
+        doc = doc.copy()
+
+        candidates: typing.List[model.Token] = []
+        for token in doc.tokens:
+            if token.pos_tag in self.pos_tags_to_consider:
+                candidates.append(token)
+        random.shuffle(candidates)
+
+        for candidate in candidates:
+            sentence = doc.sentences[candidate.sentence_index]
+            masked_sentence = self.mask_sentence(doc, sentence, candidate)
+            new_sentence = self.unmasker(masked_sentence)[0]
+            doc.tokens[candidate.index_in_document].text = new_sentence["token_str"]
+
         return doc
