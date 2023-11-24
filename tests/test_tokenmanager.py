@@ -1,3 +1,5 @@
+import pytest
+
 from transformations.tokenmanager import get_pos_tag, get_bio_tag_based_on_left_token, insert_token_in_mentions, \
     create_token, get_index_in_sentence, get_mentions, insert_token_in_tokens, delete_token_from_tokens, \
     delete_token_from_mention_token_indices, adjust_mention_indices_in_entities, delete_mention_from_entities, \
@@ -420,17 +422,17 @@ def test_delete_token_from_tokens():
 
     # ACT
     # test1
-    index1 = delete_token_from_tokens(doc_to_aug1, ind_in_doc1)
+    with pytest.raises(IndexError):
+        delete_token_from_tokens(doc_to_aug1, ind_in_doc1)
 
     # test2
     index2 = delete_token_from_tokens(doc_to_aug2, ind_in_doc2)
 
     # ASSERT
     assert doc_to_aug1 == doc_sol1
-    assert index1 == []
 
     assert doc_to_aug2 == doc_sol2
-    assert index2 == [2, 1]
+    assert index2 == (1, 2)
 
 
 def test_delete_token_from_mention_token_indices():

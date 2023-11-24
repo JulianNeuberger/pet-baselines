@@ -18,6 +18,7 @@ class Trafo24Step(base.AugmentationStep):
         ]
 
     def do_augment(self, doc: model.Document) -> model.Document:
+        doc = doc.copy()
         for _ in range(self.n):
             num_sentences = len(doc.sentences)
             if num_sentences == 1:
@@ -36,16 +37,14 @@ class Trafo24Step(base.AugmentationStep):
         first_sentence = doc.sentences[first_index]
         second_sentence = doc.sentences[first_index + 1]
 
-        new_sentence = first_sentence.copy()
         tokenmanager.delete_token(
-            doc, index_in_document=new_sentence.tokens[-1].index_in_document
+            doc, index_in_document=first_sentence.tokens[-1].index_in_document
         )
-        new_sentence.tokens += second_sentence.tokens
-
-        first_sentence_length = len(first_sentence.tokens) - 1
+        first_sentence_length = len(first_sentence.tokens)
+        first_sentence.tokens += second_sentence.tokens
 
         for mention in doc.mentions:
-            if mention.sentence_index == first_index + 1:
+            if mention.sentence_index == second_index:
                 mention.sentence_index = first_index
                 mention.token_indices = [
                     t + first_sentence_length for t in mention.token_indices
@@ -57,5 +56,4 @@ class Trafo24Step(base.AugmentationStep):
                     first_index if e is second_index else e for e in relation.evidence
                 ]
 
-        doc.sentences[first_index] = new_sentence
         doc.sentences.pop(second_index)

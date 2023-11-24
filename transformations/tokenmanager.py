@@ -1,7 +1,8 @@
-from data import model, Document
 import typing
+
 import nltk
-import data
+
+from data import model, Document
 
 
 # Delete a Token #
@@ -10,37 +11,31 @@ import data
 # Author: Benedikt
 def delete_token(doc: Document, index_in_document: int):
     # delete token from sentence.tokens, get position from where to change the following tokens
-    index = delete_token_from_tokens(doc, index_in_document)
-    index_in_sentence = index[0]
-    sentence_index = index[1]
+    sentence_index, index_in_sentence = delete_token_from_tokens(doc, index_in_document)
     mention_index = delete_token_from_mention_token_indices(
         doc, index_in_sentence, sentence_index
     )
 
 
-# Author: Benedikt
 def delete_token_from_tokens(
     doc: Document, index_in_document: int
-) -> typing.List:  # deletes tokens from the tokenslist
-    not_found_token = True
-    index = []
-    for sentence in doc.sentences:
-        counter = 0
-        for token in sentence.tokens:
-            if token.index_in_document == index_in_document and not_found_token:
-                not_found_token = False
-                # delete token from sentence.tokens
-                del sentence.tokens[counter]
-                # get the position from where to change the index_in_document for all tokens and the sentence_index
-                if counter < len(sentence.tokens):
-                    sentence.tokens[counter].index_in_document -= 1
-                index.append(counter)
-                index.append(token.sentence_index)
-            # change index_in_doc of following tokens
-            if not not_found_token:
-                token.index_in_document -= 1
-            counter += 1
-    return index
+) -> typing.Optional[typing.Tuple[int, int]]:
+    token = doc.tokens[index_in_document]
+    sentence_id = token.sentence_index
+    index_in_sentence = -1
+
+    for i, token in enumerate(doc.sentences[sentence_id].tokens):
+        if token.index_in_document == index_in_document:
+            index_in_sentence = i
+            found_token = True
+            break
+
+    doc.sentences[sentence_id].tokens.pop(index_in_sentence)
+
+    for subsequent_token in doc.tokens[index_in_document:]:
+        subsequent_token.index_in_document -= 1
+
+    return sentence_id, index_in_sentence
 
 
 # Author: Benedikt
