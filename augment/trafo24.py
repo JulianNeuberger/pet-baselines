@@ -42,7 +42,7 @@ class Trafo24Step(base.AugmentationStep):
         )
         new_sentence.tokens += second_sentence.tokens
 
-        first_sentence_length = len(new_sentence.tokens)
+        first_sentence_length = len(first_sentence.tokens) - 1
 
         for mention in doc.mentions:
             if mention.sentence_index == first_index + 1:
