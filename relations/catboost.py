@@ -398,7 +398,7 @@ class CatBoostRelationEstimator:
         spacy_token: tokens.Token
 
         assert len(mention.token_indices) > 0
-        assert len(spacy_tokens) == len(
+        assert len(spacy_tokens) > max(
             mention.token_indices
         ), f"Mention refers to tokens {mention.token_indices}, " \
            f"but there are only {len(spacy_tokens)} tokens " \
