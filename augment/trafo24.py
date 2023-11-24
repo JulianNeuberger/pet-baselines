@@ -42,22 +42,29 @@ class Trafo24Step(base.AugmentationStep):
         )
         first_sentence_length = len(first_sentence.tokens)
 
-        for token in second_sentence.tokens:
-            token.sentence_index = first_index
+        for sentence in doc.sentences[second_index:]:
+            for token in sentence.tokens:
+                token.sentence_index -= 1
 
-        first_sentence.tokens += second_sentence.tokens
+        for relation in doc.relations:
+            evidence = []
+            for evidence_sentence_index in relation.evidence:
+                new_evidence = evidence_sentence_index
+                if evidence_sentence_index >= second_index:
+                    new_evidence -= 1
+                if new_evidence not in evidence:
+                    evidence.append(new_evidence)
+            relation.evidence = evidence
 
         for mention in doc.mentions:
+            if mention.sentence_index > second_index:
+                mention.sentence_index -= 1
             if mention.sentence_index == second_index:
-                mention.sentence_index = first_index
+                mention.sentence_index -= 1
                 mention.token_indices = [
                     t + first_sentence_length for t in mention.token_indices
                 ]
 
-        for relation in doc.relations:
-            if second_index in relation.evidence:
-                relation.evidence = [
-                    first_index if e is second_index else e for e in relation.evidence
-                ]
+        first_sentence.tokens += second_sentence.tokens
 
         doc.sentences.pop(second_index)

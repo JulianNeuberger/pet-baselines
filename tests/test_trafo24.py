@@ -136,3 +136,8 @@ def test_do_augment():
 
     assert len(augmented.sentences) == 1
     assert all([t.sentence_index == 0 for t in augmented.sentences[0].tokens])
+
+    augmented = document.copy()
+    trafo.merge_sentences(0, augmented)
+
+    assert set([t.sentence_index for t in augmented.tokens]) == {0, 1}
