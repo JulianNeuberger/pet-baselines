@@ -2,14 +2,16 @@ import copy
 import typing
 from random import random
 
-from augment import base, params
 from nltk.corpus import wordnet
+
+from augment import base, params
 from data import model
 
 
 # Author: Benedikt
 class Trafo5Step(base.AugmentationStep):
-    def __init__(self, p):
+    def __init__(self, dataset: typing.List[model.Document], p):
+        super().__init__(dataset)
         self.p = p
 
     @staticmethod

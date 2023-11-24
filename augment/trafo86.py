@@ -16,13 +16,13 @@ from random import shuffle
 class Trafo86Step(base.AugmentationStep):
     def __init__(
         self,
+        dataset: typing.List[model.Document],
         max_noun: int = 1,
         kind_of_replace: int = 2,
         no_dupl: bool = False,
         prob: float = 0.5,
-        **kwargs
     ):
-        super().__init__(**kwargs)
+        super().__init__(dataset)
         self.max_noun = max_noun
         self.kind_of_replace = kind_of_replace
         self.no_dupl = no_dupl  # if True: no duplicates

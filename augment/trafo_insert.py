@@ -8,8 +8,8 @@ from transformations import tokenmanager
 
 
 class TrafoInsertStep(base.AugmentationStep):
-    def __init__(self, count_insertions = 1, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, dataset: typing.List[model.Document], count_insertions = 1):
+        super().__init__(dataset)
         self.count_insertions = count_insertions
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:

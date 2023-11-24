@@ -2,6 +2,7 @@ import copy
 import operator
 import typing
 
+import data
 from augment import base, params
 from data import model
 from transformations import tokenmanager
@@ -9,7 +10,10 @@ from transformations import tokenmanager
 
 # Author: Benedikt
 class Filter9Step(base.AugmentationStep):
-    def __init__(self, length: int = 12, op: str = "<"):
+    def __init__(
+        self, dataset: typing.List[data.Document], length: int = 12, op: str = "<"
+    ):
+        super().__init__(dataset)
         self.length = length
         self.op = Filter9Step.parse_operator(op)
 

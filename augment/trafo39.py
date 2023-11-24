@@ -1,20 +1,19 @@
 import copy
 import typing
+from random import choice
+from random import random as rand
 
 from augment import base, params
 from data import model
 from transformations import tokenmanager
-from random import choice
-from random import random as rand
-from numpy.random import binomial
 
 
 # English Mention Replacement for Ner
 
 
-# Author: Leonie
 class Trafo39Step(base.AugmentationStep):
-    def __init__(self, prob=0.5):
+    def __init__(self, dataset: typing.List[model.Document], prob=0.5):
+        super().__init__(dataset)
         self.prob = prob
 
     @staticmethod

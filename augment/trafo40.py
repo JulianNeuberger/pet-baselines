@@ -9,18 +9,17 @@ from random import choice
 # Filler Word Augmentation - Rauschen
 
 
-# Author: Leonie
 class Trafo40Step(base.AugmentationStep):
     def __init__(
         self,
+        dataset: typing.List[model.Document],
         prob=0.166,
         speaker_p: bool = True,
         uncertain_p: bool = True,
         filler_p: bool = True,
         tags: typing.List = None,
-        **kwargs
     ):
-        super().__init__(**kwargs)
+        super().__init__(dataset)
         self.prob = prob
         self.speaker_p = speaker_p
         self.uncertain_p = uncertain_p

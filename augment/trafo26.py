@@ -1,24 +1,26 @@
-import spacy
-import typing
-from transformers import pipeline
-from random import random
-import data
-from data import model
-from augment import base, params
 import copy
-from pos_enum import Pos
-class Trafo26Step(base.AugmentationStep):
+import typing
+from random import random
 
-    def __init__(self, p = 0.5, tag_groups: typing.List[Pos] = None, **kwargs):
-        super().__init__(**kwargs)
+from transformers import pipeline
+
+from augment import base, params
+from data import model
+from pos_enum import Pos
+
+
+class Trafo26Step(base.AugmentationStep):
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        p=0.5,
+        tag_groups: typing.List[Pos] = None,
+    ):
+        super().__init__(dataset)
         self.p = p
-        self.unmasker = pipeline(
-            "fill-mask", model="xlm-roberta-base", top_k=1
-        )
+        self.unmasker = pipeline("fill-mask", model="xlm-roberta-base", top_k=1)
         self.pos_tags_to_consider: typing.List[str] = [
-            v
-            for group in tag_groups
-            for v in group.tags
+            v for group in tag_groups for v in group.tags
         ]
 
     @staticmethod
@@ -26,8 +28,8 @@ class Trafo26Step(base.AugmentationStep):
         return [
             params.ChoiceParam(name="tag_groups", choices=list(Pos), max_num_picks=4),
             params.FloatParam(name="p", min_value=0.0, max_value=1.0),
-
         ]
+
     def do_augment(self, doc2: model.Document) -> model.Document:
         doc = copy.deepcopy(doc2)
         for sentence in doc.sentences:

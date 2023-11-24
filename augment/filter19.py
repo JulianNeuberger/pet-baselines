@@ -11,7 +11,14 @@ import copy
 
 # Author: Benedikt
 class Filter19Step(base.AugmentationStep):
-    def __init__(self, length: int=9, op: str=">", pos: str="V"):
+    def __init__(
+        self,
+        dataset: typing.List[data.Document],
+        length: int = 9,
+        op: str = ">",
+        pos: str = "V",
+    ):
+        super().__init__(dataset)
         self.length = length
         self.op = Filter19Step.parse_operator(op)
         self.pos = Filter19Step.parse_pos_tags(pos)
@@ -35,6 +42,7 @@ class Filter19Step(base.AugmentationStep):
             "V": ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"],  # Verben
         }
         return pos_tags[pos_tag]
+
     def do_augment(self, doc2: model.Document) -> model.Document:
         doc = copy.deepcopy(doc2)
         i = 0
@@ -55,4 +63,3 @@ class Filter19Step(base.AugmentationStep):
                 i -= 1
             i += 1
         return doc
-

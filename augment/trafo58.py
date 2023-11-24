@@ -11,8 +11,13 @@ from transformations import tokenmanager
 
 # Author: Benedikt
 class Trafo58Step(base.AugmentationStep):
-    def __init__(self, p: float = 1, lang: str = "de", **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        p: float = 1,
+        lang: str = "de",
+    ):
+        super().__init__(dataset)
         self.lang = lang
         self.p = p
         self.encode = pipeline(

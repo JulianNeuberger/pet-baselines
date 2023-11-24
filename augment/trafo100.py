@@ -9,19 +9,23 @@ from data import model
 from transformations import tokenmanager
 import nltk
 from pos_enum import Pos
+
 nltk.download("stopwords")
 
 
 # Author: Benedikt
 class Trafo100Step(base.AugmentationStep):
-    def __init__(self, tag_groups: typing.List[Pos] = None, prob=0.5, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        tag_groups: typing.List[Pos] = None,
+        prob=0.5,
+    ):
+        super().__init__(dataset)
         self.seed = 0
         self.prob = prob
         self.pos_tags_to_consider: typing.List[str] = [
-            v
-            for group in tag_groups
-            for v in group.tags
+            v for group in tag_groups for v in group.tags
         ]
         self.stopwords = stopwords.words("english")
 
@@ -61,7 +65,9 @@ class Trafo100Step(base.AugmentationStep):
                                 for j in range(len(syn)):
                                     token_to_insert = model.Token(
                                         text=syn[j],
-                                        index_in_document=token.index_in_document + 1 + j,
+                                        index_in_document=token.index_in_document
+                                        + 1
+                                        + j,
                                         pos_tag=tokenmanager.get_pos_tag([syn[j]])[0],
                                         bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
                                             token.bio_tag

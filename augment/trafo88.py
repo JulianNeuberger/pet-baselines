@@ -9,8 +9,11 @@ from data import model
 
 
 class Trafo88Step(base.AugmentationStep):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+    ):
+        super().__init__(dataset)
         self.nlp = spacy.load("en_core_web_sm")
 
     def do_augment(self, doc: model.Document) -> model.Document:

@@ -9,7 +9,8 @@ from collections import defaultdict
 # Author: Benedikt
 # not used in final work
 class Trafo33Step(base.AugmentationStep):
-    def __init__(self, p: float = 1):
+    def __init__(self, dataset: typing.List[model.Document], p: float = 1):
+        super().__init__(dataset)
         self.p = p
 
     @staticmethod

@@ -8,8 +8,15 @@ from transformations import tokenmanager
 
 # Author: Benedikt
 class Trafo82Step(base.AugmentationStep):
-    def __init__(self, short_to_long=True, long_to_short=True, p=1, bank=1, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        short_to_long=True,
+        long_to_short=True,
+        p=1,
+        bank=1,
+    ):
+        super().__init__(dataset)
         self.short_to_long = short_to_long
         self.long_to_short = long_to_short
         self.bank = bank

@@ -1,17 +1,21 @@
 import typing
 
+import data
 from augment import base
 import operator
 
 from data import model
 from transformations import tokenmanager
 
+
 # Author: Benedikt
 # OLD
 class Filter19StepOld(base.AugmentationStep):
-    def __init__(self, triples: typing.List=[()]):
+    def __init__(
+        self, dataset: typing.List[model.Document], triples: typing.List = [()]
+    ):
+        super().__init__(dataset)
         self.triples = triples
-
 
     @staticmethod
     def parse_operator(op):
@@ -23,14 +27,16 @@ class Filter19StepOld(base.AugmentationStep):
             "==": operator.eq,
         }
         return ops[op]
+
     @staticmethod
     def parse_pos_tags(self, pos_tag):
         pos_tags = {
-            "N": ["NN", "NNS", "NNP", "NNPS"], # Nomen
+            "N": ["NN", "NNS", "NNP", "NNPS"],  # Nomen
             "A": ["JJ", "JJR", "JJS", "RB", "RBR", "RBS"],  # Adjektive und Adverben
             "V": ["VB", "VBD", "VBG", "VBN", "VBP", "VBZ"],  # Verben
         }
         return pos_tags[pos_tag]
+
     def do_augment(self, doc: model.Document) -> model.Document:
         i = 0
         while i < len(doc.sentences):

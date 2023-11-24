@@ -44,6 +44,7 @@ class Trafo106Step(base.AugmentationStep):
 
     def __init__(
         self,
+        dataset: typing.List[model.Document],
         n: int = 1,
         spacy_model: str = "en_core_web_sm",
         transformer_model: str = "distilroberta-base",
@@ -52,18 +53,15 @@ class Trafo106Step(base.AugmentationStep):
         device: int = -1,
         tag_groups: typing.List[Pos] = None,
         sample_top_k: bool = False,
-        **kwargs,
     ):
-        super().__init__(**kwargs)
+        super().__init__(dataset)
         self.n = n
         self.nlp = spacy.load(spacy_model, disable=["ner", "lemmatizer"])
         self.fill_pipeline = transformers.pipeline(
             "fill-mask", model=transformer_model, top_k=top_k, device=device
         )
         self.pos_tags_to_consider: typing.List[str] = [
-            v
-            for group in tag_groups
-            for v in group.tags
+            v for group in tag_groups for v in group.tags
         ]
         self.sample_top_k = sample_top_k
 
@@ -82,12 +80,18 @@ class Trafo106Step(base.AugmentationStep):
 
     def do_augment(self, doc: model.Document) -> model.Document:
         token_texts = [t.text for t in doc.tokens]
-        max_token_count = self.tokenizer.model_max_length - self.padding - self.context_length - 4
+        max_token_count = (
+            self.tokenizer.model_max_length - self.padding - self.context_length - 4
+        )
         token_texts = token_texts[:max_token_count]
-        num_tokens_to_truncate = self.tokens_to_truncate(" ".join(token_texts), max_token_count)
+        num_tokens_to_truncate = self.tokens_to_truncate(
+            " ".join(token_texts), max_token_count
+        )
         while num_tokens_to_truncate > 0:
             token_texts = token_texts[:-num_tokens_to_truncate]
-            num_tokens_to_truncate = self.tokens_to_truncate(" ".join(token_texts), max_token_count)
+            num_tokens_to_truncate = self.tokens_to_truncate(
+                " ".join(token_texts), max_token_count
+            )
 
         spacy_doc = spacy.tokens.Doc(vocab=self.nlp.vocab, words=token_texts)
         spacy_doc = self.nlp(spacy_doc, disable=["ner", "lemmatizer"])

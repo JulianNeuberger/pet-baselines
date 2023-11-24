@@ -1,3 +1,6 @@
+import typing
+
+import data
 from augment import base
 import operator
 
@@ -8,7 +11,14 @@ import copy
 
 # Author: Benedikt
 class Filter10Step(base.AugmentationStep):
-    def __init__(self, length: int=4, op: str=">", bio: str="Activity"):
+    def __init__(
+        self,
+        dataset: typing.List[data.Document],
+        length: int = 4,
+        op: str = ">",
+        bio: str = "Activity",
+    ):
+        super().__init__(dataset)
         self.length = length
         self.op = Filter10Step.parse_operator(op)
         self.bio = bio

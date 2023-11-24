@@ -8,17 +8,22 @@ from data import model
 import numpy as np
 from pos_enum import Pos
 
+
 # Author: Benedikt
 class Trafo101Step(base.AugmentationStep):
     name = "101"
 
-    def __init__(self, prob: float = 1, tag_groups: typing.List[Pos] = None, no_dupl=False, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        prob: float = 1,
+        tag_groups: typing.List[Pos] = None,
+        no_dupl=False,
+    ):
+        super().__init__(dataset)
         self.prob = prob
         self.pos_tags_to_consider: typing.List[str] = [
-            v
-            for group in tag_groups
-            for v in group.tags
+            v for group in tag_groups for v in group.tags
         ]
         self.no_dupl = no_dupl
 

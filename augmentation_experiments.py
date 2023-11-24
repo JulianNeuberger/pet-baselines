@@ -34,9 +34,9 @@ from augment import (
     trafo106,
     trafo40,
     trafo_null,
-    trafo_insert
+    trafo_insert,
 )
-from data import loader
+from data import loader, model
 from main import cross_validate_pipeline
 
 strategies: typing.List[typing.Type[base.AugmentationStep]] = [
@@ -60,7 +60,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo103.Trafo103Step,
     trafo106.Trafo106Step,
     trafo_null.TrafoNullStep,
-    trafo_insert.TrafoInsertStep
+    trafo_insert.TrafoInsertStep,
 ]
 
 max_runs_per_step = 150
@@ -92,12 +92,14 @@ def suggest_param(param: params.Param, trial: optuna.Trial) -> typing.Any:
 
 
 def instantiate_step(
-    step_class: typing.Type[base.AugmentationStep], trial: optuna.Trial
+    step_class: typing.Type[base.AugmentationStep],
+    trial: optuna.Trial,
+    dataset: typing.List[model.Document],
 ) -> base.AugmentationStep:
     suggested_params = {
         p.name: suggest_param(p, trial) for p in step_class.get_params()
     }
-    return step_class(**suggested_params)
+    return step_class(dataset, **suggested_params)
 
 
 def objective_factory(
@@ -107,7 +109,6 @@ def objective_factory(
     **kwargs,
 ):
     def objective(trial: optuna.Trial):
-        step = instantiate_step(augmentor_class, trial)
         kf = sklearn.model_selection.KFold(
             n_splits=5, random_state=random_state, shuffle=True
         )
@@ -118,6 +119,9 @@ def objective_factory(
         for train_indices, dev_indices in kf.split(documents):
             # load training set, augment and shuffle
             un_augmented_train_documents = [documents[i] for i in train_indices]
+
+            step = instantiate_step(augmentor_class, trial, un_augmented_train_documents)
+
             augmented_train_documents, _ = augment.run_augmentation(
                 un_augmented_train_documents, step, augmentation_rate
             )

@@ -11,8 +11,8 @@ from numpy.random import binomial, shuffle
 
 # Author: Leonie
 class Trafo90Step(base.AugmentationStep):
-    def __init__(self, prob: float = 0.5, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, dataset: typing.List[model.Document], prob: float = 0.5):
+        super().__init__(dataset)
         self.prob = prob
 
     @staticmethod

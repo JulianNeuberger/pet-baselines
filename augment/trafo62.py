@@ -10,22 +10,16 @@ from transformations import tokenmanager
 
 class Trafo62Step(base.AugmentationStep):
     def __init__(
-        self,
-        p: float = 1,
-        lang: str = "de",
-        **kwargs
+        self, dataset: typing.List[model.Document], p: float = 1, lang: str = "de"
     ):
-        super().__init__(**kwargs)
+        super().__init__(dataset)
         self.model = M2M100ForConditionalGeneration.from_pretrained(
             "facebook/m2m100_418M"
         )
-        self.tokenizer = M2M100Tokenizer.from_pretrained(
-            "facebook/m2m100_418M"
-        )
+        self.tokenizer = M2M100Tokenizer.from_pretrained("facebook/m2m100_418M")
         self.src_lang = "en"
         self.pivot_lang = lang
         self.p = p
-
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
@@ -114,7 +108,7 @@ class Trafo62Step(base.AugmentationStep):
             en_new = en
         return en_new
 
-    def translate(self, sentence,  target_lang, model, tokenizer):
+    def translate(self, sentence, target_lang, model, tokenizer):
         tokenizer.src_lang = self.src_lang
         encoded_source_sentence = tokenizer(sentence, return_tensors="pt")
         generated_target_tokens = model.generate(

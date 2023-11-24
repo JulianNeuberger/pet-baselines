@@ -1,10 +1,11 @@
 import typing
+from random import random as rand
+
+from nltk.corpus import wordnet
 
 from augment import base, params
 from data import model
-from nltk.corpus import wordnet
 from transformations import tokenmanager
-from random import random as rand
 
 
 # Adjective Antonym Switch - Wortebene
@@ -12,8 +13,15 @@ from random import random as rand
 
 # Author: Leonie
 class Trafo3Step(base.AugmentationStep):
-    def __init__(self, no_dupl: bool = False, max_adj: int = 1, prob: float = 0.5, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        no_dupl: bool = False,
+        max_adj: int = 1,
+        prob: float = 0.5,
+        **kwargs
+    ):
+        super().__init__(dataset)
         self.max_adj = max_adj
         self.no_dupl = no_dupl
         self.prob = prob

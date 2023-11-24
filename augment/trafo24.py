@@ -5,10 +5,10 @@ from augment import base, params
 from transformations import tokenmanager
 from random import random
 
-class Trafo24Step(base.AugmentationStep):
 
-    def __init__(self, p = 0.5,  **kwargs):
-        super().__init__(**kwargs)
+class Trafo24Step(base.AugmentationStep):
+    def __init__(self, dataset: typing.List[model.Document], p=0.5):
+        super().__init__(dataset)
         self.p = p
 
     @staticmethod
@@ -33,8 +33,13 @@ class Trafo24Step(base.AugmentationStep):
                     # transfer Tokens
                     tok_arr = []
                     for j, token in enumerate(doc.sentences[i + 1].tokens):
-                        tok = model.Token(token.text, token.index_in_document - 1, token.pos_tag, token.bio_tag,
-                                          token.sentence_index - 1)
+                        tok = model.Token(
+                            token.text,
+                            token.index_in_document - 1,
+                            token.pos_tag,
+                            token.bio_tag,
+                            token.sentence_index - 1,
+                        )
                         tok_arr.append(tok)
                     # delete sentence
                     tokenmanager.delete_sentence(doc, i + 1)
@@ -46,4 +51,3 @@ class Trafo24Step(base.AugmentationStep):
                     tokenmanager.delete_token(doc, tok_arr[-1].index_in_document + 1)
             i += 1
         return doc
-

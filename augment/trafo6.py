@@ -10,8 +10,8 @@ from transformations import tokenmanager
 
 
 class Trafo6Step(base.AugmentationStep):
-    def __init__(self, p=0.5, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, dataset: typing.List[model.Document], p=0.5):
+        super().__init__(dataset)
         self.p = p
         self.nlp = spacy.load("en_core_web_sm")
 
