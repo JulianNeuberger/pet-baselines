@@ -240,6 +240,13 @@ class Token:
     bio_tag: str
     sentence_index: int
 
+    def index_in_sentence(self, doc: 'Document') -> int:
+        sentence = doc.sentences[self.sentence_index]
+        for index_in_sentence, token in enumerate(sentence.tokens):
+            if token.index_in_document == self.index_in_document:
+                return index_in_sentence
+        raise IndexError(f"Could not find token in sentence with id {self.sentence_index}.")
+
     def copy(self) -> 'Token':
         return Token(
             text=self.text,

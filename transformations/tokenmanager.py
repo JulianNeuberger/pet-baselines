@@ -361,13 +361,11 @@ def get_index_in_sentence(
         return None
 
 
-# Author: Leonie
-# get the mentions from a token
 def get_mentions(doc: Document, ind_in_sent, sentence_idx):
     mentions = []
-    for i in range(len(doc.mentions)):
-        if doc.mentions[i].sentence_index == sentence_idx:
-            for j in doc.mentions[i].token_indices:
+    for i, mention in enumerate(doc.mentions):
+        if mention.sentence_index == sentence_idx:
+            for j in mention.token_indices:
                 if j == ind_in_sent:
                     mentions.append(i)
                 break
