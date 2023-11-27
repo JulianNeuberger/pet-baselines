@@ -98,7 +98,7 @@ class Trafo82Step(base.AugmentationStep):
                                     pos_tag=tokenmanager.get_pos_tag(
                                         [expanded_list_splitted[i]]
                                     )[0],
-                                    bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
+                                    bio_tag=tokenmanager.get_continued_bio_tag(
                                         token.bio_tag
                                     ),
                                     sentence_index=token.sentence_index,

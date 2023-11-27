@@ -1,167 +1,98 @@
+import random
+import typing
+
 from augment import base, params
 from data import model
 from transformations import tokenmanager
-import typing
-from random import random as rand
-from random import choice
-
-
-# Filler Word Augmentation - Rauschen
 
 
 class Trafo40Step(base.AugmentationStep):
+    """
+    Based on https://github.com/GEM-benchmark/NL-Augmenter/blob/main/nlaugmenter/transformations/filler_word_augmentation/transformation.py
+    """
+
+    # Speaker opinion/mental state phrases
+    # Taken from Kovatchev et al. (2021)
+    speaker_phrases = [
+        "I think",
+        "I believe",
+        "I mean",
+        "I guess",
+        "that is",
+        "I assume",
+        "I feel",
+        "In my opinion",
+        "I would say",
+    ]
+
+    # Words and phrases indicating uncertainty
+    # Taken from Kovatchev et al. (2021)
+    uncertain_phrases = [
+        "maybe",
+        "perhaps",
+        "probably",
+        "possibly",
+        "most likely",
+    ]
+
+    # Filler words that should preserve the meaning of the phrase
+    # Taken from Laserna et al. (2014)
+    fill_phrases = [
+        "uhm",
+        "umm",
+        "ahh",
+        "err",
+        "actually",
+        "obviously",
+        "naturally",
+        "like",
+        "you know",
+    ]
+
     def __init__(
         self,
         dataset: typing.List[model.Document],
-        prob=0.166,
-        speaker_p: bool = True,
-        uncertain_p: bool = True,
-        filler_p: bool = True,
-        tags: typing.List = None,
+        n: int = 10,
+        insert_speaker_phrases: bool = True,
+        insert_uncertainty_phrases: bool = True,
+        insert_filler_phrases: bool = True,
     ):
         super().__init__(dataset)
-        self.prob = prob
-        self.speaker_p = speaker_p
-        self.uncertain_p = uncertain_p
-        self.filler_p = filler_p
-        self.tags = tags
+        self.n = n
+        self.insert_speaker_phrases = insert_speaker_phrases
+        self.insert_uncertainty_phrases = insert_uncertainty_phrases
+        self.insert_filler_phrases = insert_filler_phrases
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
-        # TODO: hard coded for PET dataset
-        tags = [
-            "Actor",
-            "Activity",
-            "Activity Data",
-            "Further Specification",
-            "XOR Gateway",
-            "Condition Specification",
-            "AND Gateway",
-        ]
         return [
-            params.FloatParam(name="prob", min_value=0, max_value=1),
+            params.IntegerParam(name="n", min_value=1, max_value=20),
             params.BooleanParameter(name="speaker_p"),
             params.BooleanParameter(name="uncertain_p"),
             params.BooleanParameter(name="filler_p"),
-            params.ChoiceParam(name="tags", choices=tags, max_num_picks=len(tags)),
         ]
+
+    def get_phrases(self):
+        all_fill = []
+        if self.insert_speaker_phrases:
+            all_fill += self.speaker_phrases
+        if self.insert_uncertainty_phrases:
+            all_fill += self.uncertain_phrases
+        if self.insert_filler_phrases:
+            all_fill += self.fill_phrases
+        return all_fill
 
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
-        for mention in doc.mentions:
-            assert max(mention.token_indices) < len(
-                doc.sentences[mention.sentence_index].tokens
-            ), "broken before trafo 40"
-        # Speaker opinion/mental state phrases
-        # Taken from Kovatchev et al. (2021)
-        speaker_phrases = [
-            "I think",
-            "I believe",
-            "I mean",
-            "I guess",
-            "that is",
-            "I assume",
-            "I feel",
-            "In my opinion",
-            "I would say",
-        ]
+        phrases = self.get_phrases()
 
-        # Words and phrases indicating uncertainty
-        # Taken from Kovatchev et al. (2021)
-        uncertain_phrases = [
-            "maybe",
-            "perhaps",
-            "probably",
-            "possibly",
-            "most likely",
-        ]
+        for _ in range(self.n):
+            index = random.randrange(0, len(doc.tokens))
+            phrase = random.choice(phrases)
+            phrase_tokens = phrase.split()
 
-        # Filler words that should preserve the meaning of the phrase
-        # Taken from Laserna et al. (2014)
-        fill_phrases = [
-            "uhm",
-            "umm",
-            "ahh",
-            "err",
-            "actually",
-            "obviously",
-            "naturally",
-            "like",
-            "you know",
-        ]
-
-        # Initialize the list of all augmentation phrases
-        all_fill = []
-
-        # Add speaker phrases, if enabled
-        if self.speaker_p:
-            all_fill += speaker_phrases
-
-        # Add uncertain phrases, if enabled
-        if self.uncertain_p:
-            all_fill += uncertain_phrases
-
-        # Add filler phrases, if enabled
-        if self.filler_p:
-            all_fill += fill_phrases
-        for sentence_counter, sentence in enumerate(doc.sentences):
-            # token counter to determine the sentence index and skip inserted words
-            token_counter = 0
-
-            while (
-                token_counter < len(sentence.tokens) - 1
-            ):  # -1 so that nothing can be inserted after the point
-                token = sentence.tokens[token_counter]
-                # only if tags are given the tokens should be checked for tags
-                if self.tags is not None:
-                    if tokenmanager.get_bio_tag_short(token.bio_tag) not in self.tags:
-                        token_counter += 1
-                        continue
-
-                if len(all_fill) == 0:
-                    token_counter += 1
-                    continue
-
-                if rand() <= self.prob:
-                    # choose filler phrase
-                    random_filler = choice(all_fill).split()
-
-                    # generate bio-tag
-                    bio_tag = tokenmanager.get_bio_tag_based_on_left_token(
-                        token.bio_tag
-                    )
-
-                    # get mention_index
-                    mentions = tokenmanager.get_mentions(
-                        doc, token_counter, sentence_counter
-                    )
-
-                    # set index_in_sentence
-                    index_in_sentence = token_counter
-                    for i in range(0, len(random_filler)):
-                        # create tokens per inserted word
-                        tok = model.Token(
-                            text=random_filler[i],
-                            index_in_document=token.index_in_document + i + 1,
-                            pos_tag=tokenmanager.get_pos_tag([random_filler[i]])[0],
-                            bio_tag=bio_tag,
-                            sentence_index=token.sentence_index,
-                        )
-                        if mentions == []:
-                            tokenmanager.create_token(
-                                doc, tok, index_in_sentence + i + 1, None
-                            )
-                        else:
-                            tokenmanager.create_token(
-                                doc, tok, index_in_sentence + i + 1, mentions[0]
-                            )
-
-                        # increase the token_counter so that the inserted words get skipped
-                        token_counter += 1
-
-                token_counter += 1
-        for mention in doc.mentions:
-            assert max(mention.token_indices) < len(
-                doc.sentences[mention.sentence_index].tokens
-            ), "broken after trafo 40"
+            for phrase_token_id, phrase_token in enumerate(phrase_tokens):
+                tokenmanager.insert_token_text_into_document(
+                    doc, phrase_token, index + phrase_token_id
+                )
         return doc

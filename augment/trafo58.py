@@ -101,7 +101,7 @@ class Trafo58Step(base.AugmentationStep):
                                 text=translated_list[k],
                                 index_in_document=token.index_in_document + i + k,
                                 pos_tag=tokenmanager.get_pos_tag([token.text])[0],
-                                bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
+                                bio_tag=tokenmanager.get_continued_bio_tag(
                                     token.bio_tag
                                 ),
                                 sentence_index=token.sentence_index,

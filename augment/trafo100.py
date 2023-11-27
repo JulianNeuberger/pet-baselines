@@ -69,7 +69,7 @@ class Trafo100Step(base.AugmentationStep):
                                         + 1
                                         + j,
                                         pos_tag=tokenmanager.get_pos_tag([syn[j]])[0],
-                                        bio_tag=tokenmanager.get_bio_tag_based_on_left_token(
+                                        bio_tag=tokenmanager.get_continued_bio_tag(
                                             token.bio_tag
                                         ),
                                         sentence_index=token.sentence_index,

@@ -143,7 +143,7 @@ class Trafo86Step(base.AugmentationStep):
                             # if the hypernym/hyponym has several words, for each further word create a new token
                             if len(text) > 1:
                                 # generate bio-tag
-                                bio_tag = tokenmanager.get_bio_tag_based_on_left_token(
+                                bio_tag = tokenmanager.get_continued_bio_tag(
                                     token.bio_tag
                                 )
 

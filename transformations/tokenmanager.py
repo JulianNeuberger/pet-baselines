@@ -2,14 +2,14 @@ import typing
 
 import nltk
 
-from data import model, Document
+from data import model
 
 
 # Delete a Token #
 
 
 # Author: Benedikt
-def delete_token(doc: Document, index_in_document: int):
+def delete_token(doc: model.Document, index_in_document: int):
     # delete token from sentence.tokens, get position from where to change the following tokens
     sentence_index, index_in_sentence = delete_token_from_tokens(doc, index_in_document)
     mention_index = delete_token_from_mention_token_indices(
@@ -18,7 +18,7 @@ def delete_token(doc: Document, index_in_document: int):
 
 
 def delete_token_from_tokens(
-    doc: Document, index_in_document: int
+    doc: model.Document, index_in_document: int
 ) -> typing.Optional[typing.Tuple[int, int]]:
     token = doc.tokens[index_in_document]
     sentence_id = token.sentence_index
@@ -45,7 +45,7 @@ def delete_token_from_tokens(
 
 # Author: Benedikt
 def delete_token_from_mention_token_indices(
-    doc: Document, token_index_in_sentence: int, sentence_index: int
+    doc: model.Document, token_index_in_sentence: int, sentence_index: int
 ):
     mention_to_delete = None
     for mention_id, mention in enumerate(doc.mentions):
@@ -71,14 +71,14 @@ def delete_token_from_mention_token_indices(
     return mention_to_delete
 
 
-def adjust_mention_indices_in_entities(doc: Document, mention_index: int):
+def adjust_mention_indices_in_entities(doc: model.Document, mention_index: int):
     for entity in doc.entities:
         for i in range(len(entity.mention_indices)):
             if entity.mention_indices[i] > mention_index:
                 entity.mention_indices[i] -= 1
 
 
-def adjust_entity_indices_in_relations(doc: Document, entity_index: int):
+def adjust_entity_indices_in_relations(doc: model.Document, entity_index: int):
     for relation in doc.relations:
         if relation.head_entity_index > entity_index:
             relation.head_entity_index -= 1
@@ -87,7 +87,7 @@ def adjust_entity_indices_in_relations(doc: Document, entity_index: int):
             relation.tail_entity_index -= 1
 
 
-def delete_mention_from_entities(doc: Document, mention_index: int):
+def delete_mention_from_entities(doc: model.Document, mention_index: int):
     for entity_id, entity in enumerate(doc.entities):
         if mention_index not in entity.mention_indices:
             continue
@@ -103,7 +103,7 @@ def delete_mention_from_entities(doc: Document, mention_index: int):
             entity.mention_indices.remove(mention_index)
 
 
-def delete_relations(doc: Document, entity_index: int):
+def delete_relations(doc: model.Document, entity_index: int):
     affected_relation_indices = set()
     for relation_index, relation in enumerate(doc.relations):
         if relation.head_entity_index == entity_index:
@@ -117,7 +117,7 @@ def delete_relations(doc: Document, entity_index: int):
 # CREATE A NEW TOKEN #
 # Author: Leonie
 def create_token(
-    doc: Document,
+    doc: model.Document,
     token: model.Token,
     index_in_sentence: int,
     mention_index=None,
@@ -150,14 +150,14 @@ def expand_token(doc: model.Document, token: model.Token, new_tokens: typing.Lis
             text=remaining_token,
             index_in_document=token.index_in_document + i,
             pos_tag=get_pos_tag([remaining_token])[0],
-            bio_tag=get_bio_tag_based_on_left_token(token.bio_tag),
+            bio_tag=get_continued_bio_tag(token.bio_tag),
             sentence_index=token.sentence_index,
         )
         create_token(doc, new_token, token_index_in_sentence + i, mention_index)
 
 
 def replace_mention_text(
-    doc: Document, mention_index: int, new_token_texts: typing.List[str]
+    doc: model.Document, mention_index: int, new_token_texts: typing.List[str]
 ):
     mention = doc.mentions[mention_index]
     new_pos_tags = get_pos_tag(new_token_texts)
@@ -215,11 +215,9 @@ def replace_mention_text(
             )
 
 
-# Author: Leonie
-# tokens gets inserted in tokens, all index_in_doc get adjusted
 def insert_token_in_tokens(
-    doc: Document, token: model.Token, index_in_sentence: int
-):  # passed
+    doc: model.Document, token: model.Token, index_in_sentence: int
+):
     if 0 <= token.sentence_index < len(doc.sentences) and 0 <= index_in_sentence <= len(
         doc.sentences[token.sentence_index].tokens
     ):
@@ -239,71 +237,62 @@ def insert_token_in_tokens(
                         mention.token_indices[i] += 1
 
 
-# Author: Leonie
-# inserts token in given mention
 def insert_token_in_mentions(
-    doc: Document, index_in_sentence: int, mention_id
-):  # passed
-    try:
-        if index_in_sentence not in doc.mentions[mention_id].token_indices:
-            doc.mentions[mention_id].token_indices.append(index_in_sentence)
-            doc.mentions[mention_id].token_indices.sort()
-    except Exception as inst:
-        print(type(inst))
-
-
-# Author: Benedikt
-# add Sentence, never used, due to the fact, that we cant create new relations etc., contains errors, not tested
-def add_sentence(
-    doc: Document,
-    text: typing.List,
-    sentence_index,
-    bio_tags: typing.List = None,
-    pos_tags: typing.List = None,
+    doc: model.Document, index_in_sentence: int, mention_id: int
 ):
-    tokens = []
-    sentence = model.Sentence(tokens)
-    counter = 0
-    index_in_document = (
-        doc.sentences[sentence - 1]
-        .tokens[len(doc.senteces[sentence - 1].tokens)]
-        .index_in_document
-        + 1
+    if index_in_sentence not in doc.mentions[mention_id].token_indices:
+        doc.mentions[mention_id].token_indices.append(index_in_sentence)
+        doc.mentions[mention_id].token_indices.sort()
+
+
+def insert_token_text_into_document(
+    doc: model.Document, token_text: str, index_in_document: int
+) -> None:
+    """
+    Inserts new text as a single token, expanding mentions if it is
+    inserted right after a mention span.
+    """
+    bio_tag = "O"
+    sentence_id = 0
+    index_in_sentence = 0
+    mention_id: typing.Optional[int] = None
+    if index_in_document > 0:
+        previous_token = doc.tokens[index_in_document - 1]
+        bio_tag = get_continued_bio_tag(previous_token.bio_tag)
+        sentence_id = previous_token.sentence_index
+        index_in_sentence = previous_token.index_in_sentence(doc) + 1
+        mentions = doc.get_mentions_for_token(previous_token)
+        if len(mentions) > 0:
+            mention = mentions[0]
+            mention_id = doc.mention_index(mention)
+
+    pos_tags = get_pos_tag([token_text])
+    assert len(pos_tags) == 1
+    pos_tag = pos_tags[0]
+
+    token = model.Token(
+        text=token_text,
+        index_in_document=index_in_document,
+        pos_tag=pos_tag,
+        bio_tag=bio_tag,
+        sentence_index=sentence_id,
     )
-    for word in text:
-        token = model.Token(
-            text=word,
-            index_in_document=index_in_document + counter,
-            sentence_index=sentence_index,
-        )
-        create_token(doc, token, counter)
-        counter += 1
-        tokens.append(token)
-    if bio_tags is not None:
-        for i in range(len(tokens)):
-            tokens[i].bio_tag = bio_tags[i]
-    if pos_tags is not None:
-        for i in range(len(tokens)):
-            tokens[i].pos_tag = pos_tags[i]
-    for i in range(sentence_index + 1, len(doc.sentences)):
-        for token in doc.sentences[i].tokens:
-            token.sentence_index += 1
-    for mention in doc.mentions:
-        if mention.sentence_index >= sentence_index:
-            mention.sentence_index += 1
-    doc.sentences.insert(sentence_index, tokens)
+
+    insert_token_in_tokens(doc, token, index_in_sentence)
+    if mention_id is not None:
+        insert_token_in_mentions(doc, index_in_sentence, mention_id)
 
 
 # Author: Benedikt
-# delete a sentence from a document, used for the filters
-def delete_sentence(doc: Document, sent_index: int):
+# delete a sentence from a model.Document, used for the filters
+def delete_sentence(doc: model.Document, sent_index: int):
     # delete every token of the sentence
     sentence = doc.sentences[sent_index]
     first_index_in_doc = sentence.tokens[0].index_in_document
     for i in range(len(sentence.tokens)):
         delete_token(doc, first_index_in_doc)
 
-    # delete the sentence from the document.sentences
+    # delete the sentence from the model.Document.sentences
     del doc.sentences[sent_index]
 
     # change the sentence_index of every token of the following sentences
@@ -317,19 +306,22 @@ def delete_sentence(doc: Document, sent_index: int):
             mention.sentence_index -= 1
 
 
-def get_pos_tag(text: typing.List[str]):
-    tagged_text = nltk.pos_tag(text)
-    tags = [tagged_text[i][1] for i in range(len(text))]
+def get_pos_tag(token_texts: typing.List[str]):
+    tagged_text = nltk.pos_tag(token_texts)
+    tags = [tagged_text[i][1] for i in range(len(token_texts))]
     return tags
 
 
-# Author: Leonie
-# get the bio tag based on the bio tag from the left token
-def get_bio_tag_based_on_left_token(tag: str):
-    if tag is "O":
+def get_continued_bio_tag(previous_tag: str):
+    """
+    Returns the continuation of the given previous tag.
+    E.g., I-Actor if previous tag was either I-Actor or
+    B-Actor
+    """
+    if previous_tag is "O":
         return "O"
-    bio = get_bio_tag_short(tag)
-    return "I-" + bio[1]
+    bio = get_bio_tag_short(previous_tag)
+    return f"I-{bio}"
 
 
 # Author: Benedikt
@@ -379,7 +371,7 @@ def get_index_in_sentence(
         return None
 
 
-def get_mentions(doc: Document, ind_in_sent, sentence_idx):
+def get_mentions(doc: model.Document, ind_in_sent, sentence_idx):
     mentions = []
     for i, mention in enumerate(doc.mentions):
         if mention.sentence_index == sentence_idx:

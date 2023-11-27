@@ -1,6 +1,6 @@
 import pytest
 
-from transformations.tokenmanager import get_pos_tag, get_bio_tag_based_on_left_token, insert_token_in_mentions, \
+from transformations.tokenmanager import get_pos_tag, get_continued_bio_tag, insert_token_in_mentions, \
     create_token, get_index_in_sentence, get_mentions, insert_token_in_tokens, delete_token_from_tokens, \
     delete_token_from_mention_token_indices, adjust_mention_indices_in_entities, delete_mention_from_entities, \
     delete_relations, delete_sentence, replace_mention_text
@@ -32,9 +32,9 @@ def test_get_bio_tag_based_on_left_token():
     p3 = "I-Actor"
 
     # ACT
-    t1 = get_bio_tag_based_on_left_token(p1)
-    t2 = get_bio_tag_based_on_left_token(p2)
-    t3 = get_bio_tag_based_on_left_token(p3)
+    t1 = get_continued_bio_tag(p1)
+    t2 = get_continued_bio_tag(p2)
+    t3 = get_continued_bio_tag(p3)
 
     # ASSERT
     assert t1 == p1

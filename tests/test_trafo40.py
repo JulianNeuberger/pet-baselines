@@ -9,7 +9,7 @@ def test_do_augment():
     # ARRANGE
     # Trafo Objects for testing do_augment()
     trafo1 = Trafo40Step()
-    trafo2 = Trafo40Step(speaker_p= False, filler_p= False, tags=["B-Actor", "B-Activity"])
+    trafo2 = Trafo40Step(insert_speaker_phrases= False, insert_filler_phrases= False, tags=["B-Actor", "B-Activity"])
 
     # test1 (Parameters: speaker_p = True, uncertain_p = True, filler_p = True, tags = None)
     tokens = []
