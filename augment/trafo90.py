@@ -1,15 +1,14 @@
+import random
 import typing
+
+import numpy as np
+from numpy.random import binomial
 
 from augment import base, params
 from data import model
-import itertools
-from numpy.random import binomial, shuffle
+from transformations import tokenmanager
 
 
-# Shuffle within Segments - Satzebene
-
-
-# Author: Leonie
 class Trafo90Step(base.AugmentationStep):
     def __init__(self, dataset: typing.List[model.Document], prob: float = 0.5):
         super().__init__(dataset)
@@ -24,50 +23,25 @@ class Trafo90Step(base.AugmentationStep):
     def do_augment(self, doc: model.Document) -> model.Document:
         doc = doc.copy()
 
-        for sentence in doc.sentences:
-            token_seq = []
-            tag_seq = []
-            pos_seq = []
+        sequences = self.get_sequences(doc)
+        for sequence in sequences:
+            if np.random.binomial(1, 1 - self.prob) == 1:
+                # shuffle this sequence
+                sequence_sentence_index = sequence[0].sentence_index
+                sequence_indices = [t.index_in_sentence(doc) for t in sequence]
+                random.shuffle(sequence_indices)
 
-            # generate token, tag and pos_tag list
-            for token in sentence.tokens:
-                token_seq.append(token.text)
-                pos_seq.append(token.pos_tag)
-                tag_seq.append(token.bio_tag)
-
-            # compare whether both lists have the same length - if not error
-            assert len(token_seq) == len(
-                tag_seq
-            ), "Lengths of token sequence and BIO-tag sequence should be the same"
-
-            # we need the original indices of each tag - (indice, tag)
-            # bsp: [(0, 'O'), (1, 'B-Actor'), (2, 'O'), (3, 'B-Activity'), (4, 'B-Activity Data'), (5, 'I-Activity Data'), (6, 'I-Activity Data'), (7, 'I-Activity Data'), (8, 'I-Activity Data'),...]
-            tags = [(i, t) for i, t in enumerate(tag_seq)]
-
-            # split tags into groups - [(indice, tag), (),...]
-            # bsp: [[(0, 'O')], [(1, 'B-Actor')], [(2, 'O')], [(3, 'B-Activity')], [(4, 'B-Activity Data'), (5, 'I-Activity Data'), (6, 'I-Activity Data'), (7, 'I-Activity Data'), (8, 'I-Activity Data')],...]
-            groups = [
-                list(g)
-                for k, g in itertools.groupby(tags, lambda s: s[1].split("-")[-1])
-            ]
-
-            # shuffle tokens in groups: dazu wird indices mit den indices der tokens je gruppe erstellt
-            # und anschließend geshuffelt. Dann wird für jeden Token aus sentence.tokens der neue token.text und
-            # token.pos_tag gesetzt.
-            pos = 0  # position des in dem ursprünglichen Satz zu ersetzenden tokens - fortlaufend über alle groups
-            for group in groups:
-                indices = [i[0] for i in group]  # [0] ... [4,5,6,7,8] ...
-
-                # shuffle indeice array
-                if binomial(1, self.prob):
-                    shuffle(indices)
-                    indices_shuffeld = indices
-                else:
-                    indices_shuffeld = indices
-
-                # set shuffled tokens
-                for i in range(len(group)):
-                    sentence.tokens[pos].text = token_seq[indices_shuffeld[i]]
-                    sentence.tokens[pos].pos_tag = pos_seq[indices_shuffeld[i]]
-                    pos += 1
+                is_first_in_sequence = True
+                for new_index, token in zip(sequence_indices, sequence):
+                    if token.bio_tag != "O":
+                        if is_first_in_sequence:
+                            token.bio_tag = (
+                                f"B-{tokenmanager.get_bio_tag_short(token.bio_tag)}"
+                            )
+                            is_first_in_sequence = False
+                        else:
+                            token.bio_tag = (
+                                f"I-{tokenmanager.get_bio_tag_short(token.bio_tag)}"
+                            )
+                    doc.sentences[sequence_sentence_index].tokens[new_index] = token
         return doc
