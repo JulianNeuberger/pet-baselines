@@ -1,16 +1,17 @@
-import typing
 import copy
-from data import model
-from augment import base, params
-from random import random, randint
+import typing
+from random import randint
 
+from augment import base, params
+from data import model
 from transformations import tokenmanager
 
 
 class TrafoInsertStep(base.AugmentationStep):
-    def __init__(self, dataset: typing.List[model.Document], count_insertions = 1):
+    def __init__(self, dataset: typing.List[model.Document], count_insertions=1):
         super().__init__(dataset)
         self.count_insertions = count_insertions
+
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
@@ -27,13 +28,20 @@ class TrafoInsertStep(base.AugmentationStep):
                 if sentence.tokens[ran].bio_tag == "O":
                     bio = sentence.tokens[ran].bio_tag
                 else:
-                    bio = "I-" + tokenmanager.get_bio_tag_short(sentence.tokens[ran].bio_tag)
-                tok = model.Token(text, sentence.tokens[ran].index_in_document + 1,
-                                  tokenmanager.get_pos_tag([text]),
-                                  bio,
-                                  sentence.tokens[ran].sentence_index)
+                    bio = "I-" + tokenmanager.get_bio_tag_short(
+                        sentence.tokens[ran].bio_tag
+                    )
+                tok = model.Token(
+                    text,
+                    sentence.tokens[ran].index_in_document + 1,
+                    tokenmanager.get_pos_tag([text]),
+                    bio,
+                    sentence.tokens[ran].sentence_index,
+                )
 
-                mentions = tokenmanager.get_mentions(doc, ran, sentence.tokens[ran].sentence_index)
+                mentions = tokenmanager.get_mentions(
+                    doc, ran, sentence.tokens[ran].sentence_index
+                )
                 if mentions != []:
                     tokenmanager.create_token(doc, tok, ran + 1, mentions[0])
                 else:

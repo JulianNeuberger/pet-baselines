@@ -14,6 +14,7 @@ class AugmentationStep(abc.ABC):
     def __init__(self, dataset: typing.List[model.Document], **kwargs):
         self.dataset = dataset
 
+    @abc.abstractmethod
     def do_augment(self, doc: model.Document) -> model.Document:
         raise NotImplementedError()
 
@@ -35,6 +36,7 @@ class AugmentationStep(abc.ABC):
             )
 
     @staticmethod
+    @abc.abstractmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
         raise NotImplementedError()
 
@@ -78,11 +80,13 @@ class BaseTokenReplacementStep(AugmentationStep, abc.ABC):
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [params.IntegerParam(name="n", min_value=1, max_value=20)]
 
+    @abc.abstractmethod
     def get_replacement_candidates(
         self, doc: model.Document
     ) -> typing.List[typing.List[model.Token]]:
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def get_replacement(
         self, candidate: typing.List[model.Token]
     ) -> typing.Optional[typing.List[str]]:
@@ -114,7 +118,7 @@ class BaseTokenReplacementStep(AugmentationStep, abc.ABC):
         return doc
 
 
-class BaseAbbreviationStep(AugmentationStep, abc.ABC):
+class AbbreviationStep(AugmentationStep, abc.ABC):
     def __init__(
         self,
         dataset: typing.List[model.Document],
@@ -149,7 +153,7 @@ class BaseAbbreviationStep(AugmentationStep, abc.ABC):
                 candidates.append(candidate)
                 candidate = []
                 continue
-            if BaseAbbreviationStep.has_keys_starting_with(dictionary, candidate_key):
+            if AbbreviationStep.has_keys_starting_with(dictionary, candidate_key):
                 candidate += [token]
                 continue
             candidate = []

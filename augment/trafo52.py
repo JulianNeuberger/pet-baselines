@@ -1,15 +1,19 @@
 import typing
 
-from augment import base_abbreviation_trafo
+from augment import base, params
 from data import model
 
 
-class Trafo52Step(base_abbreviation_trafo.BaseAbbreviationStep):
+class Trafo52Step(base.AbbreviationStep):
     def __init__(
         self, dataset: typing.List[model.Document]
     ):
         abbreviations = self._load()
         super().__init__(dataset, abbreviations)
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return []
 
     @staticmethod
     def _load() -> typing.Dict[str, str]:

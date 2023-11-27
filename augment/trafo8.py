@@ -147,5 +147,3 @@ class Trafo8Step(base.AugmentationStep):
         return predicted_outputs[0]
 
 
-# step = Trafo8Step()
-# print(step.back_translate("managing"))
