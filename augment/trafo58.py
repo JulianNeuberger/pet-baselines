@@ -63,7 +63,7 @@ class Trafo58Step(base.AugmentationStep):
 
     def do_augment_batch_wise(self, doc: model.Document):
         doc = copy.deepcopy(doc)
-        translation_candidates = self.get_translation_candidates(doc)
+        translation_candidates = self.get_sequences(doc)
         to_translate = random.sample(translation_candidates, self.n)
 
         batch = [" ".join([t.text for t in sequence]) for sequence in to_translate]
@@ -78,32 +78,6 @@ class Trafo58Step(base.AugmentationStep):
             )
 
         return doc
-
-    @staticmethod
-    def get_translation_candidates(
-        doc: model.Document,
-    ) -> typing.List[typing.List[model.Token]]:
-        translation_candidates = []
-
-        for sentence in doc.sentences:
-            last_sequence: typing.List[model.Token] = []
-            last_mention: typing.Optional[model.Mention] = None
-            for token in sentence.tokens:
-                mentions = doc.get_mentions_for_token(token)
-                if len(mentions) == 0:
-                    current_mention = None
-                else:
-                    current_mention = mentions[0]
-                if current_mention != last_mention:
-                    if len(last_sequence) > 0:
-                        translation_candidates.append(last_sequence)
-                    last_sequence = []
-                last_mention = current_mention
-                last_sequence.append(token)
-            if len(last_sequence) > 0:
-                translation_candidates.append(last_sequence)
-
-        return translation_candidates
 
     def encode_decode(self, texts: typing.List[str]) -> typing.List[str]:
         languages = self.languages

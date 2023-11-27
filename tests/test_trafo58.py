@@ -191,7 +191,7 @@ def test_candidate_collection():
         [doc], ["de", "fr", "ru"], "strict", num_translations=1, n=1, device=-1
     )
 
-    candidates = trafo.get_translation_candidates(doc)
+    candidates = trafo.get_sequences(doc)
     assert len(candidates) == 4
     assert len(candidates[0]) == 1
     assert candidates[0][0].text == "I"

@@ -32,3 +32,33 @@ class AugmentationStep(abc.ABC):
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
         raise NotImplementedError()
+
+    @staticmethod
+    def get_sequences(
+        doc: model.Document,
+    ) -> typing.List[typing.List[model.Token]]:
+        """
+        Returns a list of sequences (lists) of tokens, that have
+        the same ner tag.
+        """
+        tagged_sequences = []
+
+        for sentence in doc.sentences:
+            last_sequence: typing.List[model.Token] = []
+            last_mention: typing.Optional[model.Mention] = None
+            for token in sentence.tokens:
+                mentions = doc.get_mentions_for_token(token)
+                if len(mentions) == 0:
+                    current_mention = None
+                else:
+                    current_mention = mentions[0]
+                if current_mention != last_mention:
+                    if len(last_sequence) > 0:
+                        tagged_sequences.append(last_sequence)
+                    last_sequence = []
+                last_mention = current_mention
+                last_sequence.append(token)
+            if len(last_sequence) > 0:
+                tagged_sequences.append(last_sequence)
+
+        return tagged_sequences
