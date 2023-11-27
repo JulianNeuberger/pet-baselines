@@ -25,7 +25,7 @@ class Trafo90Step(base.AugmentationStep):
 
         sequences = self.get_sequences(doc)
         for sequence in sequences:
-            if np.random.binomial(1, 1 - self.prob) == 1:
+            if np.random.binomial(1, self.prob) == 1:
                 # shuffle this sequence
                 sequence_sentence_index = sequence[0].sentence_index
                 sequence_indices = [t.index_in_sentence(doc) for t in sequence]
