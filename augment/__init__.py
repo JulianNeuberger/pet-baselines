@@ -8,7 +8,6 @@ from augment.trafo82 import Trafo82Step
 from augment.trafo3 import Trafo3Step
 from augment.trafo39 import Trafo39Step
 from augment.trafo40 import Trafo40Step
-from augment.trafo86 import Trafo86Step
 from augment.trafo90 import Trafo90Step
 from augment.trafo103 import Trafo103Step
 from augment.trafo33 import Trafo33Step

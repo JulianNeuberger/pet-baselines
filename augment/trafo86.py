@@ -1,183 +1,83 @@
+import random
 import typing
+
+import nltk.tokenize
+from checklist.editor import Editor
 
 from augment import base, params
 from data import model
-from nltk.corpus import wordnet
 from transformations import tokenmanager
-import copy
-from random import random as rand
-from random import shuffle
 
 
-# Replace nouns with hyponyms or hypernyms - Wortebene
-
-
-# Author: Leonie
-class Trafo86Step(base.AugmentationStep):
-    def __init__(
-        self,
-        dataset: typing.List[model.Document],
-        max_noun: int = 1,
-        kind_of_replace: int = 2,
-        no_dupl: bool = False,
-        prob: float = 0.5,
-    ):
+class Trafo86HyponymReplacement(base.AugmentationStep):
+    def __init__(self, dataset: typing.List[model.Document], n: int = 10):
         super().__init__(dataset)
-        self.max_noun = max_noun
-        self.kind_of_replace = kind_of_replace
-        self.no_dupl = no_dupl  # if True: no duplicates
-        self.prob = prob
+        self.n = n
+        self.editor = Editor()
+
+    def do_augment(
+        self,
+        doc: model.Document,
+    ) -> model.Document:
+        doc = doc.copy()
+        nouns = [t for t in doc.tokens if t.pos_tag in ["NN", "NNS", "NNP", "NNPS"]]
+        random.shuffle(nouns)
+
+        num_changes = 0
+        sentence = " ".join(t.text for t in doc.tokens)
+        for token in nouns:
+            hyponyms = self.editor.hyponyms(sentence, token.text)
+            if len(hyponyms) == 0:
+                continue
+
+            hyponym_tokens = nltk.tokenize.word_tokenize(hyponyms[0])
+            token_start = token.index_in_sentence(doc)
+            tokenmanager.replace_sequence_text_in_sentence(
+                doc, token.sentence_index, token_start, token_start + 1, hyponym_tokens
+            )
+
+            num_changes += 1
+            if num_changes == self.n:
+                break
+        return doc
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
-        return [
-            params.BooleanParameter(name="max_noun"),
-            params.BooleanParameter(name="no_dupl"),
-            params.FloatParam(name="prob", min_value=0.0, max_value=1.0),
-            params.IntegerParam(name="kind_of_replace", min_value=0, max_value=2),
-        ]
+        return [params.IntegerParam(name="n", min_value=1, max_value=20)]
 
-    def do_augment(self, doc: model.Document) -> model.Document:
+
+class Trafo86HypernymReplacement(base.AugmentationStep):
+    def __init__(self, dataset: typing.List[model.Document], n: int = 10):
+        super().__init__(dataset)
+        self.n = n
+        self.editor = Editor()
+
+    def do_augment(
+        self,
+        doc: model.Document,
+    ) -> model.Document:
         doc = doc.copy()
-        for sentence in doc.sentences:
-            # create list with all tokens with pos_tag noun and a list with their indices in the sentence
-            tok_list = []
-            dupl_list = []
-            index_in_sentence_list = []
-            has_hyp = False
-            counter = 0
-            change_pos = 0
-            for token in sentence.tokens:
-                if token.pos_tag in ["NN", "NNS", "NNP", "NNPS"]:
-                    if self.no_dupl:
-                        if not token.text in dupl_list:
-                            tok_list.append(copy.deepcopy(token))
+        nouns = [t for t in doc.tokens if t.pos_tag in ["NN", "NNS", "NNP", "NNPS"]]
+        random.shuffle(nouns)
 
-                            index_in_sentence_list.append(counter)
-                            dupl_list.append(copy.deepcopy(token.text))
-                    else:
-                        tok_list.append(copy.deepcopy(token))
-                        index_in_sentence_list.append(counter)
-                        dupl_list.append(copy.deepcopy(token.text))
-                counter += 1
+        num_changes = 0
+        sentence = " ".join(t.text for t in doc.tokens)
+        for token in nouns:
+            hyperyms = self.editor.hypernyms(sentence, token.text)
+            if len(hyperyms) == 0:
+                continue
 
-            # sentence must contain a noun
-            if len(tok_list) >= 1:
-                # token_list will be shuffled, tok_list contains the right order of tokens
-                token_list = copy.deepcopy(tok_list)
+            hyponym_tokens = nltk.tokenize.word_tokenize(hyperyms[0])
+            token_start = token.index_in_sentence(doc)
+            tokenmanager.replace_sequence_text_in_sentence(
+                doc, token.sentence_index, token_start, token_start + 1, hyponym_tokens
+            )
 
-                # shuffle noun-list for random noun selection
-                # if more than the actual number of nouns should be replaced, set maxi_noun to the actual number of nouns
-                maxi_noun = self.max_noun
-                if maxi_noun > len(tok_list):
-                    maxi_noun = len(tok_list)
-
-                # change only the maximum amount of nouns
-                noun_count = 0
-                while noun_count < maxi_noun:
-                    if rand() <= self.prob:
-                        kind_of_replacement = self.kind_of_replace
-
-                        # noun to be changed
-                        token = token_list[noun_count]
-
-                        # search for the index in sentence
-                        index_in_sentence = None
-                        for i in range(0, len(tok_list)):
-                            if token.text == tok_list[i].text:
-                                index_in_sentence = index_in_sentence_list[i]
-                                break
-
-                        # determine the kind of replacement
-                        if kind_of_replacement == 2:
-                            num = rand()
-                            if num <= 0.5:
-                                kind_of_replacement = 0
-                            else:
-                                kind_of_replacement = 1
-
-                        # replace with a hypernym
-                        if kind_of_replacement == 1:
-                            hypernyms = []
-                            synsets = wordnet.synsets(token.text, "n")
-                            if synsets:
-                                syn = synsets[0]
-                                hypernyms = wordnet.synset(syn.name()).hypernyms()
-                            if hypernyms:
-                                hyp = hypernyms[0]
-                                hype = hyp.name()
-                                hypern = hype.split(".", 1)
-                                token.text = hypern[0]
-                                has_hyp = True
-
-                        # replace with a hyponym
-                        elif kind_of_replacement == 0:  # hyponym
-                            hyponyms = []
-                            synsets = wordnet.synsets(token.text, "n")
-                            if synsets:
-                                syn = synsets[0]
-                                hyponyms = wordnet.synset(syn.name()).hyponyms()
-                            if hyponyms:
-                                hyp = hyponyms[0]
-                                hypo = hyp.name()
-                                hypon = hypo.split(".", 1)
-                                token.text = hypon[0]
-                                has_hyp = True
-
-                        # only if a hypernym/ hyponym exists
-                        if has_hyp:
-                            # split the token.text if it contains several words
-                            text = token.text.split("_")
-
-                            # set the text and pos_tag of the first token
-                            token.text = text[0]
-                            token.pos_tag = tokenmanager.get_pos_tag([text[0]])[0]
-                            # set the first token
-                            sentence.tokens[
-                                index_in_sentence + change_pos
-                            ].text = token.text
-                            sentence.tokens[
-                                index_in_sentence + change_pos
-                            ].pos_tag = token.pos_tag
-
-                            # if the hypernym/hyponym has several words, for each further word create a new token
-                            if len(text) > 1:
-                                # generate bio-tag
-                                bio_tag = tokenmanager.get_continued_bio_tag(
-                                    token.bio_tag
-                                )
-
-                                # get mention index
-                                ment_ind = tokenmanager.get_mentions(
-                                    doc,
-                                    index_in_sentence + change_pos,
-                                    token.sentence_index,
-                                )
-                                # create Tokens
-                                for i in range(1, len(text)):
-                                    tok = model.Token(
-                                        text=text[i],
-                                        index_in_document=token.index_in_document
-                                        + i
-                                        + change_pos,
-                                        pos_tag=tokenmanager.get_pos_tag([text[i]])[0],
-                                        bio_tag=bio_tag,
-                                        sentence_index=token.sentence_index,
-                                    )
-                                    if ment_ind == []:
-                                        tokenmanager.create_token(
-                                            doc,
-                                            tok,
-                                            index_in_sentence + i + change_pos,
-                                            None,
-                                        )
-                                    else:
-                                        tokenmanager.create_token(
-                                            doc,
-                                            tok,
-                                            index_in_sentence + i + change_pos,
-                                            ment_ind[0],
-                                        )
-                                change_pos += len(text) - 1
-                    noun_count += 1
+            num_changes += 1
+            if num_changes == self.n:
+                break
         return doc
+
+    @staticmethod
+    def get_params() -> typing.List[typing.Union[params.Param]]:
+        return [params.IntegerParam(name="n", min_value=1, max_value=20)]
