@@ -4,7 +4,7 @@ from augment import base_abbreviation_trafo
 from data import model
 
 
-class Trafo82Step(base_abbreviation_trafo.BaseAbbreviationStep):
+class Trafo52Step(base_abbreviation_trafo.BaseAbbreviationStep):
     def __init__(
         self, dataset: typing.List[model.Document]
     ):
@@ -14,11 +14,13 @@ class Trafo82Step(base_abbreviation_trafo.BaseAbbreviationStep):
     @staticmethod
     def _load() -> typing.Dict[str, str]:
         abbreviations = {}
-        with open(f"./resources/abbreviations/82.txt", "r", encoding="utf-8") as f:
+        with open(f"./resources/abbreviations/52.txt", "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line == "":
                     continue
-                key, value = line.split(":", 1)
+                key, value = line.split(" = ", 1)
+                key = key.strip()
+                value = value.strip()
                 abbreviations[key] = value
         return abbreviations

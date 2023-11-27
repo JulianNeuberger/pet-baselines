@@ -112,25 +112,20 @@ def delete_relations(doc: model.Document, entity_index: int):
         doc.relations.pop(relation_index)
 
 
-# CREATE A NEW TOKEN #
-# Author: Leonie
 def create_token(
     doc: model.Document,
     token: model.Token,
     index_in_sentence: int,
     mention_index=None,
-):  # insert a token
-    # only if index in sentence and mention id fit should changes be made
-    if 0 <= index_in_sentence < len(doc.sentences[token.sentence_index].tokens):
-        if mention_index is not None:
-            if 0 <= mention_index < len(doc.mentions):
-                # a new given Token gets inserted in the token array of the belonging sentence and all index_in_doc are adjusted
-                insert_token_in_tokens(doc, token, index_in_sentence)
-                # adds token_id to mention if a mention id is given
-                insert_token_in_mentions(doc, index_in_sentence, mention_index)
-        else:
-            # a new given Token gets inserted in the token array of the belonging sentence and all index_in_doc are adjusted
-            insert_token_in_tokens(doc, token, index_in_sentence)
+):
+    if mention_index is None:
+        insert_token_in_tokens(doc, token, index_in_sentence)
+        return
+
+    # a new given Token gets inserted in the token array of the belonging sentence and all index_in_doc are adjusted
+    insert_token_in_tokens(doc, token, index_in_sentence)
+    # adds token_id to mention if a mention id is given
+    insert_token_in_mentions(doc, index_in_sentence, mention_index)
 
 
 def expand_token(doc: model.Document, token: model.Token, new_tokens: typing.List[str]):
@@ -235,23 +230,20 @@ def replace_mention_text(
 def insert_token_in_tokens(
     doc: model.Document, token: model.Token, index_in_sentence: int
 ):
-    if 0 <= token.sentence_index < len(doc.sentences) and 0 <= index_in_sentence <= len(
-        doc.sentences[token.sentence_index].tokens
+    sentence_index = token.sentence_index
+    doc.sentences[sentence_index].tokens.insert(index_in_sentence, token)
+    for j in range(
+        index_in_sentence + 1, len(doc.sentences[sentence_index].tokens)
     ):
-        sentence_index = token.sentence_index
-        doc.sentences[sentence_index].tokens.insert(index_in_sentence, token)
-        for j in range(
-            index_in_sentence + 1, len(doc.sentences[sentence_index].tokens)
-        ):
-            doc.sentences[sentence_index].tokens[j].index_in_document += 1
-        for i in range(sentence_index + 1, len(doc.sentences)):
-            for tok in doc.sentences[i].tokens:
-                tok.index_in_document += 1
-        for mention in doc.mentions:
-            if mention.sentence_index == sentence_index:
-                for i in range(len(mention.token_indices)):
-                    if mention.token_indices[i] >= index_in_sentence:
-                        mention.token_indices[i] += 1
+        doc.sentences[sentence_index].tokens[j].index_in_document += 1
+    for i in range(sentence_index + 1, len(doc.sentences)):
+        for tok in doc.sentences[i].tokens:
+            tok.index_in_document += 1
+    for mention in doc.mentions:
+        if mention.sentence_index == sentence_index:
+            for i in range(len(mention.token_indices)):
+                if mention.token_indices[i] >= index_in_sentence:
+                    mention.token_indices[i] += 1
 
 
 def insert_token_in_mentions(
