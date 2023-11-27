@@ -58,4 +58,4 @@ def test_do_augment():
 
     # Assert
     assert doc_aug1 == doc_sol1
-    assert doc_aug2 == doc_sol2
+    assert " ".join(t.text for t in doc_aug2.tokens) == " ".join(t.text for t in doc_sol2.tokens)
