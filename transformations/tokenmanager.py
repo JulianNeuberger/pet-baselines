@@ -5,12 +5,10 @@ import nltk
 from data import model
 
 
-# Delete a Token #
-
-
-# Author: Benedikt
 def delete_token(doc: model.Document, index_in_document: int):
-    # delete token from sentence.tokens, get position from where to change the following tokens
+    """delete token from sentence.tokens, deleting corresponding
+    mention, if it was its last token.
+    """
     sentence_index, index_in_sentence = delete_token_from_tokens(doc, index_in_document)
     mention_index = delete_token_from_mention_token_indices(
         doc, index_in_sentence, sentence_index
