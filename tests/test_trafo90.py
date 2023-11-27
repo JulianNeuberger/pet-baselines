@@ -1,5 +1,3 @@
-import copy
-
 from augment.trafo90 import Trafo90Step
 from data import model
 

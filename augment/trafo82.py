@@ -1,13 +1,11 @@
 import typing
 
-from augment import base_abbreviation_trafo
+from augment import base
 from data import model
 
 
-class Trafo82Step(base_abbreviation_trafo.BaseAbbreviationStep):
-    def __init__(
-        self, dataset: typing.List[model.Document]
-    ):
+class Trafo82Step(base.BaseAbbreviationStep):
+    def __init__(self, dataset: typing.List[model.Document]):
         abbreviations = self._load()
         super().__init__(dataset, abbreviations)
 
