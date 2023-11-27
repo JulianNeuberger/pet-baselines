@@ -156,63 +156,82 @@ def expand_token(doc: model.Document, token: model.Token, new_tokens: typing.Lis
         create_token(doc, new_token, token_index_in_sentence + i, mention_index)
 
 
-def replace_mention_text(
-    doc: model.Document, mention_index: int, new_token_texts: typing.List[str]
+def replace_sequence_text_in_sentence(
+    doc: model.Document,
+    sentence_id: int,
+    start_in_sentence: int,
+    stop_in_sentence: int,
+    new_token_texts: typing.List[str],
 ):
-    mention = doc.mentions[mention_index]
+    offset = doc.token_offset_for_sentence(sentence_id)
+    start_in_doc = offset + start_in_sentence
+    stop_in_doc = offset + stop_in_sentence
+
+    old_tokens = doc.tokens[start_in_doc:stop_in_doc]
+
+    old_bio_tag = get_bio_tag_short(doc.tokens[start_in_doc].bio_tag)
+    if old_bio_tag == "O":
+        new_bio_tags = ["O"] * len(new_token_texts)
+    else:
+        new_bio_tags = [f"B-{old_bio_tag}"]
+        new_bio_tags += [f"I-{old_bio_tag}"] * (len(new_token_texts) - 1)
+
     new_pos_tags = get_pos_tag(new_token_texts)
-    new_bio_tags = [f"B-{mention.ner_tag}"] + (len(new_token_texts) - 1) * [
-        f"I-{mention.ner_tag}"
-    ]
-    mention_start = mention.document_level_token_indices(doc)[0]
 
     new_tokens = [
         model.Token(
             text=new_text,
             pos_tag=new_pos,
-            index_in_document=mention_start + new_index,
+            index_in_document=start_in_doc + new_index,
             bio_tag=new_bio_tag,
-            sentence_index=mention.sentence_index,
+            sentence_index=sentence_id,
         )
         for new_text, new_pos, new_index, new_bio_tag in zip(
             new_token_texts, new_pos_tags, range(len(new_token_texts)), new_bio_tags
         )
     ]
-    old_tokens = [
-        doc.sentences[mention.sentence_index].tokens[i] for i in mention.token_indices
-    ]
 
     length_difference = len(new_tokens) - len(old_tokens)
 
-    sentence_level_mention_start = mention.token_indices[0]
-
     if length_difference == 0:
         for i, token in enumerate(new_tokens):
-            doc.sentences[mention.sentence_index].tokens[
-                sentence_level_mention_start + i
-            ] = token
+            doc.sentences[sentence_id].tokens[start_in_sentence + i] = token
         return
 
     if length_difference < 0:
         for old_token in old_tokens[len(new_tokens) :]:
             delete_token(doc, old_token.index_in_document)
         for i, token in enumerate(new_tokens):
-            doc.sentences[mention.sentence_index].tokens[
-                sentence_level_mention_start + i
-            ] = token
+            doc.sentences[sentence_id].tokens[start_in_sentence + i] = token
 
     if length_difference > 0:
         for i, token in enumerate(new_tokens[: len(old_tokens)]):
-            doc.sentences[mention.sentence_index].tokens[
-                sentence_level_mention_start + i
-            ] = token
+            doc.sentences[sentence_id].tokens[start_in_sentence + i] = token
         for i, new_token in enumerate(new_tokens[len(old_tokens) :]):
+            mentions = doc.get_mentions_for_token(old_tokens[0])
+            mention_id = None
+            if len(mentions) > 0:
+                mention_id = doc.mention_index(mentions[0])
+
             create_token(
                 doc,
                 new_token,
-                sentence_level_mention_start + len(old_tokens) + i,
-                mention_index,
+                start_in_sentence + len(old_tokens) + i,
+                mention_id,
             )
+
+
+def replace_mention_text(
+    doc: model.Document, mention_index: int, new_token_texts: typing.List[str]
+):
+    mention = doc.mentions[mention_index]
+    replace_sequence_text_in_sentence(
+        doc,
+        mention.sentence_index,
+        mention.token_indices[0],
+        mention.token_indices[-1] + 1,
+        new_token_texts,
+    )
 
 
 def insert_token_in_tokens(
