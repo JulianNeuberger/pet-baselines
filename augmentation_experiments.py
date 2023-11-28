@@ -51,7 +51,8 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     # trafo62.Trafo62Step, # runs too long
     trafo79.Trafo79Step,
     trafo82.Trafo82Step,
-    trafo86.Trafo86Step,
+    trafo86.Trafo86HyponymReplacement,
+    trafo86.Trafo86HypernymReplacement,
     trafo88.Trafo88Step,
     trafo90.Trafo90Step,
     trafo100.Trafo100Step,
