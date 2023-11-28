@@ -67,9 +67,9 @@ class Trafo40Step(base.AugmentationStep):
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
             params.IntegerParam(name="n", min_value=1, max_value=20),
-            params.BooleanParameter(name="speaker_p"),
-            params.BooleanParameter(name="uncertain_p"),
-            params.BooleanParameter(name="filler_p"),
+            params.BooleanParameter(name="insert_speaker_phrases"),
+            params.BooleanParameter(name="insert_uncertainty_phrases"),
+            params.BooleanParameter(name="insert_filler_phrases"),
         ]
 
     def get_phrases(self):

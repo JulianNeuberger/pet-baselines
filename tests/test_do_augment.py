@@ -1,7 +1,7 @@
 import inspect
 import typing
 
-from augment import base
+from augment import base, params
 from data import model
 
 
@@ -11,7 +11,9 @@ def collect_all_trafos(
     sub_classes = []
 
     immediate_sub_classes = base_class.__subclasses__()
-    immediate_sub_classes = [c for c in immediate_sub_classes if not inspect.isabstract(c)]
+    immediate_sub_classes = [
+        c for c in immediate_sub_classes if not inspect.isabstract(c)
+    ]
     sub_classes.extend(immediate_sub_classes)
     for sub_class in immediate_sub_classes:
         child_sub_classes = collect_all_trafos(sub_class)
@@ -146,12 +148,19 @@ def get_test_doc():
 
 def test_do_augment():
     trafo_classes = collect_all_trafos(base.AugmentationStep)
+    print(trafo_classes)
     for clazz in trafo_classes:
+        print(f"Testing {clazz.__name__}...")
         doc = get_test_doc()
-        args = {
-            'dataset': [doc]
-        }
-        if issubclass(clazz, base.BaseTokenReplacementStep):
-            args['n'] = 1
+        args = {"dataset": [doc]}
+        for param in clazz.get_params():
+            if isinstance(param, params.NumberParam):
+                args[param.name] = param.min_value
+            elif isinstance(param, params.ChoiceParam):
+                args[param.name] = param.choices[0]
+                if param.max_num_picks > 1:
+                    args[param.name] = [param.choices[0]]
+            elif isinstance(param, params.BooleanParameter):
+                args[param.name] = True
         trafo = clazz(**args)
         trafo.do_augment(doc)
