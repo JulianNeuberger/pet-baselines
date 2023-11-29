@@ -115,9 +115,9 @@ def objective_factory(
         augmentation_rate = trial.suggest_float("augmentation_rate", low=0.0, high=10.0)
         un_augmented_train_folds = []
         augmented_train_folds: typing.List[typing.List[data.Document]] = []
-        dev_folds = []
-        for train_indices, dev_indices in kf.split(documents):
-            # load training set, augment and shuffle
+        test_folds = []
+        for train_indices, test_indices in kf.split(documents):
+            test_documents = [documents[i] for i in test_indices]
             un_augmented_train_documents = [documents[i] for i in train_indices]
 
             step = instantiate_step(augmentor_class, trial, un_augmented_train_documents)
@@ -126,7 +126,6 @@ def objective_factory(
                 un_augmented_train_documents, step, augmentation_rate
             )
             random.shuffle(augmented_train_documents)
-            dev_documents = [documents[i] for i in dev_indices]
             augmented_train_folds.append(augmented_train_documents)
             un_augmented_train_folds.append(un_augmented_train_documents)
             print(
@@ -134,7 +133,7 @@ def objective_factory(
                 f"with augmentation rate of {augmentation_rate:.4f} "
                 f"resulting in {len(augmented_train_documents)} documents"
             )
-            dev_folds.append(dev_documents)
+            test_folds.append(test_documents)
 
         augmented_pipeline_step = pipeline_step_class(
             name="crf mention extraction", **kwargs
@@ -145,7 +144,7 @@ def objective_factory(
                 steps=[augmented_pipeline_step],
             ),
             train_folds=augmented_train_folds,
-            test_folds=dev_folds,
+            test_folds=test_folds,
             save_results=False,
         )
 
@@ -158,7 +157,7 @@ def objective_factory(
                 steps=[unaugmented_pipeline_step],
             ),
             train_folds=un_augmented_train_folds,
-            test_folds=dev_folds,
+            test_folds=test_folds,
             save_results=False,
         )
 
@@ -196,11 +195,6 @@ def main():
             raise AssertionError("\n".join([str(e) for e in errors]))
 
     all_documents = loader.read_documents_from_json("./jsonl/all.jsonl")
-    random.shuffle(all_documents)
-    test_percentage = 0.2
-    num_test_documents = int(len(all_documents) * test_percentage)
-    test_set = all_documents[:num_test_documents]
-    train_set = all_documents[num_test_documents:]
     pipeline_step_class = pipeline.CatBoostRelationExtractionStep
 
     for strategy_class in strategies:
@@ -208,7 +202,7 @@ def main():
         objective = objective_factory(
             strategy_class,
             pipeline_step_class,
-            train_set,
+            all_documents,
             num_trees=100,
             device=device,
             device_ids=device_ids,

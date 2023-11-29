@@ -327,7 +327,7 @@ def get_continued_bio_tag(previous_tag: str):
     E.g., I-Actor if previous tag was either I-Actor or
     B-Actor
     """
-    if previous_tag is "O":
+    if previous_tag == "O":
         return "O"
     bio = get_bio_tag_short(previous_tag)
     return f"I-{bio}"
