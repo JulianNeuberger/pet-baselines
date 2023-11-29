@@ -63,7 +63,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo_insert.TrafoInsertStep,
 ]
 
-max_runs_per_step = 150
+max_runs_per_step = 25
 random_state = 42
 random.seed(random_state)
 
@@ -103,7 +103,7 @@ def instantiate_step(
 
 
 def objective_factory(
-    augmentor_class: typing.Type[base.AugmentationStep],
+    augmenter_class: typing.Type[base.AugmentationStep],
     pipeline_step_class: typing.Type[pipeline.PipelineStep],
     documents: typing.List[data.Document],
     **kwargs,
@@ -120,7 +120,7 @@ def objective_factory(
             test_documents = [documents[i] for i in test_indices]
             un_augmented_train_documents = [documents[i] for i in train_indices]
 
-            step = instantiate_step(augmentor_class, trial, un_augmented_train_documents)
+            step = instantiate_step(augmenter_class, trial, un_augmented_train_documents)
 
             augmented_train_documents, _ = augment.run_augmentation(
                 un_augmented_train_documents, step, augmentation_rate
