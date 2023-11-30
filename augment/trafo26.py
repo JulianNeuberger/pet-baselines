@@ -57,11 +57,19 @@ class Trafo26Step(base.AugmentationStep):
             if new_token == original:
                 continue
 
+            if new_token == '':
+                continue
+
             doc.tokens[candidate.index_in_document].text = new_token
             doc.tokens[candidate.index_in_document].pos_tag = tokenmanager.get_pos_tag([new_token])
 
             num_changes += 1
             if num_changes == self.n:
                 break
+
+        for sentence in doc.sentences:
+            for token in sentence.tokens:
+                if token.text.strip() == '':
+                    print(f"Erroneous document: {' '.join(t.text for t in doc.tokens)}")
 
         return doc

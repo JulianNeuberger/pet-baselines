@@ -31,9 +31,9 @@ from augment import (
     trafo101,
     trafo103,
     trafo106,
-    trafo40,
     trafo_null,
     trafo_insert,
+    cheating,
 )
 from data import loader, model
 from main import cross_validate_pipeline
@@ -42,13 +42,13 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo3.Trafo3Step,
     trafo5.Trafo5Step,
     trafo6.Trafo6Step,
-    # trafo8.Trafo8Step,  # long runtime
+    trafo8.Trafo8Step,  # long runtime
     trafo24.Trafo24Step,
     trafo26.Trafo26Step,
     trafo39.Trafo39Step,
     trafo40.Trafo40Step,
     trafo58.Trafo58Step,  # runs too long?
-    # trafo62.Trafo62Step, # runs too long
+    trafo62.Trafo62Step,  # runs too long
     trafo79.Trafo79Step,
     trafo82.Trafo82Step,
     trafo86.Trafo86HyponymReplacement,
@@ -61,6 +61,7 @@ strategies: typing.List[typing.Type[base.AugmentationStep]] = [
     trafo106.Trafo106Step,
     trafo_null.TrafoNullStep,
     trafo_insert.TrafoInsertStep,
+    # cheating.CheatingTransformationStep,
 ]
 
 max_runs_per_step = 25
@@ -120,7 +121,9 @@ def objective_factory(
             test_documents = [documents[i] for i in test_indices]
             un_augmented_train_documents = [documents[i] for i in train_indices]
 
-            step = instantiate_step(augmenter_class, trial, un_augmented_train_documents)
+            step = instantiate_step(
+                augmenter_class, trial, un_augmented_train_documents
+            )
 
             augmented_train_documents, _ = augment.run_augmentation(
                 un_augmented_train_documents, step, augmentation_rate

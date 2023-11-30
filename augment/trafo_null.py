@@ -4,7 +4,6 @@ from augment import base, params
 from data import model
 
 
-# Author: Benedikt
 class TrafoNullStep(base.AugmentationStep):
     name = "null"
 
