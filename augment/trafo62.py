@@ -1,15 +1,13 @@
 import typing
 
+from nltk import tokenize
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
 from augment import base, params
 from data import model
-from transformations import tokenmanager
-
-from nltk import tokenize
 
 
-class Trafo62Step(base.AugmentationStep):
+class Trafo62Step(base.BaseTokenReplacementStep):
     languages = [
         "af",
         "am",
@@ -113,8 +111,13 @@ class Trafo62Step(base.AugmentationStep):
         "zu",
     ]
 
-    def __init__(self, dataset: typing.List[model.Document], pivot_language: str = "de"):
-        super().__init__(dataset)
+    def __init__(
+        self,
+        dataset: typing.List[model.Document],
+        n: int = 10,
+        pivot_language: str = "de",
+    ):
+        super().__init__(dataset, n)
         self.model = M2M100ForConditionalGeneration.from_pretrained(
             "facebook/m2m100_418M"
         )
@@ -126,32 +129,34 @@ class Trafo62Step(base.AugmentationStep):
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
             params.ChoiceParam(name="pivot_language", choices=Trafo62Step.languages),
+            params.IntegerParam(name="n", min_value=1, max_value=20),
         ]
 
-    def do_augment(self, doc: model.Document):
-        doc = doc.copy()
-        candidates = self.get_sequences(doc)
+    def get_replacement_candidates(
+        self, doc: model.Document
+    ) -> typing.List[typing.List[model.Token]]:
+        return self.get_sequences(doc)
 
-        for candidate in candidates:
-            sentence = " ".join(t.text for t in candidate)
-            translated_candidate = self.back_translate(sentence)[0]
-            translated_tokens = tokenize.word_tokenize(translated_candidate)
-            print("Input : ", sentence)
-            print("Output: ", " ".join(translated_tokens))
-            sentence_id = candidate[0].sentence_index
-            start_in_sentence = candidate[0].index_in_sentence(doc)
-            stop_in_sentence = candidate[-1].index_in_sentence(doc) + 1
-            tokenmanager.replace_sequence_text_in_sentence(
-                doc, sentence_id, start_in_sentence, stop_in_sentence, translated_tokens
-            )
-        return doc
+    def get_replacement(
+        self, candidate: typing.List[model.Token]
+    ) -> typing.Optional[typing.List[str]]:
+        sentence = " ".join(t.text for t in candidate)
+        translated_candidate = self.back_translate(sentence)[0]
+        translated_tokens = tokenize.word_tokenize(translated_candidate)
+        return translated_tokens
 
     def back_translate(self, sentence: str):
-        pivot_sentence = self.translate(sentence, self.src_lang, self.pivot_lang, self.model, self.tokenizer)
-        return self.translate(pivot_sentence, self.pivot_lang, self.src_lang, self.model, self.tokenizer)
+        pivot_sentence = self.translate(
+            sentence, self.src_lang, self.pivot_lang, self.model, self.tokenizer
+        )
+        return self.translate(
+            pivot_sentence, self.pivot_lang, self.src_lang, self.model, self.tokenizer
+        )
 
     @staticmethod
-    def translate(sentence: str, source_lang: str, target_lang: str, translation_model, tokenizer) -> str:
+    def translate(
+        sentence: str, source_lang: str, target_lang: str, translation_model, tokenizer
+    ) -> str:
         tokenizer.src_lang = source_lang
         encoded_source_sentence = tokenizer(sentence, return_tensors="pt")
         generated_target_tokens = translation_model.generate(
