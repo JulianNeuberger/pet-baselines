@@ -5,7 +5,6 @@ from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
 from augment import base, params
 from data import model
-from transformations import tokenmanager
 
 
 # Author: Benedikt
@@ -14,12 +13,14 @@ class Trafo8Step(base.BaseTokenReplacementStep):
         self,
         dataset: typing.List[model.Document],
         n: int = 1,
+        max_outputs: int = 1,
         num_beams: int = 2,
         lang: str = "de",
     ):
         super().__init__(dataset, n)
         self.lang = lang
         self.num_beams = num_beams
+        self.max_outputs = min(num_beams, max_outputs)
         name_en_de = "facebook/wmt19-en-de"
         self.tokenizer_en_de = FSMTTokenizer.from_pretrained(name_en_de)
         self.model_en_de = FSMTForConditionalGeneration.from_pretrained(name_en_de).to(
@@ -35,37 +36,23 @@ class Trafo8Step(base.BaseTokenReplacementStep):
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
             params.IntegerParam(name="n", min_value=1, max_value=20),
+            params.IntegerParam(name="max_outputs", min_value=1, max_value=10),
             params.IntegerParam(name="num_beams", min_value=1, max_value=20),
         ]
 
-    def do_augment(self, doc: model.Document) -> model.Document:
-        doc = doc.copy()
+    def get_replacement_candidates(self, doc: model.Document) -> typing.List[typing.List[model.Token]]:
+        return self.get_sequences(doc)
 
-        candidates = self.get_replacement_candidates(doc)
-        num_changes = 0
-        for candidate in candidates:
-            text = " ".join(t.text for t in candidate)
-            if text in [",", ".", "?", "!", ":", "#", "-"]:
-                continue
+    def get_replacement(self, candidate: typing.List[model.Token]) -> typing.Optional[typing.List[str]]:
+        text = " ".join(t.text for t in candidate)
+        if text in [",", ".", "?", "!", ":", "#", "-"]:
+            return None
 
-            translated = self.back_translate(text)
-            if translated is None:
-                continue
+        translated = self.back_translate(text)
+        if translated is None:
+            return None
 
-            translated_tokens = tokenize.word_tokenize(translated)
-            tokenmanager.replace_sequence_text_in_sentence(
-                doc,
-                candidate[0].sentence_index,
-                candidate[0].index_in_sentence(doc),
-                candidate[-1].index_in_sentence(doc),
-                translated_tokens,
-            )
-
-            num_changes += 1
-            if num_changes == self.n:
-                break
-
-        return doc
+        return tokenize.word_tokenize(translated)
 
     def back_translate(self, en: str) -> typing.Optional[str]:
         try:
