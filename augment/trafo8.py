@@ -35,7 +35,7 @@ class Trafo8Step(base.BaseTokenReplacementStep):
     def get_params() -> typing.List[typing.Union[params.Param]]:
         return [
             params.FloatParam(name="p", min_value=0, max_value=1),
-            params.IntegerParam(name="max_outputs", min_value=1, max_value=10),
+            params.IntegerParam(name="n", min_value=1, max_value=20),
             params.IntegerParam(name="num_beams", min_value=1, max_value=20),
         ]
 
