@@ -2,6 +2,8 @@ import copy
 import typing
 from random import shuffle
 
+import tqdm
+
 from augment import base
 from data import model
 
@@ -13,6 +15,9 @@ def run_augmentation_old(dataset: typing.List[model.Document], step: base.Augmen
 # Author: Benedikt
 def run_augmentation(dataset: typing.List[model.Document], step: base.AugmentationStep, aug_rate):
     num_of_doc_to_aug = int(len(dataset) * aug_rate)
+    print(f'Augmenting {len(dataset)} documents with '
+          f'augmentation factor of {aug_rate:.4f} '
+          f'using strategy {step.__class__.__name__}...')
     extended_dataset = []
     ds = copy.deepcopy(dataset)
     indices = []
@@ -30,7 +35,12 @@ def run_augmentation(dataset: typing.List[model.Document], step: base.Augmentati
     unaug_dataset = copy.deepcopy(dataset)
     ext_ds = copy.deepcopy(extended_dataset)
     unaug_dataset.extend(ext_ds)
-    aug_dataset = [step.do_augment(doc) for doc in extended_dataset]
+    aug_dataset = []
+
+    for doc in tqdm.tqdm(extended_dataset):
+        aug_dataset.append(step.do_augment(doc))
+
+    #aug_dataset = [step.do_augment(doc) for doc in extended_dataset]
     aug_data = copy.deepcopy(dataset)
     aug_data.extend(aug_dataset)
     indices2 = []
