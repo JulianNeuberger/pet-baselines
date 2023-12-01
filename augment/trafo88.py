@@ -24,11 +24,17 @@ class Trafo88Step(base.AugmentationStep):
         return []
 
     @staticmethod
-    def sentence_reordering(document: data.Document):
-        document = document.copy()
+    def _get_new_ordering(document: model.Document) -> typing.List[int]:
         new_ids = list(range(len(document.sentences)))
         random.shuffle(new_ids)
+        return new_ids
+
+    @staticmethod
+    def sentence_reordering(document: data.Document):
+        document = document.copy()
+        new_ids = Trafo88Step._get_new_ordering(document)
         id_mapping = {old: new for old, new in enumerate(new_ids)}
+        reverse_mapping = {v: k for k, v in id_mapping.items()}
 
         for mention in document.mentions:
             mention.sentence_index = id_mapping[mention.sentence_index]
@@ -37,5 +43,8 @@ class Trafo88Step(base.AugmentationStep):
         for sentence in document.sentences:
             for token in sentence.tokens:
                 token.sentence_index = id_mapping[token.sentence_index]
-        document.sentences = [document.sentences[i] for i in new_ids]
+        document.sentences = [
+            document.sentences[reverse_mapping[i]]
+            for i in range(len(document.sentences))
+        ]
         return document
