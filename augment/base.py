@@ -103,12 +103,36 @@ class BaseTokenReplacementStep(AugmentationStep, abc.ABC):
             if replacement_tokens is None:
                 continue
 
+            num_annotations_before = (
+                len(doc.mentions),
+                len(doc.entities),
+                len(doc.relations),
+            )
+
+            print(f"Replacing '{' '.join(t.text for t in candidate)}' "
+                  f"(sentence {candidate[0].sentence_index}, "
+                  f"tokens {candidate[0].index_in_sentence(doc)} - "
+                  f"{candidate[-1].index_in_sentence(doc) + 1}) "
+                  f"with '{' '.join(replacement_tokens)}'.")
+
             tokenmanager.replace_sequence_text_in_sentence(
                 doc,
                 candidate[0].sentence_index,
                 candidate[0].index_in_sentence(doc),
                 candidate[-1].index_in_sentence(doc) + 1,
                 replacement_tokens,
+            )
+
+            num_annotations_after = (
+                len(doc.mentions),
+                len(doc.entities),
+                len(doc.relations),
+            )
+
+            assert num_annotations_before == num_annotations_after, (
+                f"Replacing candidates changed the documents annotations! "
+                f"This must not happen! Before augmentation there were {num_annotations_before} "
+                f"mentions, entities and relations, now there are {num_annotations_after}."
             )
 
             num_changed += 1

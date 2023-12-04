@@ -33,7 +33,6 @@ from augment import (
     trafo106,
     trafo_null,
     trafo_insert,
-    cheating,
 )
 from data import loader, model
 from main import cross_validate_pipeline
@@ -81,12 +80,12 @@ def suggest_param(param: params.Param, trial: optuna.Trial) -> typing.Any:
         )
 
     if isinstance(param, params.ChoiceParam):
-        choices = param.get_combinations_as_bit_masks()
-        choice = trial.suggest_categorical(name=param.name, choices=choices)
-        choice_as_list = param.bit_mask_to_choices(choice)
-        if param.max_num_picks == 1:
-            return choice_as_list[0]
-        return choice_as_list
+        if param.max_num_picks > 1:
+            choices = param.get_combinations_as_bit_masks()
+            choice = trial.suggest_categorical(name=param.name, choices=choices)
+            choice_as_list = param.bit_mask_to_choices(choice)
+            return choice_as_list
+        return trial.suggest_categorical(name=param.name, choices=param.choices)
 
     if isinstance(param, params.BooleanParameter):
         return trial.suggest_categorical(name=param.name, choices=[True, False])

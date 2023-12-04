@@ -64,7 +64,8 @@ class Trafo58Step(base.AugmentationStep):
     def do_augment_batch_wise(self, doc: model.Document):
         doc = copy.deepcopy(doc)
         translation_candidates = self.get_sequences(doc)
-        to_translate = random.sample(translation_candidates, self.n)
+        num_to_translate = min(self.n, len(translation_candidates))
+        to_translate = random.sample(translation_candidates, num_to_translate)
 
         batch = [" ".join([t.text for t in sequence]) for sequence in to_translate]
         translated_batch = self.encode_decode(batch)

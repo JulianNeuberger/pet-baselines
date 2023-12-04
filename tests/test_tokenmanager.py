@@ -5,6 +5,55 @@ from data import model
 import copy
 
 
+def document_fixture():
+    doc = model.Document(
+        text="",
+        name="test",
+        sentences=[
+            model.Sentence(tokens=[
+                model.Token("This", 0, "A", "O", 0),
+                model.Token("is", 1, "B", "O", 0),
+                model.Token("a", 2, "C", "O", 0),
+                model.Token("sentence", 3, "A", "B-Object", 0),
+                model.Token(".", 4, "A", "O", 0),
+            ]),
+            model.Sentence(tokens=[
+                model.Token("And", 5, "A", "O", 1),
+                model.Token("another", 6, "B", "B-Object", 1),
+                model.Token("one", 7, "C", "I-Object", 1),
+                model.Token("!", 8, "A", "0", 1),
+            ]),
+            model.Sentence(tokens=[
+                model.Token("Here", 9, "A", "B-Something", 2),
+                model.Token("comes", 10, "B", "B-Activity", 2),
+                model.Token("the", 11, "C", "O", 2),
+                model.Token("last", 12, "C", "O", 2),
+                model.Token("one", 13, "C", "B-Object", 2),
+                model.Token(".", 14, "A", "0", 2),
+            ]),
+        ],
+        mentions=[
+            model.Mention("Object", 0, [3]),
+            model.Mention("Object", 1, [1, 2]),
+            model.Mention("Something", 2, [0]),
+            model.Mention("Activity", 2, [1]),
+            model.Mention("Object", 2, [4]),
+        ],
+        entities=[
+            model.Entity([0, 1]),
+            model.Entity([2]),
+            model.Entity([3]),
+            model.Entity([4]),
+        ],
+        relations=[
+            model.Relation(0, 2, "Testtag", [0, 2]),
+            model.Relation(1, 2, "Othertag", [1, 2]),
+            model.Relation(3, 2, "Lasttag", [2]),
+        ]
+    )
+    return doc
+
+
 def test_get_pos_tag():
     # ARRANGE
     p1 = []
@@ -1312,3 +1361,20 @@ def test_replace_mention_text():
     tokenmanager.replace_mention_text(doc, 3, ["it"])
     assert doc.mentions[3].text(doc) == "it"
     assert " ".join([t.text for t in doc.sentences[3].tokens]) == "I like it ."
+
+
+def test_replace_sequence_text_in_sentence():
+    doc = document_fixture()
+    tokenmanager.replace_sequence_text_in_sentence(doc, 0, 3, 4, ["sent"])
+    assert doc.sentences[0].text == "This is a sent ."
+    assert doc.mentions[0].text(doc) == "sent"
+
+    doc = document_fixture()
+    tokenmanager.replace_sequence_text_in_sentence(doc, 0, 3, 5, ["sent"])
+    assert doc.sentences[0].text == "This is a sent"
+    assert doc.mentions[0].text(doc) == "sent"
+
+    doc = document_fixture()
+    tokenmanager.replace_sequence_text_in_sentence(doc, 0, 3, 4, ["example", "sent"])
+    assert doc.sentences[0].text == "This is a example sent ."
+    assert doc.mentions[0].text(doc) == "example sent"

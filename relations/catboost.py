@@ -173,7 +173,6 @@ class CatBoostRelationEstimator:
                 teacher_forced_last_pass = self._sub_sample_document_relations(
                     document, sub_sampling_rate
                 )
-                print(len(teacher_forced_last_pass.relations), len(document.relations))
             else:
                 teacher_forced_last_pass = document
             feature_builder = functools.partial(

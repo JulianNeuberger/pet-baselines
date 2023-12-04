@@ -11,10 +11,7 @@ def collect_all_trafos(
     sub_classes = []
 
     immediate_sub_classes = base_class.__subclasses__()
-    immediate_sub_classes = [
-        c for c in immediate_sub_classes if not inspect.isabstract(c)
-    ]
-    sub_classes.extend(immediate_sub_classes)
+    sub_classes.extend([c for c in immediate_sub_classes if not inspect.isabstract(c)])
     for sub_class in immediate_sub_classes:
         child_sub_classes = collect_all_trafos(sub_class)
         sub_classes.extend(child_sub_classes)
@@ -22,128 +19,59 @@ def collect_all_trafos(
     return sub_classes
 
 
-def get_test_doc():
-    sentences = [
-        model.Sentence(
-            tokens=[
-                model.Token(
-                    text="First",
-                    index_in_document=0,
-                    pos_tag="JJ",
-                    bio_tag="",
-                    sentence_index=0,
-                ),
-                model.Token(
-                    text="sentence",
-                    index_in_document=1,
-                    pos_tag="NN",
-                    bio_tag="",
-                    sentence_index=0,
-                ),
-                model.Token(
-                    text="content",
-                    index_in_document=2,
-                    pos_tag="NN",
-                    bio_tag="",
-                    sentence_index=0,
-                ),
-                model.Token(
-                    text=".",
-                    index_in_document=3,
-                    pos_tag=".",
-                    bio_tag="",
-                    sentence_index=0,
-                ),
-            ]
-        ),
-        model.Sentence(
-            tokens=[
-                model.Token(
-                    text="Second",
-                    index_in_document=4,
-                    pos_tag="JJ",
-                    bio_tag="",
-                    sentence_index=1,
-                ),
-                model.Token(
-                    text="short",
-                    index_in_document=5,
-                    pos_tag="JJ",
-                    bio_tag="",
-                    sentence_index=1,
-                ),
-                model.Token(
-                    text="sentence",
-                    index_in_document=6,
-                    pos_tag="NN",
-                    bio_tag="",
-                    sentence_index=1,
-                ),
-                model.Token(
-                    text="!",
-                    index_in_document=7,
-                    pos_tag=".",
-                    bio_tag="",
-                    sentence_index=1,
-                ),
-            ]
-        ),
-        model.Sentence(
-            tokens=[
-                model.Token(
-                    text="Third",
-                    index_in_document=8,
-                    pos_tag="NNP",
-                    bio_tag="",
-                    sentence_index=2,
-                ),
-                model.Token(
-                    text="and",
-                    index_in_document=9,
-                    pos_tag="CC",
-                    bio_tag="",
-                    sentence_index=2,
-                ),
-                model.Token(
-                    text="last",
-                    index_in_document=10,
-                    pos_tag="JJ",
-                    bio_tag="",
-                    sentence_index=2,
-                ),
-                model.Token(
-                    text="!",
-                    index_in_document=11,
-                    pos_tag=".",
-                    bio_tag="",
-                    sentence_index=2,
-                ),
-            ]
-        ),
-    ]
-
-    mentions = [
-        model.Mention(ner_tag="A", sentence_index=0, token_indices=[1]),
-        model.Mention(ner_tag="B", sentence_index=1, token_indices=[0, 1, 2]),
-    ]
-
-    entities = [model.Entity(mention_indices=[0]), model.Entity(mention_indices=[1])]
-
-    relations = [
-        model.Relation(
-            head_entity_index=0, tail_entity_index=1, tag="RR", evidence=[0, 1]
-        )
-    ]
-
-    document = model.Document(
-        name="",
-        sentences=sentences,
-        mentions=mentions,
-        entities=entities,
-        relations=relations,
+def document_fixture():
+    doc = model.Document(
         text="",
+        name="test",
+        sentences=[
+            model.Sentence(
+                tokens=[
+                    model.Token("This", 0, "A", "O", 0),
+                    model.Token("is", 1, "B", "O", 0),
+                    model.Token("a", 2, "C", "O", 0),
+                    model.Token("sentence", 3, "A", "B-Object", 0),
+                    model.Token(".", 4, "A", "O", 0),
+                ]
+            ),
+            model.Sentence(
+                tokens=[
+                    model.Token("And", 5, "A", "O", 1),
+                    model.Token("another", 6, "B", "B-Object", 1),
+                    model.Token("one", 7, "C", "I-Object", 1),
+                    model.Token("!", 8, "A", "0", 1),
+                ]
+            ),
+            model.Sentence(
+                tokens=[
+                    model.Token("Here", 9, "A", "B-Something", 2),
+                    model.Token("comes", 10, "B", "B-Activity", 2),
+                    model.Token("the", 11, "C", "O", 2),
+                    model.Token("last", 12, "C", "O", 2),
+                    model.Token("one", 13, "C", "B-Object", 2),
+                    model.Token(".", 14, "A", "0", 2),
+                ]
+            ),
+        ],
+        mentions=[
+            model.Mention("Object", 0, [3]),
+            model.Mention("Object", 1, [1, 2]),
+            model.Mention("Something", 2, [0]),
+            model.Mention("Activity", 2, [1]),
+            model.Mention("Object", 2, [4]),
+        ],
+        entities=[
+            model.Entity([0, 1]),
+            model.Entity([2]),
+            model.Entity([3]),
+            model.Entity([4]),
+        ],
+        relations=[
+            model.Relation(0, 2, "Testtag", [0, 2]),
+            model.Relation(1, 2, "Othertag", [1, 2]),
+            model.Relation(3, 2, "Lasttag", [2]),
+        ],
     )
-    return document
+    return doc
 
 
 def test_do_augment():
@@ -151,11 +79,11 @@ def test_do_augment():
     print(trafo_classes)
     for clazz in trafo_classes:
         print(f"Testing {clazz.__name__}...")
-        doc = get_test_doc()
+        doc = document_fixture()
         args = {"dataset": [doc]}
         for param in clazz.get_params():
             if isinstance(param, params.NumberParam):
-                args[param.name] = param.min_value
+                args[param.name] = param.max_value
             elif isinstance(param, params.ChoiceParam):
                 args[param.name] = param.choices[0]
                 if param.max_num_picks > 1:
@@ -163,4 +91,4 @@ def test_do_augment():
             elif isinstance(param, params.BooleanParameter):
                 args[param.name] = True
         trafo = clazz(**args)
-        trafo.do_augment(doc)
+        augmented = trafo.do_augment(doc)
