@@ -197,7 +197,8 @@ def main():
             raise AssertionError("\n".join([str(e) for e in errors]))
 
     all_documents = loader.read_documents_from_json("./jsonl/all.jsonl")
-    pipeline_step_class = pipeline.CatBoostRelationExtractionStep
+    pipeline_step_class = pipeline.CrfMentionEstimatorStep
+    # pipeline.CatBoostRelationExtractionStep
 
     for strategy_class in strategies:
         print(f"Running optimization for strategy {strategy_class.__name__}")
@@ -205,7 +206,7 @@ def main():
             strategy_class,
             pipeline_step_class,
             all_documents,
-            num_trees=100,
+            # num_trees=100,
             device=device,
             device_ids=device_ids,
         )
