@@ -47,7 +47,8 @@ def cross_validate_pipeline(p: pipeline.Pipeline, *,
                             train_folds: typing.List[typing.List[data.Document]],
                             test_folds: typing.List[typing.List[data.Document]],
                             save_results: bool = False,
-                            dump_predictions_dir: str = None):
+                            dump_predictions_dir: str = None,
+                            averaging_mode: str = 'micro'):
     assert len(train_folds) == len(test_folds)
     pipeline_results = []
     for n_fold, (train_fold, test_fold) in tqdm.tqdm(enumerate(zip(train_folds, test_folds)),
@@ -60,7 +61,7 @@ def cross_validate_pipeline(p: pipeline.Pipeline, *,
                                 test_documents=test_fold,
                                 ground_truth_documents=ground_truth)
         pipeline_results.append(pipeline_result)
-    res = accumulate_pipeline_results(pipeline_results)
+    res = accumulate_pipeline_results(pipeline_results, averaging_mode=averaging_mode)
     if dump_predictions_dir is not None:
         for i, pipeline_result in enumerate(pipeline_results):
             json_data = [p.to_json_serializable() for p in pipeline_result.step_results[p.steps[-1]].predictions]
