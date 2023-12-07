@@ -1,6 +1,7 @@
 import collections
 import functools
 import itertools
+import os
 import random
 import typing
 
@@ -88,6 +89,17 @@ class CatBoostRelationEstimator:
 
             cat_features = list(range(cat_features_start, cat_features_start + num_cat_features))
             self._model[pass_id].fit(xs, ys, cat_features=cat_features, verbose=self._verbose)
+
+            # Save the model 
+            model_save_path = f'models/catboost_model_pass_{pass_id}.cbm' 
+            os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
+            self._model[pass_id].save_model(model_save_path)
+
+            # Load the model for verification
+            loaded_model = catboost.CatBoostClassifier()
+            loaded_model.load_model(model_save_path)
+
+            print("Model saved")
 
         return self
 

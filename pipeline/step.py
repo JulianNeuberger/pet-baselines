@@ -37,15 +37,25 @@ class PipelineStep(abc.ABC):
     def run(self, *,
             train_documents: typing.List[data.Document],
             test_documents: typing.List[data.Document],
-            ground_truth_documents: typing.List[data.Document]):
+            ground_truth_documents: typing.Optional[typing.List[data.Document]] = None,
+            training_only: bool = False): # setting parameters to optional, in case there are not handed over
         train_data = [d.copy() for d in train_documents]
         test_data = [d.copy() for d in test_documents]
-        result = self._run(train_documents=train_data, test_documents=test_data)
-        print('Running evaluation...')
-        start = time.time_ns()
-        stats = self._eval(ground_truth=ground_truth_documents, predictions=result)
-        print(f'Evaluation done after {(time.time_ns() - start) / 1e6:.1f}ms!')
-        return PipelineStepResult(result, stats)
+        result = self._run(train_documents=train_data, test_documents=test_data, training_only=training_only)
+        if not training_only: # No evaluation while training only
+            print('Running evaluation...')
+            start = time.time_ns()
+            stats = self._eval(ground_truth=ground_truth_documents, predictions=result)
+            print(f'Evaluation done after {(time.time_ns() - start) / 1e6:.1f}ms!')
+            return PipelineStepResult(result, stats)
+    
+    # Added for more control
+    def _train(self, *, train_documents: typing.List[data.Document]):
+        raise NotImplementedError()
+    
+    # Added for more control
+    def _predict(self, *, test_documents: typing.List[data.Document]):
+        raise NotImplementedError()
 
     def _eval(self, *,
               predictions: typing.List[data.Document],
@@ -54,7 +64,7 @@ class PipelineStep(abc.ABC):
 
     def _run(self, *,
              train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.Optional[typing.List[data.Document]]:
         raise NotImplementedError()
 
 
@@ -73,6 +83,7 @@ class CatBoostRelationExtractionStep(PipelineStep):
                  class_weighting: float = 0.0,
                  seed: int = 42):
         super().__init__(name)
+        self.estimator = None
         self._num_trees = num_trees
         self._num_passes = num_passes
         self._negative_sampling = negative_sampling_rate
@@ -92,7 +103,14 @@ class CatBoostRelationExtractionStep(PipelineStep):
                                          verbose=self._verbose)
 
     def _run(self, *, train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.Optional[typing.List[data.Document]]:
+        self._train(train_documents=train_documents)
+        if training_only:
+            print('Training finished')
+        else:
+            self._predict(test_documents=test_documents)
+
+    def _train(self, *, train_documents: typing.List[data.Document]):
         ner_tags = ['Activity', 'Actor', 'Activity Data', 'Condition Specification',
                     'Further Specification', 'AND Gateway', 'XOR Gateway']
         relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
@@ -108,24 +126,28 @@ class CatBoostRelationExtractionStep(PipelineStep):
         else:
             class_weights = {k: 1.0 for k, v in class_weights.items()}
         print(f'Using class weights {class_weights}')
-        estimator = relations.CatBoostRelationEstimator(negative_sampling_rate=self._negative_sampling,
-                                                        num_trees=self._num_trees,
-                                                        use_pos_features=self._use_pos_features,
-                                                        use_embedding_features=self._use_embedding_features,
-                                                        num_passes=self._num_passes,
-                                                        context_size=self._context_size,
-                                                        relation_tags=relation_tags,
-                                                        ner_tags=ner_tags,
-                                                        name=self._name,
-                                                        seed=self._seed,
-                                                        depth=self._depth,
-                                                        learning_rate=self._learning_rate,
-                                                        class_weights=class_weights,
-                                                        verbose=True)
-        estimator.train(train_documents)
+        if self.estimator is None:
+            self.estimator = relations.CatBoostRelationEstimator(negative_sampling_rate=self._negative_sampling,
+                                                            num_trees=self._num_trees,
+                                                            use_pos_features=self._use_pos_features,
+                                                            use_embedding_features=self._use_embedding_features,
+                                                            num_passes=self._num_passes,
+                                                            context_size=self._context_size,
+                                                            relation_tags=relation_tags,
+                                                            ner_tags=ner_tags,
+                                                            name=self._name,
+                                                            seed=self._seed,
+                                                            depth=self._depth,
+                                                            learning_rate=self._learning_rate,
+                                                            class_weights=class_weights,
+                                                            verbose=True)
+        self.estimator.train(train_documents)
+    
+    def _predict(self, test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+        if self.estimator is None: # TODO: Ensure the lifecycle of the estimator, in case training and prediction happen in different instances
+            raise ValueError("Estimator has not been initialized. Run _train first.")
         test_documents = [d.copy(clear_relations=True) for d in test_documents]
-        return estimator.predict(test_documents)
-
+        return self.estimator.predict(test_documents)
 
 class NeuralRelationExtraction(PipelineStep):
     def __init__(self, name: str, negative_sampling_rate: float,
@@ -143,7 +165,7 @@ class NeuralRelationExtraction(PipelineStep):
 
     def _run(self, *,
              train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.List[data.Document]:
         ner_tags = ['Activity', 'Actor', 'Activity Data', 'Condition Specification',
                     'Further Specification', 'AND Gateway', 'XOR Gateway']
         relation_tags = ['Flow', 'Uses', 'Actor Performer', 'Actor Recipient', 'Further Specification', 'Same Gateway']
@@ -163,7 +185,7 @@ class RuleBasedRelationExtraction(PipelineStep):
         return metrics.relation_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
 
     def _run(self, *, train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.List[data.Document]:
         activity = 'Activity'
         actor = 'Actor'
         activity_data = 'Activity Data'
@@ -198,19 +220,35 @@ class RuleBasedRelationExtraction(PipelineStep):
 
 
 class CrfMentionEstimatorStep(PipelineStep):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.estimator = None
+
     def _eval(self, *,
               predictions: typing.List[data.Document],
               ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
         return metrics.mentions_f1_stats(predicted_documents=predictions, ground_truth_documents=ground_truth)
+    
+    def _train(self, *, train_documents: typing.List[data.Document]):
+        if self.estimator is None:
+            self.estimator = mentions.ConditionalRandomFieldsEstimator(pathlib.Path(f'models/crf/{self._name}'))
+        self.estimator.train(train_documents)
+
+    def _predict(self, test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+        if self.estimator is None: # TODO: Ensure the lifecycle of the estimator, in case training and prediction happen in different instances
+            raise ValueError("Estimator has not been initialized. Run _train first.")
+        mention_extraction_input = [d.copy(clear_mentions=True) for d in test_documents]
+        return self.estimator.predict(mention_extraction_input)
 
     def _run(self, *,
              train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
-        estimator = mentions.ConditionalRandomFieldsEstimator(pathlib.Path(f'models/crf/{self._name}'))
-        estimator.train(train_documents)
-        mention_extraction_input = [d.copy(clear_mentions=True) for d in test_documents]
-        return estimator.predict(mention_extraction_input)
-
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.Optional[typing.List[data.Document]]:
+        self._train(train_documents= train_documents)
+        if training_only:
+            print("Training finished.")
+        else:
+            return self._predict(test_documents=test_documents)
+    
 
 class NeuralCoReferenceResolutionStep(PipelineStep):
     def __init__(self, name: str, resolved_tags: typing.List[str],
@@ -231,7 +269,7 @@ class NeuralCoReferenceResolutionStep(PipelineStep):
 
     def _run(self, *,
              train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.List[data.Document]:
         test_documents = [d.copy(clear_entities=True) for d in test_documents]
         solver = coref.NeuralCoRefSolver(self._resolved_tags,
                                          ner_tag_strategy=self._ner_strategy,
@@ -248,7 +286,7 @@ class NaiveCoReferenceResolutionStep(PipelineStep):
 
     def _eval(self, *,
               predictions: typing.List[data.Document],
-              ground_truth: typing.List[data.Document]) -> typing.Dict[str, metrics.Stats]:
+              ground_truth: typing.List[data.Document], training_only: bool = False) -> typing.Dict[str, metrics.Stats]:
         return metrics.entity_f1_stats(predicted_documents=predictions,
                                        only_tags=self._resolved_tags,
                                        min_num_mentions=2,
@@ -256,7 +294,7 @@ class NaiveCoReferenceResolutionStep(PipelineStep):
 
     def _run(self, *,
              train_documents: typing.List[data.Document],
-             test_documents: typing.List[data.Document]) -> typing.List[data.Document]:
+             test_documents: typing.List[data.Document], training_only: bool = False) -> typing.List[data.Document]:
         test_documents = [d.copy(clear_entities=True) for d in test_documents]
         solver = coref.NaiveCoRefSolver(self._resolved_tags, min_mention_overlap=self._mention_overlap)
         return solver.resolve_co_references(test_documents)
