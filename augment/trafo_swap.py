@@ -26,7 +26,7 @@ class TrafoRandomSwapStep(augment.AugmentationStep):
             source_pos = source.pos_tag
 
             source.text = target.text
-            source.pos_tag = target.pos
+            source.pos_tag = target.pos_tag
 
             target.text = source_text
             target.pos_tag = source_pos
