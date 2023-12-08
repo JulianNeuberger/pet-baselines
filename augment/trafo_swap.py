@@ -7,7 +7,7 @@ from data import model
 
 
 class TrafoRandomSwapStep(augment.AugmentationStep):
-    def __init__(self, n: int, dataset: typing.List[model.Document], **kwargs):
+    def __init__(self, dataset: typing.List[model.Document], n: int,  **kwargs):
         super().__init__(dataset, **kwargs)
         self.n = n
 
