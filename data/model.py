@@ -193,7 +193,9 @@ class Mention:
     def to_json_serializable(self):
         return {
             "tag": self.ner_tag,
+            "ner": self.ner_tag,
             "sentence_index": self.sentence_index,
+            "sentence_ic": self.sentence_index,
             "token_indices": self.token_indices,
         }
 
@@ -262,6 +264,7 @@ class Relation:
             "head": self.head_entity_index,
             "tail": self.tail_entity_index,
             "tag": self.tag,
+            "type": self.tag,
             "evidence": self.evidence,
         }
 

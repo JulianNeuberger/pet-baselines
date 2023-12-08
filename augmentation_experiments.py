@@ -9,58 +9,35 @@ import sklearn.model_selection
 import augment
 import data
 import pipeline
-from augment import (
-    base,
-    trafo3,
-    trafo5,
-    trafo6,
-    trafo8,
-    trafo24,
-    trafo26,
-    trafo39,
-    trafo40,
-    params,
-    trafo58,
-    trafo62,
-    trafo79,
-    trafo82,
-    trafo86,
-    trafo88,
-    trafo90,
-    trafo100,
-    trafo101,
-    trafo103,
-    trafo106,
-    trafo_null,
-    trafo_insert,
-)
+from augment import params
 from data import loader, model
 from main import cross_validate_pipeline
 
-strategies: typing.List[typing.Type[base.AugmentationStep]] = [
-    trafo3.Trafo3Step,
-    trafo5.Trafo5Step,
-    trafo6.Trafo6Step,
-    #trafo8.Trafo8Step,  # long runtime
-    trafo24.Trafo24Step,
-    trafo26.Trafo26Step,
-    trafo39.Trafo39Step,
-    trafo40.Trafo40Step,
-    trafo58.Trafo58Step,  # runs too long?
-    trafo62.Trafo62Step,  # runs too long
-    trafo79.Trafo79Step,
-    trafo82.Trafo82Step,
-    trafo86.Trafo86HyponymReplacement,
-    trafo86.Trafo86HypernymReplacement,
-    trafo88.Trafo88Step,
-    trafo90.Trafo90Step,
-    trafo100.Trafo100Step,
-    trafo101.Trafo101Step,
-    trafo103.Trafo103Step,
-    trafo106.Trafo106Step,
-    trafo_null.TrafoNullStep,
-    trafo_insert.TrafoInsertStep,
-    # cheating.CheatingTransformationStep,
+strategies: typing.List[typing.Type[augment.AugmentationStep]] = [
+    augment.Trafo3Step,
+    augment.Trafo5Step,
+    augment.Trafo6Step,
+    # augment.Trafo8Step,  # long runtime
+    augment.Trafo24Step,
+    #augment.Trafo26Step,
+    augment.Trafo39Step,
+    augment.Trafo40Step,
+    #augment.Trafo58Step,  # runs too long?
+    #augment.Trafo62Step,  # runs too long
+    augment.Trafo79Step,
+    augment.Trafo82Step,
+    augment.Trafo86HyponymReplacement,
+    augment.Trafo86HypernymReplacement,
+    augment.Trafo88Step,
+    augment.Trafo90Step,
+    augment.Trafo100Step,
+    augment.Trafo101Step,
+    augment.Trafo103Step,
+    augment.Trafo106Step,
+    augment.TrafoNullStep,
+    augment.TrafoInsertStep,
+    augment.TrafoRandomSwapStep
+    # augment.CheatingTransformationStep,
 ]
 
 max_runs_per_step = 25
@@ -92,10 +69,10 @@ def suggest_param(param: params.Param, trial: optuna.Trial) -> typing.Any:
 
 
 def instantiate_step(
-    step_class: typing.Type[base.AugmentationStep],
+    step_class: typing.Type[augment.AugmentationStep],
     trial: optuna.Trial,
     dataset: typing.List[model.Document],
-) -> base.AugmentationStep:
+) -> augment.AugmentationStep:
     suggested_params = {
         p.name: suggest_param(p, trial) for p in step_class.get_params()
     }
@@ -103,7 +80,7 @@ def instantiate_step(
 
 
 def objective_factory(
-    augmenter_class: typing.Type[base.AugmentationStep],
+    augmenter_class: typing.Type[augment.AugmentationStep],
     pipeline_step_class: typing.Type[pipeline.PipelineStep],
     documents: typing.List[data.Document],
     **kwargs,

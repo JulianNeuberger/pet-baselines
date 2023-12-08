@@ -25,5 +25,6 @@ from augment.trafo101 import Trafo101Step
 from augment.trafo103 import Trafo103Step
 from augment.trafo106 import Trafo106Step
 
+from augment.trafo_swap import TrafoRandomSwapStep
 from augment.trafo_insert import TrafoInsertStep
 from augment.trafo_null import TrafoNullStep

@@ -86,6 +86,9 @@ class Trafo40Step(base.AugmentationStep):
         doc = doc.copy()
         phrases = self.get_phrases()
 
+        if len(phrases) == 0:
+            return doc
+
         for _ in range(self.n):
             index = random.randrange(0, len(doc.tokens))
             phrase = random.choice(phrases)

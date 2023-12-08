@@ -1,6 +1,5 @@
-import copy
+import random
 import typing
-from random import randint
 
 from augment import base, params
 from data import model
@@ -11,6 +10,11 @@ class TrafoInsertStep(base.AugmentationStep):
     def __init__(self, dataset: typing.List[model.Document], count_insertions=1):
         super().__init__(dataset)
         self.count_insertions = count_insertions
+        vocab = set()
+        for document in dataset:
+            for token in document.tokens:
+                vocab.add(token.text)
+        self.vocab = list(vocab)
 
     @staticmethod
     def get_params() -> typing.List[typing.Union[params.Param]]:
@@ -18,33 +22,14 @@ class TrafoInsertStep(base.AugmentationStep):
             params.IntegerParam(name="count_insertions", max_value=20, min_value=1),
         ]
 
-    def do_augment(self, doc2: model.Document) -> model.Document:
-        doc = copy.deepcopy(doc2)
-        for sentence in doc.sentences:
-            counter = 0
-            while counter < self.count_insertions:
-                ran = randint(0, len(sentence.tokens) - 1)
-                text = "Test"
-                if sentence.tokens[ran].bio_tag == "O":
-                    bio = sentence.tokens[ran].bio_tag
-                else:
-                    bio = "I-" + tokenmanager.get_bio_tag_short(
-                        sentence.tokens[ran].bio_tag
-                    )
-                tok = model.Token(
-                    text,
-                    sentence.tokens[ran].index_in_document + 1,
-                    tokenmanager.get_pos_tag([text]),
-                    bio,
-                    sentence.tokens[ran].sentence_index,
-                )
+    def do_augment(self, doc: model.Document) -> model.Document:
+        doc = doc.copy()
 
-                mentions = tokenmanager.get_mentions(
-                    doc, ran, sentence.tokens[ran].sentence_index
-                )
-                if mentions != []:
-                    tokenmanager.create_token(doc, tok, ran + 1, mentions[0])
-                else:
-                    tokenmanager.create_token(doc, tok, ran + 1)
-                counter += 1
+        for _ in range(self.count_insertions):
+            index_in_doc = random.randint(0, len(doc.tokens))
+            token_text = random.choice(self.vocab)
+
+            tokenmanager.insert_token_text_into_document(
+                doc=doc, token_text=token_text, index_in_document=index_in_doc
+            )
         return doc

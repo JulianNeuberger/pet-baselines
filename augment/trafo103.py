@@ -74,7 +74,10 @@ class Trafo103Step(base.AugmentationStep):
 
             original_text = tuple([t.text for t in sub_sequence])
             new_texts = self.text_by_pos[pos]
-            new_texts.remove(original_text)
+            try:
+                new_texts.remove(original_text)
+            except ValueError:
+                pass
 
             if len(new_texts) == 0:
                 continue
