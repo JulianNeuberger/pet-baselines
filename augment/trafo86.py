@@ -24,21 +24,26 @@ class Trafo86HyponymReplacement(base.AugmentationStep):
         random.shuffle(nouns)
 
         num_changes = 0
-        sentence = " ".join(t.text for t in doc.tokens)
-        for token in nouns:
-            hyponyms = self.editor.hyponyms(sentence, token.text)
-            if len(hyponyms) == 0:
-                continue
+        for s in doc.sentences:
+            sentence = " ".join(t.text for t in s.tokens)
 
-            hyponym_tokens = nltk.tokenize.word_tokenize(hyponyms[0])
-            token_start = token.index_in_sentence(doc)
-            tokenmanager.replace_sequence_text_in_sentence(
-                doc, token.sentence_index, token_start, token_start + 1, hyponym_tokens
-            )
+            nouns = [t for t in s.tokens if t.pos_tag in ["NN", "NNS", "NNP", "NNPS"]]
+            random.shuffle(nouns)
 
-            num_changes += 1
-            if num_changes == self.n:
-                break
+            for token in nouns:
+                hyponyms = self.editor.hyponyms(sentence, token.text)
+                if len(hyponyms) == 0:
+                    continue
+
+                hyponym_tokens = nltk.tokenize.word_tokenize(hyponyms[0])
+                token_start = token.index_in_sentence(doc)
+                tokenmanager.replace_sequence_text_in_sentence(
+                    doc, token.sentence_index, token_start, token_start + 1, hyponym_tokens
+                )
+
+                num_changes += 1
+                if num_changes == self.n:
+                    break
         return doc
 
     @staticmethod
@@ -57,25 +62,28 @@ class Trafo86HypernymReplacement(base.AugmentationStep):
         doc: model.Document,
     ) -> model.Document:
         doc = doc.copy()
-        nouns = [t for t in doc.tokens if t.pos_tag in ["NN", "NNS", "NNP", "NNPS"]]
-        random.shuffle(nouns)
 
         num_changes = 0
-        sentence = " ".join(t.text for t in doc.tokens)
-        for token in nouns:
-            hyperyms = self.editor.hypernyms(sentence, token.text)
-            if len(hyperyms) == 0:
-                continue
+        for s in doc.sentences:
+            sentence = " ".join(t.text for t in s.tokens)
 
-            hyponym_tokens = nltk.tokenize.word_tokenize(hyperyms[0])
-            token_start = token.index_in_sentence(doc)
-            tokenmanager.replace_sequence_text_in_sentence(
-                doc, token.sentence_index, token_start, token_start + 1, hyponym_tokens
-            )
+            nouns = [t for t in s.tokens if t.pos_tag in ["NN", "NNS", "NNP", "NNPS"]]
+            random.shuffle(nouns)
 
-            num_changes += 1
-            if num_changes == self.n:
-                break
+            for token in nouns:
+                hyperyms = self.editor.hypernyms(sentence, token.text)
+                if len(hyperyms) == 0:
+                    continue
+
+                hyponym_tokens = nltk.tokenize.word_tokenize(hyperyms[0])
+                token_start = token.index_in_sentence(doc)
+                tokenmanager.replace_sequence_text_in_sentence(
+                    doc, token.sentence_index, token_start, token_start + 1, hyponym_tokens
+                )
+
+                num_changes += 1
+                if num_changes == self.n:
+                    break
         return doc
 
     @staticmethod
