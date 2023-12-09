@@ -28,8 +28,8 @@ strategies: typing.List[typing.Type[augment.AugmentationStep]] = [
     # augment.Trafo62Step,  # runs too long
     augment.Trafo79Step,
     # augment.Trafo82Step,
-    augment.Trafo86HyponymReplacement,
-    augment.Trafo86HypernymReplacement,
+    # augment.Trafo86HyponymReplacement,
+    # augment.Trafo86HypernymReplacement,
     # augment.Trafo88Step,
     # augment.Trafo90Step,
     # augment.Trafo100Step,
@@ -39,7 +39,7 @@ strategies: typing.List[typing.Type[augment.AugmentationStep]] = [
     # augment.Trafo110Step,
     # augment.TrafoNullStep,
     # augment.TrafoInsertStep,
-    # augment.TrafoRandomSwapStep
+    augment.TrafoRandomSwapStep
     # augment.CheatingTransformationStep,
 ]
 
