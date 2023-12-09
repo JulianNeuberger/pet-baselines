@@ -14,32 +14,32 @@ from data import loader, model
 from main import cross_validate_pipeline
 
 strategies: typing.List[typing.Type[augment.AugmentationStep]] = [
-    augment.Trafo3Step,
-    augment.Trafo5Step,
-    augment.Trafo6Step,
-    augment.Trafo8Step,  # long runtime
-    augment.Trafo24Step,
-    augment.Trafo26Step,
-    augment.Trafo27Step,
-    augment.Trafo39Step,
-    augment.Trafo40Step,
-    augment.Trafo52Step,
-    augment.Trafo58Step,  # runs too long?
-    augment.Trafo62Step,  # runs too long
+    # augment.Trafo3Step,
+    # augment.Trafo5Step,
+    # augment.Trafo6Step,
+    # augment.Trafo8Step,  # long runtime
+    # augment.Trafo24Step,
+    # augment.Trafo26Step,
+    # augment.Trafo27Step,
+    # augment.Trafo39Step,
+    # augment.Trafo40Step,
+    # augment.Trafo52Step,
+    # augment.Trafo58Step,  # runs too long?
+    # augment.Trafo62Step,  # runs too long
     augment.Trafo79Step,
-    augment.Trafo82Step,
+    # augment.Trafo82Step,
     augment.Trafo86HyponymReplacement,
     augment.Trafo86HypernymReplacement,
-    augment.Trafo88Step,
-    augment.Trafo90Step,
-    augment.Trafo100Step,
-    augment.Trafo101Step,
-    augment.Trafo103Step,
-    augment.Trafo106Step,
-    augment.Trafo110Step,
-    augment.TrafoNullStep,
-    augment.TrafoInsertStep,
-    augment.TrafoRandomSwapStep
+    # augment.Trafo88Step,
+    # augment.Trafo90Step,
+    # augment.Trafo100Step,
+    # augment.Trafo101Step,
+    # augment.Trafo103Step,
+    # augment.Trafo106Step,
+    # augment.Trafo110Step,
+    # augment.TrafoNullStep,
+    # augment.TrafoInsertStep,
+    # augment.TrafoRandomSwapStep
     # augment.CheatingTransformationStep,
 ]
 
