@@ -61,7 +61,7 @@ class Trafo26Step(base.AugmentationStep):
                 continue
 
             doc.tokens[candidate.index_in_document].text = new_token
-            doc.tokens[candidate.index_in_document].pos_tag = tokenmanager.get_pos_tag([new_token])
+            doc.tokens[candidate.index_in_document].pos_tag = tokenmanager.get_pos_tag([new_token])[0]
 
             num_changes += 1
             if num_changes == self.n:

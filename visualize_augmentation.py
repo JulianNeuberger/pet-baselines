@@ -41,11 +41,6 @@ transformation_classes: typing.List[typing.Type[augment.AugmentationStep]] = [
     augment.TrafoInsertStep,
 ]
 
-step_classes = [
-    pipeline.CatBoostRelationExtractionStep,
-    # pipeline.CrfMentionEstimatorStep,
-]
-
 
 def get_vocab_size(documents: typing.List[data.Document]) -> int:
     vocab: typing.Set[str] = set()
@@ -159,20 +154,47 @@ def build_plot_data():
     original_num_samples = len(original_data)
     original_num_ltr, original_num_rtl = get_relation_directions(original_data)
 
-    for step_class in step_classes:
-        plot_data = [
-            {
-                "name": "Original Data",
-                "num_samples": original_num_samples,
-                "vocab_size": original_vocab_size,
-                "span_length": original_span_length,
-                "num_ltr_relations": original_num_ltr,
-                "num_rtl_relations": original_num_rtl,
-                "type": "original",
-            }
-        ]
+    plot_data = [
+        {
+            "name": "Original Data",
+            "num_samples": original_num_samples,
+            "vocab_size": original_vocab_size,
+            "span_length": original_span_length,
+            "num_ltr_relations": original_num_ltr,
+            "num_rtl_relations": original_num_rtl,
+            "type": "original",
+        }
+    ]
 
+    step_classes = [
+        pipeline.CatBoostRelationExtractionStep,
+        pipeline.CrfMentionEstimatorStep,
+    ]
+
+    for step_class in step_classes:
         for transformation_class in transformation_classes:
+            name = transformation_class.__name__
+            name = name.replace("Trafo", "").replace("Step", "")
+            variation = ""
+            if name.endswith("HyponymReplacement"):
+                name.replace("HyponymReplacement", "")
+                variation = "Hyponym Replacement"
+
+            if name.endswith("HypernymReplacement"):
+                name.replace("HypernymReplacement", "")
+                variation = "Hypernym Replacement"
+
+            try:
+                int(name)
+                name = f"B.{name} {variation}"
+            except ValueError:
+                pass
+
+            loaded_trafos = [p["name"] for p in plot_data]
+            if name in loaded_trafos:
+                print('Already loaded, continuing')
+                continue
+
             base_dir = os.path.join("jsonl", "augmented")
             data_file = f"{os.path.join(base_dir, transformation_class.__name__)}.jsonl"
 
@@ -196,23 +218,6 @@ def build_plot_data():
             span_length = get_mean_span_length(augmented_data)
             num_ltr, num_rtl = get_relation_directions(augmented_data)
 
-            name = transformation_class.__name__
-            name = name.replace("Trafo", "").replace("Step", "")
-            variation = ""
-            if name.endswith("HyponymReplacement"):
-                name.replace("HyponymReplacement", "")
-                variation = "Hyponym Replacement"
-
-            if name.endswith("HypernymReplacement"):
-                name.replace("HypernymReplacement", "")
-                variation = "Hypernym Replacement"
-
-            try:
-                int(name)
-                name = f"B.{name} {variation}"
-            except ValueError:
-                pass
-
             plot_data.append(
                 {
                     "name": name,
@@ -227,9 +232,8 @@ def build_plot_data():
                 }
             )
 
-        df = pd.DataFrame.from_records(plot_data)
-
-        return df
+    df = pd.DataFrame.from_records(plot_data)
+    return df
 
 
 def augmentation_effect_figure(df: pd.DataFrame):
@@ -264,8 +268,9 @@ def augmentation_effect_figure(df: pd.DataFrame):
 
 
 def data_characteristics_figure(df: pd.DataFrame):
-    df["ratio_ltr_relations"] = df["num_ltr_relations"] / df["num_samples"]
-    df["ratio_rtl_relations"] = df["num_rtl_relations"] / df["num_samples"]
+    total_num_relations = df["num_ltr_relations"] + df["num_rtl_relations"]
+    df["ratio_ltr_relations"] = df["num_ltr_relations"] / total_num_relations
+    df["ratio_rtl_relations"] = df["num_rtl_relations"] / total_num_relations
     df = df.drop(
         columns=[
             "vocab_size",
@@ -278,12 +283,18 @@ def data_characteristics_figure(df: pd.DataFrame):
     )
     df = df.set_index("name")
     df.plot(kind="bar", stacked=True)
+    ax: plt.Axes = plt.gca()
+    ax.set_ylim(0.4, 1.05)
+    threshold = df.loc[["Original Data"]]["ratio_ltr_relations"].item()
+    plt.plot(ax.get_xlim(), [threshold, threshold])
     # df["relation_direction_ratio"] = df["num_ltr_relations"] / df["num_rtl_relations"]
     # sns.barplot(df, x="name", y="relation_direction_ratio", hue="type")
     plt.show()
 
 
 if __name__ == "__main__":
-    plot_data = build_plot_data()
-    # augmentation_effect_figure(plot_data)
-    data_characteristics_figure(plot_data)
+    def main():
+        plot_data = build_plot_data()
+        # augmentation_effect_figure(plot_data)
+        data_characteristics_figure(plot_data)
+    main()
