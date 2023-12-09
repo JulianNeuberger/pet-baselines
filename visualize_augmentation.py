@@ -96,9 +96,10 @@ def add_labels(ax: plt.Axes, df: pd.DataFrame):
     texts = []
     xs = []
     ys = []
+    df = df.reset_index()
     for _, row in df.iterrows():
-        x = row["delta_vocab_size"]
-        y = row["delta_span_length"]
+        x = row["vocab_size"]
+        y = row["span_length"]
         text = ax.text(x, y, row["name"])
         texts.append(text)
         xs.append(x)
@@ -156,7 +157,7 @@ def build_plot_data():
 
     plot_data = [
         {
-            "name": "Original Data",
+            "name": "Original",
             "num_samples": original_num_samples,
             "vocab_size": original_vocab_size,
             "span_length": original_span_length,
@@ -222,10 +223,8 @@ def build_plot_data():
                 {
                     "name": name,
                     "num_samples": len(augmented_data),
-                    "vocab_size": (vocab_size - original_vocab_size)
-                    / original_vocab_size,
-                    "span_length": (span_length - original_span_length)
-                    / original_span_length,
+                    "vocab_size": vocab_size,
+                    "span_length": span_length,
                     "type": "step",
                     "num_ltr_relations": num_ltr,
                     "num_rtl_relations": num_rtl,
@@ -237,10 +236,19 @@ def build_plot_data():
 
 
 def augmentation_effect_figure(df: pd.DataFrame):
-    original_data = df[df["name"] == "Original Data"]
+    df = df.set_index("name")
 
-    df = df["vocab_size"] - original_data["vocab_size"].iloc[0]
-    df = df["span_length"] - original_data["span_length"].iloc[0]
+    print(df)
+    original_data = df.loc[["Original"]]
+    print(original_data)
+
+    print('------------------')
+    print(df["span_length"])
+    print('------------------')
+    print(original_data["span_length"])
+    print('------------------')
+    df["vocab_size"] = (df["vocab_size"] - original_data["vocab_size"].item()) / original_data["vocab_size"].item()
+    df["span_length"] = (df["span_length"] - original_data["span_length"].item()) / original_data["span_length"].item()
 
     sns.scatterplot(df, x="vocab_size", y="span_length", hue="type")
     ax = plt.gca()
@@ -263,6 +271,7 @@ def augmentation_effect_figure(df: pd.DataFrame):
         texts=texts, x=xs, y=ys, arrowprops=dict(arrowstyle="-", color="k", lw=0.5)
     )
 
+    plt.tight_layout()
     plt.savefig("figures/data-augmentation/trafo-effects.png")
     plt.savefig("figures/data-augmentation/trafo-effects.pdf")
 
@@ -285,16 +294,22 @@ def data_characteristics_figure(df: pd.DataFrame):
     df.plot(kind="bar", stacked=True)
     ax: plt.Axes = plt.gca()
     ax.set_ylim(0.4, 1.05)
-    threshold = df.loc[["Original Data"]]["ratio_ltr_relations"].item()
+    threshold = df.loc[["Original"]]["ratio_ltr_relations"].item()
     plt.plot(ax.get_xlim(), [threshold, threshold])
+    plt.legend(["original distribution", "right to left", "left to right"])
+    plt.ylabel("share of relations")
+    plt.xlabel("data augmentation technique")
+    ax.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=1))
     # df["relation_direction_ratio"] = df["num_ltr_relations"] / df["num_rtl_relations"]
     # sns.barplot(df, x="name", y="relation_direction_ratio", hue="type")
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("figures/data-augmentation/directionality.png")
+    plt.savefig("figures/data-augmentation/directionality.pdf")
 
 
 if __name__ == "__main__":
     def main():
         plot_data = build_plot_data()
-        # augmentation_effect_figure(plot_data)
-        data_characteristics_figure(plot_data)
+        augmentation_effect_figure(plot_data.copy())
+        data_characteristics_figure(plot_data.copy())
     main()

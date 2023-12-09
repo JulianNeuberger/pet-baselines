@@ -14,28 +14,28 @@ from data import loader, model
 from main import cross_validate_pipeline
 
 strategies: typing.List[typing.Type[augment.AugmentationStep]] = [
-    augment.Trafo3Step,
-    augment.Trafo5Step,
-    augment.Trafo6Step,
-    augment.Trafo8Step,  # long runtime
-    augment.Trafo24Step,
-    augment.Trafo26Step,
-    augment.Trafo27Step,
-    augment.Trafo39Step,
-    augment.Trafo40Step,
-    augment.Trafo52Step,
-    augment.Trafo58Step,  # runs too long?
-    augment.Trafo62Step,  # runs too long
-    augment.Trafo79Step,
-    augment.Trafo82Step,
-    augment.Trafo86HyponymReplacement,
-    augment.Trafo86HypernymReplacement,
-    augment.Trafo88Step,
-    augment.Trafo90Step,
-    augment.Trafo100Step,
-    augment.Trafo101Step,
-    augment.Trafo103Step,
-    augment.Trafo106Step,
+    # augment.Trafo3Step,
+    # augment.Trafo5Step,
+    # augment.Trafo6Step,
+    # augment.Trafo8Step,  # long runtime
+    # augment.Trafo24Step,
+    # augment.Trafo26Step,
+    # augment.Trafo27Step,
+    # augment.Trafo39Step,
+    # augment.Trafo40Step,
+    # augment.Trafo52Step,
+    # augment.Trafo58Step,  # runs too long?
+    # augment.Trafo62Step,  # runs too long
+    # augment.Trafo79Step,
+    # augment.Trafo82Step,
+    # augment.Trafo86HyponymReplacement,
+    # augment.Trafo86HypernymReplacement,
+    # augment.Trafo88Step,
+    # augment.Trafo90Step,
+    # augment.Trafo100Step,
+    # augment.Trafo101Step,
+    # augment.Trafo103Step,
+    # augment.Trafo106Step,
     augment.Trafo110Step,
     augment.TrafoNullStep,
     augment.TrafoInsertStep,
@@ -177,8 +177,8 @@ def main():
             raise AssertionError("\n".join([str(e) for e in errors]))
 
     all_documents = loader.read_documents_from_json("./jsonl/all.jsonl")
-    pipeline_step_class = pipeline.CrfMentionEstimatorStep
-    # pipeline.CatBoostRelationExtractionStep
+    # pipeline_step_class = pipeline.CrfMentionEstimatorStep
+    pipeline_step_class = pipeline.CatBoostRelationExtractionStep
 
     for strategy_class in strategies:
         print(f"Running optimization for strategy {strategy_class.__name__}")
@@ -186,7 +186,7 @@ def main():
             strategy_class,
             pipeline_step_class,
             all_documents,
-            # num_trees=100,
+            num_trees=100,
             device=device,
             device_ids=device_ids,
         )
