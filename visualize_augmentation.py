@@ -156,14 +156,16 @@ def build_plot_data():
     original_data = loader.read_documents_from_json("./jsonl/all.jsonl")
     original_vocab_size = get_vocab_size(original_data)
     original_span_length = get_mean_span_length(original_data)
+    original_num_samples = len(original_data)
     original_num_ltr, original_num_rtl = get_relation_directions(original_data)
 
     for step_class in step_classes:
         plot_data = [
             {
                 "name": "Original Data",
+                "num_samples": original_num_samples,
                 "vocab_size": original_vocab_size,
-                "average_span_length": original_span_length,
+                "span_length": original_span_length,
                 "num_ltr_relations": original_num_ltr,
                 "num_rtl_relations": original_num_rtl,
                 "type": "original",
@@ -214,6 +216,7 @@ def build_plot_data():
             plot_data.append(
                 {
                     "name": name,
+                    "num_samples": len(augmented_data),
                     "vocab_size": (vocab_size - original_vocab_size)
                     / original_vocab_size,
                     "span_length": (span_length - original_span_length)
@@ -261,7 +264,22 @@ def augmentation_effect_figure(df: pd.DataFrame):
 
 
 def data_characteristics_figure(df: pd.DataFrame):
-    sns.barplot(df, x="name", y="num_ltr_relations", hue="type")
+    df["ratio_ltr_relations"] = df["num_ltr_relations"] / df["num_samples"]
+    df["ratio_rtl_relations"] = df["num_rtl_relations"] / df["num_samples"]
+    df = df.drop(
+        columns=[
+            "vocab_size",
+            "span_length",
+            "type",
+            "num_ltr_relations",
+            "num_rtl_relations",
+            "num_samples",
+        ]
+    )
+    df = df.set_index("name")
+    df.plot(kind="bar", stacked=True)
+    # df["relation_direction_ratio"] = df["num_ltr_relations"] / df["num_rtl_relations"]
+    # sns.barplot(df, x="name", y="relation_direction_ratio", hue="type")
     plt.show()
 
 

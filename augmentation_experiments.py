@@ -17,13 +17,13 @@ strategies: typing.List[typing.Type[augment.AugmentationStep]] = [
     augment.Trafo3Step,
     augment.Trafo5Step,
     augment.Trafo6Step,
-    # augment.Trafo8Step,  # long runtime
+    augment.Trafo8Step,  # long runtime
     augment.Trafo24Step,
-    #augment.Trafo26Step,
+    augment.Trafo26Step,
     augment.Trafo39Step,
     augment.Trafo40Step,
-    #augment.Trafo58Step,  # runs too long?
-    #augment.Trafo62Step,  # runs too long
+    augment.Trafo58Step,  # runs too long?
+    augment.Trafo62Step,  # runs too long
     augment.Trafo79Step,
     augment.Trafo82Step,
     augment.Trafo86HyponymReplacement,
